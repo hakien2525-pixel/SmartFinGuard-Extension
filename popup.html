@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartFin-Guard AI</title>
+  <style>
+    body {
+      width: 320px;
+      height: 400px;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 20px;
+      color: #0b3b60; /* Deep Blue */
+      margin: 0 0 10px 0;
+    }
+
+    p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .auth-button {
+      background: linear-gradient(135deg, #0b3b60, #1e5a8c);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(11, 59, 96, 0.3);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-button:hover {
+      background: linear-gradient(135deg, #092f4c, #164670);
+      box-shadow: 0 6px 14px rgba(11, 59, 96, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .auth-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 5px rgba(11, 59, 96, 0.3);
+    }
+
+    .auth-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #ffffff;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #2e7d32; /* Green for success */
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🛡️</div>
+    <h1>SmartFin-Guard AI</h1>
+    <p>Xin chào Cán bộ Ngân hàng, vui lòng xác thực để sử dụng hệ thống.</p>
+    
+    <button id="authBtn" class="auth-button">
+      <span class="loader" id="btnLoader"></span>
+      <span id="btnText">Xác thực FaceID (VNPT eKYC)</span>
+    </button>
+    
+    <div id="message"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
