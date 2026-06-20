@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+ai-core/venv/
+backend/node_modules/
+frontend/node_modules/
+backend/dist/
+frontend/dist/
+frontend/.swc/
+*.log
+.DS_Store
