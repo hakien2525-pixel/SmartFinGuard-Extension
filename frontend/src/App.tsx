@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, CssBaseline, AppBar, Toolbar, Typography, Container, Grid, ThemeProvider, createTheme, Button, CircularProgress, Snackbar, Alert, Tabs, Tab } from '@mui/material';
+import { Box, CssBaseline, AppBar, Toolbar, Typography, Grid, ThemeProvider, createTheme, Button, CircularProgress, Snackbar, Alert, Tabs, Tab } from '@mui/material';
 import ShieldIcon from '@mui/icons-material/Shield';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import OverviewPanel from './components/OverviewPanel';
@@ -7,6 +7,8 @@ import DocumentQueue from './components/DocumentQueue';
 import AnalysisPanel from './components/AnalysisPanel';
 import HistoryPage from './components/HistoryPage';
 import type { DocumentRecord } from './mockData';
+
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const theme = createTheme({
   palette: {
@@ -26,7 +28,7 @@ function App() {
 
   const fetchDocuments = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/documents');
+      const res = await fetch(`${baseURL}/api/documents`);
       const data = await res.json();
       if (data.status === 'success') {
         setDocuments(data.data);
@@ -66,7 +68,7 @@ function App() {
     reader.onloadend = async () => {
       const base64Image = reader.result as string;
       try {
-        const res = await fetch('http://localhost:3000/api/scan', {
+        const res = await fetch(`${baseURL}/api/scan`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -94,7 +96,7 @@ function App() {
   const handleAction = async (action: 'approve' | 'block' | 'review') => {
     if (!selectedDoc) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/documents/${selectedDoc.id}/action`, {
+      const res = await fetch(`${baseURL}/api/documents/${selectedDoc.id}/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action })
@@ -121,7 +123,7 @@ function App() {
             <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', mr: 4 }}>
               SmartFin-Guard
             </Typography>
-            <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)} textColor="inherit" indicatorColor="secondary" sx={{ flexGrow: 1 }}>
+            <Tabs value={activeTab} onChange={(_e, v) => setActiveTab(v)} textColor="inherit" indicatorColor="secondary" sx={{ flexGrow: 1 }}>
               <Tab label="Dashboard Quyết định" />
               <Tab label="Lịch sử Hồ sơ" />
             </Tabs>
@@ -151,14 +153,14 @@ function App() {
             <OverviewPanel stats={stats} />
             
             <Grid container spacing={4} sx={{ alignItems: 'flex-start' }}>
-              <Grid item xs={12} md={5} lg={4}>
+              <Grid size={{ xs: 12, md: 5, lg: 5 }}>
                 <DocumentQueue 
                   documents={documents}
                   onSelect={(doc) => setSelectedDoc(doc)} 
                   selectedId={selectedDoc?.id || null} 
                 />
               </Grid>
-              <Grid item xs={12} md={7} lg={8}>
+              <Grid size={{ xs: 12, md: 7, lg: 7 }}>
                 <AnalysisPanel document={selectedDoc} onAction={handleAction} />
               </Grid>
             </Grid>

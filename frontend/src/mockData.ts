@@ -6,6 +6,7 @@ export interface DocumentRecord {
   status: 'Phê duyệt' | 'Cảnh báo' | 'Kiểm tra thêm';
   amount: string;
   taxCode: string;
+  invoiceType?: string;
   aiHeatmap: boolean;
   details?: string;
   imageUrl?: string;

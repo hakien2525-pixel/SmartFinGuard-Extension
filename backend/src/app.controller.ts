@@ -1,34 +1,65 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { AppService } from './app.service';
+import { GeminiService } from './gemini.service';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// In-memory Database for hackathon (Bonus points for statefulness)
-const documentDatabase = [
+// Persistent Database for hackathon
+const DB_FILE = path.join(process.cwd(), 'database.json');
+
+const defaultData = [
   { id: 'DOC001', company: 'Công ty Cổ phần Alpha', time: '10:05', riskScore: 0.95, status: 'Phê duyệt', amount: '500,000,000 VND', taxCode: '0101234567', aiHeatmap: false, details: "Hệ thống AI đánh giá hình ảnh nguyên bản (độ tin cậy cao: 95%)." },
   { id: 'DOC002', company: 'Công ty TNHH Beta', time: '10:15', riskScore: 0.12, status: 'Cảnh báo', amount: '1,200,000,000 VND', taxCode: '0309876543', aiHeatmap: true, details: "Hệ thống AI phát hiện dấu hiệu bất thường (độ tin cậy thấp: 12%)." },
 ];
 
+function getDatabase(): any[] {
+  try {
+    if (!fs.existsSync(DB_FILE)) {
+      fs.writeFileSync(DB_FILE, JSON.stringify(defaultData, null, 2));
+    }
+    return JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+  } catch (error) {
+    console.error("Failed to read database", error);
+    return [...defaultData];
+  }
+}
+
+function saveDatabase(data: any[]) {
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error("Failed to save database", error);
+  }
+}
+
 @Controller('api')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly geminiService: GeminiService
+  ) {}
 
   @Get('documents')
   getAllDocuments() {
+    const db = getDatabase();
     return {
       status: 'success',
-      data: documentDatabase.sort((a, b) => b.id.localeCompare(a.id)) // newest first
+      data: db.sort((a, b) => b.id.localeCompare(a.id)) // newest first
     };
   }
 
   @Post('documents/:id/action')
   updateDocumentStatus(@Body() body: { action: string }, @Param('id') id: string) {
-    const doc = documentDatabase.find(d => d.id === id);
-    if (!doc) return { status: 'error', message: 'Document not found' };
+    const db = getDatabase();
+    const docIndex = db.findIndex(d => d.id === id);
+    if (docIndex === -1) return { status: 'error', message: 'Document not found' };
 
-    if (body.action === 'approve') doc.status = 'Đã duyệt';
-    else if (body.action === 'block') doc.status = 'Đã chặn';
-    else if (body.action === 'review') doc.status = 'Chờ xử lý';
+    if (body.action === 'approve') db[docIndex].status = 'Đã duyệt';
+    else if (body.action === 'block') db[docIndex].status = 'Đã chặn';
+    else if (body.action === 'review') db[docIndex].status = 'Chờ xử lý';
 
-    return { status: 'success', data: doc };
+    saveDatabase(db);
+    return { status: 'success', data: db[docIndex] };
   }
 
   @Post('ekyc')
@@ -65,36 +96,58 @@ export class AppController {
         heatmap_detected: trustScore < 0.5,
         analysis_details: trustScore < 0.5 ? `Hệ thống AI phát hiện dấu hiệu bất thường (độ tin cậy thấp: ${(trustScore*100).toFixed(0)}%).` : `Hệ thống AI đánh giá hình ảnh nguyên bản (độ tin cậy cao: ${(trustScore*100).toFixed(0)}%).`,
         ocr_tax_code: "Không tìm thấy",
-        ocr_amount: "Không tìm thấy"
+        ocr_amount: "Không tìm thấy",
+        ocr_invoice_type: "Khác"
       };
     }
 
-    // 2. Cross-check logic (Duplicate Tax Code)
-    const requestTaxCode = aiResponse.ocr_tax_code;
-    const isDuplicate = documentDatabase.some(doc => doc.taxCode === requestTaxCode && requestTaxCode !== "Không tìm thấy" && requestTaxCode !== "Lỗi kết nối OCR");
-    
-    if (isDuplicate) {
-      aiResponse.is_fraud = true;
-      const originalScore = aiResponse.fraud_score;
-      aiResponse.fraud_score = Math.min(originalScore, 0.2); // Bắt buộc điểm tin cậy phải thấp
-      aiResponse.analysis_details = `Hệ thống phân tích phát hiện rủi ro (độ tin cậy bị hạ thấp: ${(aiResponse.fraud_score*100).toFixed(0)}%). | HỆ THỐNG ĐỐI CHIẾU CẢNH BÁO: Hóa đơn có mã số thuế trùng lặp (đã từng giải ngân).`;
+    // 2. Call Gemini for Deep Reasoning and Data Extraction
+    let geminiResult;
+    try {
+        geminiResult = await this.geminiService.analyzeInvoice(body.image || "");
+    } catch (e) {
+        console.error("Gemini fallback:", e);
+        geminiResult = {
+            tax_id: aiResponse.ocr_tax_code,
+            total_amount: aiResponse.ocr_amount,
+            conclusion: aiResponse.analysis_details,
+            trust_score: Math.round(aiResponse.fraud_score * 100)
+        };
     }
 
-    // 3. Save to In-Memory DB
+    // Determine values based on Gemini
+    const trustScore = geminiResult.trust_score / 100;
+    let isFraud = trustScore < 0.5;
+    let analysisDetails = geminiResult.conclusion;
+    const requestTaxCode = geminiResult.tax_id;
+    const amount = geminiResult.total_amount;
+
+    // 3. Cross-check logic (Duplicate Tax Code)
+    const db = getDatabase();
+    const isDuplicate = db.some(doc => doc.taxCode === requestTaxCode && requestTaxCode !== "Không tìm thấy" && requestTaxCode !== "Lỗi kết nối OCR" && requestTaxCode !== "Lỗi kết nối AI");
+    
+    if (isDuplicate) {
+      isFraud = true;
+      analysisDetails = `${analysisDetails} | HỆ THỐNG ĐỐI CHIẾU CẢNH BÁO: Hóa đơn có mã số thuế trùng lặp (đã từng giải ngân).`;
+    }
+
+    // 4. Save to In-Memory DB
     const newDoc = {
       id: docId,
       company: body.company || 'Doanh nghiệp ' + docId,
       time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-      riskScore: aiResponse.fraud_score,
-      status: aiResponse.is_fraud ? 'Cảnh báo' : 'Phê duyệt',
-      amount: aiResponse.ocr_amount,
+      riskScore: isDuplicate ? Math.min(trustScore, 0.2) : trustScore,
+      status: isFraud ? 'Cảnh báo' : 'Phê duyệt',
+      amount: amount,
       taxCode: requestTaxCode,
+      invoiceType: aiResponse.ocr_invoice_type || 'Khác',
       aiHeatmap: aiResponse.heatmap_detected,
-      details: aiResponse.analysis_details,
+      details: analysisDetails,
       imageUrl: body.image || null
     };
     
-    documentDatabase.push(newDoc);
+    db.push(newDoc);
+    saveDatabase(db);
 
     return {
       status: 'success',

@@ -35,14 +35,14 @@ export default function DocumentQueue({ documents, onSelect, selectedId }: Props
   return (
     <Box sx={{ height: '100%' }}>
       <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>Danh sách hồ sơ chờ duyệt</Typography>
-      <TableContainer component={Paper} elevation={1}>
-        <Table stickyHeader>
+      <TableContainer component={Paper} elevation={1} className="overflow-x-hidden">
+        <Table stickyHeader sx={{ tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow>
-              <TableCell><strong>Mã HS</strong></TableCell>
-              <TableCell><strong>Doanh nghiệp</strong></TableCell>
-              <TableCell><strong>Độ tin cậy</strong></TableCell>
-              <TableCell><strong>Trạng thái</strong></TableCell>
+              <TableCell className="w-[15%]"><strong>Mã HS</strong></TableCell>
+              <TableCell className="w-[45%]"><strong>Doanh nghiệp</strong></TableCell>
+              <TableCell className="w-[15%]"><strong>Độ tin cậy</strong></TableCell>
+              <TableCell className="w-[25%] min-w-max"><strong>Trạng thái</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -56,13 +56,13 @@ export default function DocumentQueue({ documents, onSelect, selectedId }: Props
                   backgroundColor: selectedId === row.id ? 'rgba(25, 118, 210, 0.08)' : 'inherit'
                 }}
               >
-                <TableCell>{row.id}</TableCell>
-                <TableCell>{row.company}</TableCell>
-                <TableCell sx={{ color: getPercentageColor(row.status), fontWeight: 'bold' }}>
+                <TableCell className="w-[15%]">{row.id}</TableCell>
+                <TableCell className="w-[45%] truncate max-w-0" title={row.company} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.company}</TableCell>
+                <TableCell className="w-[15%]" sx={{ color: getPercentageColor(row.status), fontWeight: 'bold' }}>
                   {(row.riskScore * 100).toFixed(0)}%
                 </TableCell>
-                <TableCell>
-                  <Chip label={row.status} color={getStatusColor(row.status)} size="small" />
+                <TableCell className="w-[25%] min-w-max">
+                  <Chip label={row.status} color={getStatusColor(row.status)} className="whitespace-nowrap w-fit px-3 py-1 text-center" size="small" />
                 </TableCell>
               </TableRow>
             ))}
