@@ -24,6 +24,7 @@ class ScanResponse(BaseModel):
     ocr_tax_code: str
     ocr_amount: str
     ocr_invoice_type: str
+    raw_text: str
     anomalies: list = []
 
 @app.get("/")
@@ -75,17 +76,17 @@ def extract_ocr_data(image_base64: str):
             if amount_matches:
                 amount = amount_matches[-1].strip() + " VND"
             
-        return invoice_type, tax_code, amount
+        return invoice_type, tax_code, amount, text
     except Exception as e:
         print(f"OCR Error: {e}")
-        return "Lỗi phân tích", "Lỗi phân tích", "Lỗi phân tích"
+        return "Lỗi phân tích", "Lỗi phân tích", "Lỗi phân tích", ""
 
 @app.post("/analyze", response_model=ScanResponse)
 def analyze_invoice(request: ScanRequest):
     time.sleep(1.0) # Simulating processing time
     
     # 1. Thực hiện OCR thực tế
-    invoice_type, tax_code, amount = extract_ocr_data(request.image_base64)
+    invoice_type, tax_code, amount, raw_text = extract_ocr_data(request.image_base64)
     
     # 2. Chạy Image Forgery Detector
     try:
@@ -134,5 +135,6 @@ def analyze_invoice(request: ScanRequest):
         ocr_tax_code=tax_code,
         ocr_amount=amount,
         ocr_invoice_type=invoice_type,
+        raw_text=raw_text,
         anomalies=anomalies
     )

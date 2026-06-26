@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageChops
 import io
-import re
+import datetime
 
 class ImageForgeryDetector:
     def __init__(self):
@@ -11,13 +11,11 @@ class ImageForgeryDetector:
 
     def analyze_ela(self, pil_image, quality=95):
         """
-        Kỹ thuật 1: Error Level Analysis (ELA)
-        Lưu lại ảnh ở tỷ lệ nén 95% và tính toán độ chênh lệch pixel.
+        Kỹ thuật 1: Error Level Analysis (ELA - Phân tích mức độ lỗi nén)
         """
         try:
             # Save the image at a specific quality
             temp_io = io.BytesIO()
-            # Convert to RGB if necessary (e.g. RGBA)
             if pil_image.mode != 'RGB':
                 pil_image = pil_image.convert('RGB')
                 
@@ -28,7 +26,7 @@ class ImageForgeryDetector:
             # Calculate absolute difference
             ela_image = ImageChops.difference(pil_image, compressed_image)
             
-            # Enhance the difference (scale it up to make it visible/analyzable)
+            # Enhance the difference
             extrema = ela_image.getextrema()
             max_diff = max([ex[1] for ex in extrema])
             if max_diff == 0:
@@ -36,25 +34,30 @@ class ImageForgeryDetector:
             scale = 255.0 / max_diff
             ela_image = ImageChops.multiply(ela_image.point(lambda x: x * scale), ela_image)
             
-            # Convert to OpenCV format to find anomalous regions (bounding boxes)
+            # Convert to OpenCV format to find anomalous regions
             ela_cv = np.array(ela_image)
             gray = cv2.cvtColor(ela_cv, cv2.COLOR_RGB2GRAY)
             _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
-            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            # Use morphological operations to group nearby noise
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+            dilated = cv2.dilate(thresh, kernel, iterations=1)
+            
+            contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
             anomalies = []
             score = 0.0
             
-            # Find significant ELA spikes
+            # Find significant ELA spikes (indicative of local tampering like inserted text)
             for cnt in contours:
                 area = cv2.contourArea(cnt)
-                if area > 100:  # Threshold for noise
+                if area > 150:  # Threshold for noise
                     x, y, w, h = cv2.boundingRect(cnt)
                     anomalies.append({
-                        "reason": "Mức độ nén ELA bất thường (dấu vết cắt ghép pixel)",
+                        "reason": "Mức độ nén ELA chênh lệch (Dấu vết cắt ghép/chèn thêm chữ)",
                         "box": [int(x), int(y), int(w), int(h)]
                     })
-                    score += 0.2 # Tăng rủi ro
+                    score += 0.25 # Tăng rủi ro
                     
             return min(score, 1.0), anomalies
         except Exception as e:
@@ -64,7 +67,7 @@ class ImageForgeryDetector:
     def check_metadata(self, pil_image):
         """
         Kỹ thuật 2: Metadata & EXIF Checking
-        Đọc thẻ EXIF phát hiện phần mềm chỉnh sửa hoặc ngày sửa đổi không hợp lệ.
+        Tìm dấu vết phần mềm chỉnh sửa và sự bất nhất về thời gian.
         """
         try:
             anomalies = []
@@ -73,138 +76,127 @@ class ImageForgeryDetector:
             if not info:
                 return score, anomalies
                 
-            # TAG 305 is "Software" in standard EXIF
+            # TAG 305 is "Software", TAG 306 is "DateTime" (Last modified), TAG 36867 is "DateTimeOriginal"
             software = info.get(305, "").lower()
+            date_time = info.get(306, "")
+            date_original = info.get(36867, "")
+            
             if software:
                 for suspicious in self.suspicious_software:
                     if suspicious in software:
                         anomalies.append({
-                            "reason": f"Phát hiện dấu vết phần mềm chỉnh sửa ảnh trong EXIF: {software.title()}",
+                            "reason": f"Dấu vết chỉnh sửa kỹ thuật số: Phát hiện phần mềm {software.title()} trong EXIF",
                             "box": [0, 0, 0, 0] # Lỗi toàn cục
                         })
-                        score += 0.5
+                        score += 0.6
                         break
                         
-            # Cân nhắc thêm việc kiểm tra DateTimeOriginal vs DateTimeDigitized nếu cần
+            # Kiểm tra sự bất nhất giữa ngày chụp gốc và ngày chỉnh sửa cuối (nếu có cả hai)
+            if date_time and date_original and date_time != date_original:
+                anomalies.append({
+                    "reason": f"Ngày tạo ({date_original}) và Ngày sửa đổi ({date_time}) không khớp. Khả năng cao tệp đã bị can thiệp.",
+                    "box": [0, 0, 0, 0]
+                })
+                score += 0.4
+
             return min(score, 1.0), anomalies
         except Exception as e:
             print(f"Metadata check error: {e}")
             return 0.0, []
 
-    def analyze_font_and_alignment(self, cv_image):
+    def analyze_pixel_alignment(self, cv_image):
         """
-        Kỹ thuật 3: Font & Alignment Analysis bằng OpenCV
-        Phát hiện nhiễu xung quanh viền ký tự và độ lệch dòng (Alignment).
+        Kỹ thuật 3: Pixel & Alignment Analysis
+        Phép toán hình thái học (Morphological) tìm trục tọa độ và độ lệch dòng.
         """
         try:
             anomalies = []
             score = 0.0
             
-            # Convert to grayscale
             if len(cv_image.shape) == 3:
                 gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
             else:
                 gray = cv_image
                 
-            # Dùng Canny Edge Detection để tìm nhiễu biên (Text Edge Discontinuity)
+            # Binarize using adaptive thresholding
+            thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                           cv2.THRESH_BINARY_INV, 11, 2)
+            
+            # Kẻ đường trục ngang (Horizontal projection) để tìm các hàng chữ tự nhiên
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))
+            detect_horizontal = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+            
+            # Tìm các contours (chữ hoặc số) không nằm trên các trục ngang này (bị lệch dòng)
+            # Dùng viền chữ
             edges = cv2.Canny(gray, 50, 150)
+            char_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 5))
+            dilated_chars = cv2.dilate(edges, char_kernel, iterations=1)
             
-            # Dùng Morphological operations (Dilate) để gộp các block chữ
-            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 5))
-            dilated = cv2.dilate(edges, kernel, iterations=2)
+            contours, _ = cv2.findContours(dilated_chars, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
-            contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            
-            # Giả lập logic tìm ra các dòng chữ bị lệch trục (y variance > threshold)
-            # Hoặc các vùng nhiễu (mật độ cạnh (edges) quá dày đặc so với phần còn lại)
             for cnt in contours:
                 x, y, w, h = cv2.boundingRect(cnt)
-                # Chỉ check các vùng nhỏ/vừa nghi ngờ bị sửa đổi số tiền (ví dụ)
-                if 20 < w < 300 and 10 < h < 100:
-                    roi = edges[y:y+h, x:x+w]
-                    density = np.sum(roi) / (w * h * 255.0)
-                    if density > 0.4: # Bất thường: nhiễu pixel quá cao
+                # Chỉ check các khối text kích thước vừa (số tiền, ngày tháng)
+                if 20 < w < 400 and 10 < h < 100:
+                    roi_edges = edges[y:y+h, x:x+w]
+                    density = np.sum(roi_edges) / (w * h * 255.0)
+                    
+                    # Bắt lỗi: 1. Nhiễu pixel quanh viền quá bất thường
+                    if density > 0.45:
                         anomalies.append({
-                            "reason": "Phát hiện nhiễu pixel viền ký tự (Khả năng chèn/sửa text)",
+                            "reason": "Mật độ nhiễu Pixel cao bất thường (Nghi ngờ tẩy xóa/chèn số)",
                             "box": [int(x), int(y), int(w), int(h)]
                         })
                         score += 0.3
+                    
+                    # Bắt lỗi: 2. Lệch trục (Khoảng cách từ y đến đường kẻ trục ngang gần nhất)
+                    roi_horiz = detect_horizontal[max(0, y-10):min(detect_horizontal.shape[0], y+h+10), x:x+w]
+                    if np.sum(roi_horiz) == 0:
+                        # Vùng này hoàn toàn bị trơ trọi, không thẳng hàng với bất kỳ trục văn bản nào
+                        anomalies.append({
+                            "reason": "Lệch trục tọa độ siêu nhỏ (Sai lệch căn dòng so với văn bản gốc)",
+                            "box": [int(x), int(y), int(w), int(h)]
+                        })
+                        score += 0.35
             
             return min(score, 1.0), anomalies
         except Exception as e:
-            print(f"Font analysis error: {e}")
+            print(f"Alignment analysis error: {e}")
             return 0.0, []
-
-    def cnn_feature_extraction(self, cv_image):
-        """
-        Kỹ thuật 4: CNN Feature Extraction Pipeline
-        Chuẩn hóa ảnh (resize 224x224, normalize) để đưa vào mạng CNN.
-        Vì Hackathon không chạy CNN thật, đây là Pipeline mô phỏng quá trình đó.
-        """
-        try:
-            # 1. Resize về kích thước chuẩn của mạng CNN (ví dụ ResNet50, VGG16)
-            resized_img = cv2.resize(cv_image, (224, 224))
-            
-            # 2. Normalize (0-1)
-            normalized_img = resized_img.astype(np.float32) / 255.0
-            
-            # 3. Trừ Mean & chia Std (ImageNet standards)
-            mean = np.array([0.485, 0.456, 0.406])
-            std = np.array([0.229, 0.224, 0.225])
-            normalized_img = (normalized_img - mean) / std
-            
-            # CNN Mocking: Trong thực tế ta sẽ pass normalized_img vào model.predict()
-            # Ở đây mô phỏng bằng cách tạo ngẫu nhiên nhưng có tỷ lệ dựa trên nhiễu ảnh
-            noise_level = np.std(normalized_img)
-            mock_cnn_risk = min(noise_level / 2.0, 1.0)
-            
-            # Tinh chỉnh cho có tính ngẫu nhiên nhẹ nhàng
-            mock_cnn_risk = max(0.0, mock_cnn_risk - 0.2) 
-            
-            return mock_cnn_risk
-        except Exception as e:
-            print(f"CNN pipeline error: {e}")
-            return 0.0
 
     def detect(self, pil_image):
         """
-        Hàm chính điều phối toàn bộ 4 kỹ thuật.
-        Trả về JSON: { "is_forged": bool, "confidence_score": float, "anomalies": list }
+        Kỹ thuật 4: Định dạng Đầu ra (Bounding Box JSON Pipeline)
+        Tích hợp và trả về JSON chuẩn xác
         """
         all_anomalies = []
         total_risk = 0.0
         
-        # Kỹ thuật 1: ELA
+        # 1. ELA Analysis
         ela_risk, ela_anomalies = self.analyze_ela(pil_image)
-        total_risk += ela_risk * 0.3 # ELA chiếm 30% trọng số
+        total_risk += ela_risk * 0.4 
         all_anomalies.extend(ela_anomalies)
         
-        # Kỹ thuật 2: EXIF
+        # 2. Metadata / EXIF
         exif_risk, exif_anomalies = self.check_metadata(pil_image)
-        total_risk += exif_risk * 0.2 # EXIF chiếm 20%
+        total_risk += exif_risk * 0.3
         all_anomalies.extend(exif_anomalies)
         
-        # Convert to OpenCV format cho Kỹ thuật 3 & 4
+        # Convert to OpenCV format
         cv_image = cv2.cvtColor(np.array(pil_image.convert('RGB')), cv2.COLOR_RGB2BGR)
         
-        # Kỹ thuật 3: OpenCV Font/Alignment
-        font_risk, font_anomalies = self.analyze_font_and_alignment(cv_image)
-        total_risk += font_risk * 0.2 # Font chiếm 20%
-        all_anomalies.extend(font_anomalies)
+        # 3. Pixel & Alignment Analysis
+        align_risk, align_anomalies = self.analyze_pixel_alignment(cv_image)
+        total_risk += align_risk * 0.3 
+        all_anomalies.extend(align_anomalies)
         
-        # Kỹ thuật 4: CNN
-        cnn_risk = self.cnn_feature_extraction(cv_image)
-        total_risk += cnn_risk * 0.3 # CNN chiếm 30%
-        
-        # Nếu có bằng chứng mạnh từ ELA hoặc EXIF thì đẩy risk lên cao
-        if exif_risk > 0 or ela_risk > 0.5 or font_risk > 0.5:
-            total_risk += 0.3
-            
         total_risk = min(total_risk, 1.0)
         
-        # Trust score là nghịch đảo của Fraud Risk
+        # Confidence score (Độ tin cậy của hóa đơn = 1 - rủi ro giả mạo)
         confidence_score = round(1.0 - total_risk, 2)
-        is_forged = confidence_score < 0.5 # Dưới 50% độ tin cậy -> Bị giả mạo
+        
+        # Ngưỡng giả mạo: Rủi ro > 0.4 (hoặc độ tin cậy < 0.6)
+        is_forged = bool(confidence_score < 0.6)
         
         return {
             "is_forged": is_forged,

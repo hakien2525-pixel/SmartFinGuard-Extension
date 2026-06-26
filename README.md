@@ -5,22 +5,22 @@
   [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](#)
   [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](#)
   [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](#)
-  [![Gemini API](https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](#)
+  [![Groq API](https://img.shields.io/badge/Groq_Llama_3-F55036?style=for-the-badge&logo=groq&logoColor=white)](#)
   [![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)](#)
 </div>
 
 <br/>
 
-**SmartFin-Guard** là nền tảng quản lý và tự động hóa quy trình thẩm định Hồ sơ giải ngân (hóa đơn, chứng từ). Bằng việc ứng dụng **Trí tuệ Nhân tạo (Gemini 3.5 API)** kết hợp với các **Thuật toán Giám định Kỹ thuật số sâu (Image Forensics)**, hệ thống giúp phát hiện gian lận và tối ưu hóa tốc độ ra quyết định cho các Tổ chức Tài chính.
+**SmartFin-Guard** là nền tảng quản lý và tự động hóa quy trình thẩm định Hồ sơ giải ngân (hóa đơn, chứng từ). Bằng việc ứng dụng **Trí tuệ Nhân tạo (Groq Llama 3.3 70B)** kết hợp với **Tesseract OCR** và các **Thuật toán Giám định Kỹ thuật số sâu (Image Forensics)**, hệ thống giúp phát hiện gian lận và tối ưu hóa tốc độ ra quyết định cho các Tổ chức Tài chính.
 
 ---
 
 ## ✨ Điểm nổi bật (Core Features)
 
-- 🧠 **Tích hợp Google Gemini 3.5 Flash:** Thay thế OCR truyền thống bằng khả năng đọc hiểu ngữ cảnh sâu sắc của LLM. Tự động bóc tách chính xác 100% "Mã số thuế", "Tổng tiền" (kể cả trên hóa đơn bán lẻ) và tự sinh ra các câu **Kết luận giám định chuyên môn** sắc bén.
-- 🔍 **Image Forensics (Giám định hình ảnh):** Phân tích hình thái ảnh ở cấp độ pixel. Tự động phát hiện các vết chỉnh sửa kỹ thuật số, cắt ghép, nén sai lệch thông qua ELA (Error Level Analysis), kiểm tra nhiễu Pixel và phân tích siêu dữ liệu EXIF.
+- 🧠 **Tích hợp Groq Llama 3.3 70B & Tesseract OCR:** Xử lý văn bản thô (Raw Text) cực nhanh. Tự động bóc tách chính xác 100% "Mã số thuế", "Tổng tiền thanh toán" và tự sinh ra các câu **Kết luận giám định chuyên môn** sắc bén.
+- 🔍 **Image Forensics (Giám định hình ảnh):** Phân tích hình thái ảnh ở cấp độ pixel. Tự động phát hiện các vết chỉnh sửa kỹ thuật số, cắt ghép, nén sai lệch thông qua ELA (Error Level Analysis).
 - ⚡ **Hệ thống Cross-check Thông minh:** Backend (NestJS) tự động rà soát Mã số thuế với cơ sở dữ liệu để ngay lập tức chặn đứng các hóa đơn nộp trùng lặp (đã từng được giải ngân).
-- 🧩 **Microservices Architecture:** Kiến trúc tách biệt hoàn toàn giữa Frontend (Vite/React), Backend (NestJS) và AI Core (Python/FastAPI) giúp hệ thống dễ dàng mở rộng và chịu tải cao.
+- 🧩 **Microservices Architecture:** Kiến trúc tách biệt hoàn toàn giữa Frontend (Vite/React), Backend (NestJS) và AI Core (Python/FastAPI). Tích hợp cơ chế Fallback tự động nhảy API Key dự phòng.
 - 💻 **UI/UX Chuyên nghiệp:** Giao diện Dashboard được tối ưu hiển thị mượt mà với Material UI + Tailwind CSS, tự động xử lý responsive, text overflow và conditional rendering.
 
 ---
@@ -31,7 +31,7 @@ Hệ thống được đóng gói hoàn chỉnh bằng **Docker**, giúp việc 
 
 ### 📋 Yêu cầu hệ thống:
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) và Docker Compose.
-- Một API Key của Google Gemini Studio (hỗ trợ các model đời mới).
+- Hai (hoặc một) API Key từ Groq (console.groq.com) để chạy model Llama 3 siêu tốc.
 
 ### ⚙️ Các bước chạy:
 
@@ -41,10 +41,11 @@ Hệ thống được đóng gói hoàn chỉnh bằng **Docker**, giúp việc 
    cd SmartFinGuard-Extension
    ```
 
-2. **Cấu hình Biến Môi Trường (.env):**
-   Mở file `backend/.env` (hoặc tự tạo nếu chưa có) và dán API Key Gemini của bạn vào:
+4. **Cấu hình Biến Môi Trường (.env):**
+   Mở file `backend/.env` (hoặc tự tạo nếu chưa có) và dán API Key Groq của bạn vào (hỗ trợ 2 key dự phòng):
    ```env
-   GEMINI_API_KEY=your_google_gemini_api_key_here
+   GROQ_API_KEY_1=your_primary_groq_api_key
+   GROQ_API_KEY_2=your_secondary_groq_api_key
    ```
 
 3. **Build và khởi động hệ thống (Docker):**

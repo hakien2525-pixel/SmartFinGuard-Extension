@@ -5,56 +5,70 @@ dotenv.config();
 
 @Injectable()
 export class GeminiService {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
+  constructor() {}
 
-  constructor() {
-    // Requires GEMINI_API_KEY in .env file
-    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'MISSING_API_KEY');
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
-  }
+  async analyzeInvoice(base64Image: string, rawText: string = "") {
+    const prompt = `Bạn là chuyên gia kế toán kiểm toán. Dựa vào văn bản OCR thô của hóa đơn này, hãy trích xuất chính xác 100% các thông tin sau:
+  + Tên hóa đơn (invoice_name): Ví dụ 'HÓA ĐƠN GIÁ TRỊ GIA TĂNG', 'HÓA ĐƠN BÁN HÀNG'...
+  + Mã số thuế (tax_id): Lấy MST của ĐƠN VỊ BÁN HÀNG. Nếu là Hóa đơn bán lẻ không có MST, BẮT BUỘC trả về null.
+  + Tổng tiền (total_amount): Lấy SỐ TIỀN TỔNG CỘNG CUỐI CÙNG PHẢI THANH TOÁN (thường nằm ở dưới cùng). Tuyệt đối loại trừ các con số đơn giá, tiền hàng lẻ, hoặc các số thứ tự/công thức (như 3 = 1 x 2).
+  + Kết luận (conclusion): Nhận xét ngắn gọn về tính hợp lệ của các dữ liệu vừa đọc.
+  Trả về JSON chuẩn xác định dạng (không bọc bằng markdown, chỉ trả về JSON raw):
+  { "invoice_name": "...", "tax_id": "...", "total_amount": "...", "conclusion": "...", "trust_score": 0-100 }
+  
+  === VĂN BẢN OCR ===
+  ${rawText}`;
 
-  async analyzeInvoice(base64Image: string) {
-    if (!base64Image) {
-      throw new Error('Image is required');
+    const keys = [process.env.GROQ_API_KEY_1, process.env.GROQ_API_KEY_2].filter(Boolean) as string[];
+    if (keys.length === 0) {
+        throw new Error('No Groq API keys found in .env');
     }
 
-    try {
-      // Remove header if present
-      const base64Data = base64Image.includes(',') ? base64Image.split(',')[1] : base64Image;
+    const payload = {
+        model: "llama-3.3-70b-versatile",
+        messages: [
+            {
+                role: "user",
+                content: prompt
+            }
+        ],
+        temperature: 0.1
+    };
 
-      const prompt = `Bạn là chuyên gia giám định tài chính số. Dựa vào dữ liệu hóa đơn này, hãy: 
-1. Trích xuất chính xác Mã số thuế và Tổng tiền thanh toán cuối cùng. Ưu tiên tìm các dòng chứa từ khóa "Tổng tiền thanh toán:" hoặc "Tổng cộng:". Bỏ qua các con số đơn lẻ ở dòng tiêu đề bảng (như "3 = 1 x 2"). Mã số thuế sử dụng format Mã số thuế: [A-Z0-9-].
-2. Kiểm tra tính hợp logic (VD: Thuế VAT 8% hay 10% có khớp tổng tiền không). 
-3. Viết một kết luận giám định chuyên sâu (dưới 50 từ), chỉ ra điểm bất thường nếu có. 
-4. Trả về JSON chuẩn xác định dạng (không bọc bằng markdown, chỉ trả về JSON raw): 
-{ "tax_id": "...", "total_amount": "...", "conclusion": "...", "trust_score": 0-100 }`;
+    let lastError = null;
 
-      const imageParts = [
-        {
-          inlineData: {
-            data: base64Data,
-            mimeType: 'image/jpeg' // or image/png, Gemini handles it generically
-          }
+    for (const key of keys) {
+        try {
+            console.log(`Trying Groq API with key ${key.substring(0, 8)}...`);
+            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${key}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errorData}`);
+            }
+
+            const data = await response.json();
+            let text = data.choices[0].message.content;
+            
+            // Clean markdown formatting
+            text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            
+            return JSON.parse(text);
+        } catch (error) {
+            lastError = error;
+            console.error(`Groq API attempt failed:`, error.message);
+            // If it fails (e.g. 429 Rate Limit, 401 Unauthorized), it will naturally continue to the next key in the array
         }
-      ];
-
-      const result = await this.model.generateContent([prompt, ...imageParts]);
-      const response = await result.response;
-      let text = response.text();
-      
-      // Clean markdown formatting if Gemini returns it
-      text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      
-      return JSON.parse(text);
-    } catch (error) {
-      console.error('Gemini API Error:', error);
-      return {
-        tax_id: "Lỗi kết nối AI",
-        total_amount: "Lỗi kết nối AI",
-        conclusion: `Gemini API Error: ${error.message}. Vui lòng kiểm tra lại API Key.`,
-        trust_score: 50
-      };
     }
+
+    console.error(`All Groq API attempts failed. Last error: ${lastError?.message}`);
+    throw new Error(`Groq API Error: ${lastError?.message || 'Unknown Error'}`);
   }
 }

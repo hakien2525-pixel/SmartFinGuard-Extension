@@ -101,14 +101,15 @@ export class AppController {
       };
     }
 
-    // 2. Call Gemini for Deep Reasoning and Data Extraction
+    // 2. Call Groq AI for Deep Reasoning and Data Extraction
     let geminiResult;
     try {
-        geminiResult = await this.geminiService.analyzeInvoice(body.image || "");
+        geminiResult = await this.geminiService.analyzeInvoice(body.image || "", aiResponse.raw_text || "");
     } catch (e) {
-        console.error("Gemini fallback:", e);
+        console.warn("⚠️ Groq API Failed. Falling back to offline AI (Tesseract/Python). Error:", e.message);
         geminiResult = {
-            tax_id: aiResponse.ocr_tax_code,
+            invoice_name: aiResponse.ocr_invoice_type,
+            tax_id: aiResponse.ocr_tax_code === "Không tìm thấy" ? null : aiResponse.ocr_tax_code,
             total_amount: aiResponse.ocr_amount,
             conclusion: aiResponse.analysis_details,
             trust_score: Math.round(aiResponse.fraud_score * 100)
@@ -132,18 +133,21 @@ export class AppController {
     }
 
     // 4. Save to In-Memory DB
+    const now = new Date();
+    const formattedTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} - ${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+
     const newDoc = {
       id: docId,
       company: body.company || 'Doanh nghiệp ' + docId,
-      time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+      time: formattedTime,
       riskScore: isDuplicate ? Math.min(trustScore, 0.2) : trustScore,
       status: isFraud ? 'Cảnh báo' : 'Phê duyệt',
       amount: amount,
       taxCode: requestTaxCode,
-      invoiceType: aiResponse.ocr_invoice_type || 'Khác',
+      invoiceName: geminiResult.invoice_name || aiResponse.ocr_invoice_type || "Khác",
       aiHeatmap: aiResponse.heatmap_detected,
       details: analysisDetails,
-      imageUrl: body.image || null
+      imageUrl: body.image
     };
     
     db.push(newDoc);

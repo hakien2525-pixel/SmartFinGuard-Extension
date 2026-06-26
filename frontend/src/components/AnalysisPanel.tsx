@@ -79,18 +79,20 @@ export default function AnalysisPanel({ document, onAction }: Props) {
             <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', mb: 3, gap: 2 }}>
               <Box>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Thông tin OCR Bóc tách</Typography>
-                {document.invoiceType && (
-                  <Typography variant="body1" sx={{ mb: 0.5 }}><strong>Loại hóa đơn:</strong> <Chip label={document.invoiceType} size="small" variant="outlined" color="primary" sx={{ height: 20 }} /></Typography>
+                {document.invoiceName && (
+                  <Typography variant="body1" sx={{ mb: 0.5 }}><strong>Loại chứng từ:</strong> <Chip label={document.invoiceName} size="small" variant="outlined" color="primary" sx={{ height: 20 }} /></Typography>
                 )}
                 <Typography variant="body1" sx={{ mb: 0.5 }}>
                   <strong>Mã số thuế:</strong>{' '}
-                  {document.taxCode === 'Không tìm thấy' && document.invoiceType === 'Hóa đơn bán hàng' ? (
-                    <span className="text-gray-500">Hóa đơn bán lẻ (Không yêu cầu)</span>
+                  {(!document.taxCode || document.taxCode === 'Không tìm thấy' || document.taxCode === 'null') && document.invoiceName && document.invoiceName.toUpperCase().includes('BÁN HÀNG') ? (
+                    <span className="text-gray-500 bg-gray-100 px-2 py-0.5 rounded text-xs font-bold">Không yêu cầu (Hóa đơn bán lẻ)</span>
+                  ) : (!document.taxCode || document.taxCode === 'Không tìm thấy' || document.taxCode === 'null') && document.invoiceName && document.invoiceName.toUpperCase().includes('GIA TĂNG') ? (
+                    <span className="text-red-600 font-bold">Không tìm thấy (Bất thường)</span>
                   ) : (
-                    <span style={{ color: document.taxCode === 'Không tìm thấy' ? '#d32f2f' : 'inherit' }}>{document.taxCode}</span>
+                    <span style={{ color: (!document.taxCode || document.taxCode === 'Không tìm thấy' || document.taxCode === 'null') ? '#d32f2f' : 'inherit' }}>{document.taxCode || 'Không tìm thấy'}</span>
                   )}
                 </Typography>
-                <Typography variant="body1"><strong>Tổng tiền:</strong> {document.amount}</Typography>
+                <Typography variant="body1"><strong>Tổng tiền thanh toán:</strong> <span className="font-bold text-lg">{document.amount}</span></Typography>
               </Box>
               
               <Box sx={{ minWidth: 200 }}>

@@ -39,8 +39,8 @@ export default function DocumentQueue({ documents, onSelect, selectedId }: Props
         <Table stickyHeader sx={{ tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow>
-              <TableCell className="w-[15%]"><strong>Mã HS</strong></TableCell>
-              <TableCell className="w-[45%]"><strong>Doanh nghiệp</strong></TableCell>
+              <TableCell className="w-[20%]"><strong>Mã HS</strong></TableCell>
+              <TableCell className="w-[40%]"><strong>Doanh nghiệp</strong></TableCell>
               <TableCell className="w-[15%]"><strong>Độ tin cậy</strong></TableCell>
               <TableCell className="w-[25%] min-w-max"><strong>Trạng thái</strong></TableCell>
             </TableRow>
@@ -56,8 +56,11 @@ export default function DocumentQueue({ documents, onSelect, selectedId }: Props
                   backgroundColor: selectedId === row.id ? 'rgba(25, 118, 210, 0.08)' : 'inherit'
                 }}
               >
-                <TableCell className="w-[15%]">{row.id}</TableCell>
-                <TableCell className="w-[45%] truncate max-w-0" title={row.company} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.company}</TableCell>
+                <TableCell className="w-[20%]">
+                  <div className="font-medium">{row.id}</div>
+                  <div className="text-xs text-gray-500 whitespace-nowrap mt-1">{row.time}</div>
+                </TableCell>
+                <TableCell className="w-[40%] truncate max-w-0" title={row.company} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.company}</TableCell>
                 <TableCell className="w-[15%]" sx={{ color: getPercentageColor(row.status), fontWeight: 'bold' }}>
                   {(row.riskScore * 100).toFixed(0)}%
                 </TableCell>
