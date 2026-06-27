@@ -55,7 +55,9 @@ export class AppController {
         body: JSON.stringify({ 
           document_id: docId, 
           image_base64: body.image || "",
-          api_key: body.apiKey || ""
+          token_id: body.tokenId || "",
+          token_key: body.tokenKey || "",
+          access_token: body.accessToken || ""
         })
       });
       aiResponse = await response.json();

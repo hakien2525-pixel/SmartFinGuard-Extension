@@ -40,14 +40,18 @@ export default function SMEPortal({ onScanComplete }: Props) {
     reader.onloadend = async () => {
       const base64Image = reader.result as string;
       try {
-        const apiKey = localStorage.getItem('vnpt_api_key') || '';
+        const tokenId = localStorage.getItem('vnpt_token_id') || '';
+        const tokenKey = localStorage.getItem('vnpt_token_key') || '';
+        const accessToken = localStorage.getItem('vnpt_access_token') || '';
         const res = await fetch('http://localhost:3000/api/scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             company: 'Công ty Doanh nghiệp SME Mẫu',
             image: base64Image,
-            apiKey: apiKey
+            tokenId: tokenId,
+            tokenKey: tokenKey,
+            accessToken: accessToken
           })
         });
         const data = await res.json();

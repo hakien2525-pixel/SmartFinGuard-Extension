@@ -7,6 +7,7 @@ import io
 import re
 import urllib.request
 import json
+import requests
 from PIL import Image
 import pytesseract
 
@@ -15,7 +16,9 @@ app = FastAPI(title="SmartFin-Guard AI Core")
 class ScanRequest(BaseModel):
     document_id: str
     image_base64: str = None
-    api_key: str = None
+    token_id: str = None
+    token_key: str = None
+    access_token: str = None
 
 class ScanResponse(BaseModel):
     fraud_score: float
@@ -62,38 +65,99 @@ def extract_ocr_data(image_base64: str):
         print(f"OCR Error: {e}")
         return "Lỗi phân tích", "Lỗi phân tích"
 
-def call_vnpt_smartreader(image_base64: str, api_key: str):
-    if not image_base64:
+def call_vnpt_smartreader(image_base64: str, token_id: str, token_key: str, access_token: str = None):
+    if not image_base64 or not token_id or not token_key:
         return None
-    
-    url = "https://api.vnpt.ai/ocr/v1/invoice"
-    
-    # Clean base64 header if present
-    if ',' in image_base64:
-        image_base64 = image_base64.split(',')[1]
         
-    headers = {
-        "x-api-key": api_key,
-        "Content-Type": "application/json"
-    }
-    
-    payload = json.dumps({
-        "image": image_base64
-    }).encode("utf-8")
-    
-    req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
     try:
-        with urllib.request.urlopen(req, timeout=10) as response:
-            res_data = json.loads(response.read().decode("utf-8"))
-            if res_data.get("status") == "success" or "data" in res_data:
-                # Trích xuất dữ liệu từ response của VNPT SmartReader
-                data = res_data.get("data", [{}])[0] if isinstance(res_data.get("data"), list) else res_data.get("data", {})
-                tax_code = data.get("seller_tax_code") or data.get("tax_code") or "Không tìm thấy"
-                amount = data.get("total_amount") or data.get("amount") or "Không tìm thấy"
-                return tax_code, str(amount)
+        # Clean base64 header if present
+        header_part = ""
+        if ',' in image_base64:
+            header_part, image_base64 = image_base64.split(',', 1)
+            
+        img_bytes = base64.b64decode(image_base64)
+        
+        file_type = "png"
+        if "pdf" in header_part:
+            file_type = "pdf"
+        elif "jpeg" in header_part or "jpg" in header_part:
+            file_type = "jpg"
+            
+        # Step 1: Upload file to VNPT file-service
+        upload_url = "https://api.idg.vnpt.vn/file-service/v1/addFile"
+        headers = {
+            "Token-id": token_id,
+            "Token-key": token_key,
+            "mac-address": "EGOV-DIGDOC-WEB-API"
+        }
+        if access_token and access_token.strip():
+            headers["Authorization"] = access_token
+            
+        files = {
+            'file': ('document.' + file_type, img_bytes, 'application/octet-stream')
+        }
+        data = {
+            'title': 'Hashing document',
+            'description': 'Hashing document'
+        }
+        
+        print(f"Calling VNPT addFile API...")
+        res = requests.post(upload_url, files=files, data=data, headers=headers, timeout=15)
+        if res.status_code != 200:
+            print(f"VNPT addFile failed: {res.status_code} - {res.text}")
+            return None
+            
+        res_json = res.json()
+        file_hash = res_json.get("object", {}).get("hash")
+        detected_file_type = res_json.get("object", {}).get("fileType") or file_type
+        
+        if not file_hash:
+            print("VNPT addFile did not return file hash.")
+            return None
+            
+        print(f"VNPT file uploaded successfully. Hash: {file_hash}")
+        
+        # Step 2: Call OCR Invoice API
+        ocr_url = "https://api.idg.vnpt.vn/rpa-service/aidigdoc/v1/ocr/hoa-don-gtgt"
+        ocr_headers = {
+            "Token-id": token_id,
+            "Token-key": token_key,
+            "mac-address": "mac-address",
+            "Content-Type": "application/json"
+        }
+        if access_token and access_token.strip():
+            ocr_headers["Authorization"] = access_token
+            
+        ocr_payload = {
+            "file_hash": file_hash,
+            "file_type": detected_file_type,
+            "token": "8928skjhfa89298jahga1771vbvb",
+            "client_session": "00-14-22-01-23-45-1548211589291",
+            "details": True
+        }
+        
+        print(f"Calling VNPT OCR Invoice API...")
+        ocr_res = requests.post(ocr_url, json=ocr_payload, headers=ocr_headers, timeout=15)
+        if ocr_res.status_code != 200:
+            print(f"VNPT OCR Invoice failed: {ocr_res.status_code} - {ocr_res.text}")
+            return None
+            
+        ocr_json = ocr_res.json()
+        obj_data = ocr_json.get("object", {})
+        
+        # Extract fields
+        tax_code = obj_data.get("seller_tax_code") or obj_data.get("sellerTaxCode") or obj_data.get("mst_seller") or "Không tìm thấy"
+        amount = obj_data.get("total_amount") or obj_data.get("totalAmount") or obj_data.get("total_payment") or "Không tìm thấy"
+        
+        # Format amount if it's a number
+        if isinstance(amount, (int, float)):
+            amount = f"{amount:,.0f} VND"
+            
+        return tax_code, str(amount)
+        
     except Exception as e:
-        print(f"VNPT SmartReader API error: {e}")
-    return None
+        print(f"VNPT SmartReader integration error: {e}")
+        return None
 
 @app.post("/analyze", response_model=ScanResponse)
 def analyze_invoice(request: ScanRequest):
@@ -102,19 +166,23 @@ def analyze_invoice(request: ScanRequest):
     tax_code = None
     amount = None
     
-    # 1. Gọi API VNPT AI thực tế nếu có API Key
-    if request.api_key and request.api_key.strip():
-        vnpt_result = call_vnpt_smartreader(request.image_base64, request.api_key)
+    # 1. Gọi API VNPT AI thực tế nếu có Token ID và Token Key
+    if request.token_id and request.token_id.strip() and request.token_key and request.token_key.strip():
+        vnpt_result = call_vnpt_smartreader(
+            request.image_base64, 
+            request.token_id, 
+            request.token_key, 
+            request.access_token
+        )
         if vnpt_result:
             tax_code, amount = vnpt_result
             print(f"VNPT AI SmartReader thành công: MST={tax_code}, Tiền={amount}")
 
-    # Fallback sử dụng OCR cục bộ nếu không có API Key hoặc gọi API VNPT bị lỗi
+    # Fallback sử dụng OCR cục bộ nếu không có Keys hoặc gọi API VNPT bị lỗi
     if not tax_code:
         tax_code, amount = extract_ocr_data(request.image_base64)
     
     # 2. Logic CNN giả lập phân tích ảnh (đảo ngược lại: Điểm rủi ro -> Độ tin cậy)
-    # trust_score cao = an toàn, thấp = gian lận
     trust_score = round(random.uniform(0.0, 1.0), 2)
     is_fraud = trust_score < 0.5
     

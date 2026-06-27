@@ -4,42 +4,58 @@ import KeyIcon from '@mui/icons-material/Key';
 import CodeIcon from '@mui/icons-material/Code';
 
 export default function APIConsole() {
-  const [apiKey, setApiKey] = useState(localStorage.getItem('vnpt_api_key') || '');
-  const [clientId, setClientId] = useState(localStorage.getItem('vnpt_client_id') || '');
-  const [clientSecret, setClientSecret] = useState(localStorage.getItem('vnpt_client_secret') || '');
+  const [tokenId, setTokenId] = useState(localStorage.getItem('vnpt_token_id') || '');
+  const [tokenKey, setTokenKey] = useState(localStorage.getItem('vnpt_token_key') || '');
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('vnpt_access_token') || '');
 
   const saveConfig = () => {
-    localStorage.setItem('vnpt_api_key', apiKey);
-    localStorage.setItem('vnpt_client_id', clientId);
-    localStorage.setItem('vnpt_client_secret', clientSecret);
-    alert('Cấu hình API keys thành công!');
+    localStorage.setItem('vnpt_token_id', tokenId);
+    localStorage.setItem('vnpt_token_key', tokenKey);
+    localStorage.setItem('vnpt_access_token', accessToken);
+    alert('Cấu hình API keys VNPT thành công!');
   };
 
-  const codeSnippet = `// Ví dụ tích hợp VNPT SmartReader Invoice OCR bằng Node.js (NestJS / Axios)
+  const codeSnippet = `// Tích hợp VNPT SmartReader bằng Node.js (2 bước: Upload & OCR)
 const axios = require('axios');
 const fs = require('fs');
 
 async function scanInvoice(imagePath) {
-  const base64Image = fs.readFileSync(imagePath, { encoding: 'base64' });
-  const url = 'https://api.vnpt.ai/ocr/v1/invoice';
+  // 1. Upload ảnh lấy File Hash
+  const form = new FormData();
+  form.append('file', fs.createReadStream(imagePath));
+  form.append('title', 'Hashing document');
+  form.append('description', 'Hashing document');
 
-  try {
-    const response = await axios.post(url, {
-      image: base64Image
-    }, {
-      headers: {
-        'x-api-key': '${apiKey || "YOUR_API_KEY"}',
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.data.status === 'success') {
-      console.log('Mã số thuế:', response.data.data.seller_tax_code);
-      console.log('Tổng tiền:', response.data.data.total_amount);
+  const uploadRes = await axios.post('https://api.idg.vnpt.vn/file-service/v1/addFile', form, {
+    headers: {
+      'Token-id': '${tokenId || "YOUR_TOKEN_ID"}',
+      'Token-key': '${tokenKey || "YOUR_TOKEN_KEY"}',
+      'mac-address': 'EGOV-DIGDOC-WEB-API',
+      ...form.getHeaders()
     }
-  } catch (error) {
-    console.error('OCR Error:', error.message);
-  }
+  });
+
+  const fileHash = uploadRes.data.object.hash;
+  const fileType = uploadRes.data.object.fileType;
+
+  // 2. Gọi API bóc tách Hóa đơn GTGT
+  const ocrRes = await axios.post('https://api.idg.vnpt.vn/rpa-service/aidigdoc/v1/ocr/hoa-don-gtgt', {
+    file_hash: fileHash,
+    file_type: fileType,
+    token: '8928skjhfa89298jahga1771vbvb',
+    client_session: '00-14-22-01-23-45-1548211589291',
+    details: true
+  }, {
+    headers: {
+      'Token-id': '${tokenId || "YOUR_TOKEN_ID"}',
+      'Token-key': '${tokenKey || "YOUR_TOKEN_KEY"}',
+      'mac-address': 'mac-address',
+      'Content-Type': 'application/json'
+    }
+  });
+
+  console.log('Mã số thuế:', ocrRes.data.object.mst_seller);
+  console.log('Tổng tiền:', ocrRes.data.object.total_payment);
 }`;
 
   return (
@@ -59,31 +75,31 @@ async function scanInvoice(imagePath) {
             <Divider />
 
             <TextField
-              label="VNPT API Key (x-api-key)"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
+              label="Token ID (Token-id)"
+              value={tokenId}
+              onChange={(e) => setTokenId(e.target.value)}
               fullWidth
               variant="outlined"
-              placeholder="e.g. vnpt_ai_key_xxxxxxxxxxxxx"
+              placeholder="e.g. 5496a499-8bb7-..."
             />
 
             <TextField
-              label="VNPT Client ID"
-              value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
+              label="Token Key (Token-key)"
+              value={tokenKey}
+              onChange={(e) => setTokenKey(e.target.value)}
               fullWidth
               variant="outlined"
-              placeholder="Nhập Client ID dự án"
+              placeholder="e.g. MFwwDQYJKoZIhvc..."
             />
 
             <TextField
-              label="VNPT Client Secret"
+              label="Access Token (Bearer token)"
               type="password"
-              value={clientSecret}
-              onChange={(e) => setClientSecret(e.target.value)}
+              value={accessToken}
+              onChange={(e) => setAccessToken(e.target.value)}
               fullWidth
               variant="outlined"
-              placeholder="Nhập Client Secret dự án"
+              placeholder="Dán chuỗi JWT Access token"
             />
 
             <Button variant="contained" color="primary" onClick={saveConfig} sx={{ bgcolor: '#0b3b60', py: 1.2 }}>
