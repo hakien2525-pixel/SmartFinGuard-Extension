@@ -1,4 +1,4 @@
-import { Paper, Typography, Box, Grid, Chip, Button, Divider, LinearProgress } from '@mui/material';
+import { Paper, Typography, Box, Grid, Chip, Button, LinearProgress } from '@mui/material';
 import type { DocumentRecord } from '../mockData';
 import PolicyIcon from '@mui/icons-material/Policy';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
@@ -58,7 +58,7 @@ export default function AnalysisPanel({ document, onAction }: Props) {
         <Grid container spacing={4}>
           
           {/* Image Section */}
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2, minHeight: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', bgcolor: '#fdfdfd' }}>
               {document.imageUrl ? (
                 <img src={document.imageUrl} alt="Invoice" style={{ maxWidth: '100%', maxHeight: 500, objectFit: 'contain' }} />
@@ -75,7 +75,7 @@ export default function AnalysisPanel({ document, onAction }: Props) {
           </Grid>
 
           {/* Analysis Section */}
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', mb: 3, gap: 2 }}>
               <Box>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Thông tin OCR Bóc tách</Typography>
@@ -86,7 +86,7 @@ export default function AnalysisPanel({ document, onAction }: Props) {
               <Box sx={{ minWidth: 200 }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Trust Score (Độ tin cậy)</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="h4" color={getPercentageColor(document.status)} fontWeight="bold">
+                  <Typography variant="h4" color={getPercentageColor(document.status)} sx={{ fontWeight: 'bold' }}>
                     {(document.riskScore * 100).toFixed(0)}%
                   </Typography>
                   <Chip label={document.status.toUpperCase()} color={getProgressColor(document.status) as any} size="small" />
@@ -109,7 +109,7 @@ export default function AnalysisPanel({ document, onAction }: Props) {
 
       {/* Action Footer */}
       <Box sx={{ p: 3, bgcolor: isFraud ? 'rgba(211, 47, 47, 0.08)' : 'rgba(46, 125, 50, 0.08)', borderTop: `2px solid ${isFraud ? '#d32f2f' : '#2e7d32'}` }}>
-        <Typography variant="subtitle1" fontWeight="bold" color={isFraud ? 'error.main' : 'success.main'} sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="subtitle1" color={isFraud ? 'error.main' : 'success.main'} sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1, fontWeight: 'bold' }}>
           <PolicyIcon /> Đề xuất & Quyết định:
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>

@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import { Box, CssBaseline, AppBar, Toolbar, Typography, Container, Grid, ThemeProvider, createTheme, Button, CircularProgress, Snackbar, Alert, Tabs, Tab } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, CssBaseline, AppBar, Toolbar, Typography, ThemeProvider, createTheme, Snackbar, Alert, Tabs, Tab, Grid } from '@mui/material';
 import ShieldIcon from '@mui/icons-material/Shield';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import OverviewPanel from './components/OverviewPanel';
 import DocumentQueue from './components/DocumentQueue';
 import AnalysisPanel from './components/AnalysisPanel';
 import HistoryPage from './components/HistoryPage';
+import SMEPortal from './components/SMEPortal';
+import APIConsole from './components/APIConsole';
 import type { DocumentRecord } from './mockData';
 
 const theme = createTheme({
@@ -19,10 +20,8 @@ const theme = createTheme({
 function App() {
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<DocumentRecord | null>(null);
-  const [isScanning, setIsScanning] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [toast, setToast] = useState<{open: boolean, message: string, severity: 'success' | 'error'}>({open: false, message: '', severity: 'success'});
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchDocuments = async () => {
     try {
@@ -30,7 +29,6 @@ function App() {
       const data = await res.json();
       if (data.status === 'success') {
         setDocuments(data.data);
-        // If a document is currently selected, update its state from the fetched list
         setSelectedDoc((prev) => {
           if (!prev) return null;
           const updatedDoc = data.data.find((d: DocumentRecord) => d.id === prev.id);
@@ -44,51 +42,15 @@ function App() {
 
   useEffect(() => {
     fetchDocuments();
-    const interval = setInterval(fetchDocuments, 10000);
+    const interval = setInterval(fetchDocuments, 8000);
     return () => clearInterval(interval);
   }, []);
 
   const stats = {
     total: documents.length,
-    processing: isScanning ? 1 : 0,
+    processing: documents.filter(d => ['Chờ xử lý', 'Kiểm tra thêm'].includes(d.status)).length,
     valid: documents.filter(d => ['Phê duyệt', 'Đã duyệt'].includes(d.status)).length,
     fraud: documents.filter(d => ['Cảnh báo', 'Đã chặn'].includes(d.status)).length,
-  };
-
-  const handleScanInvoice = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsScanning(true);
-    setToast({ open: true, message: 'Đang đẩy ảnh qua Lõi AI VNPT để phân tích...', severity: 'success' });
-    
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64Image = reader.result as string;
-      try {
-        const res = await fetch('http://localhost:3000/api/scan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            image: base64Image
-          })
-        });
-        const data = await res.json();
-        if (data.status === 'success') {
-          setToast({ open: true, message: 'Quét hoàn tất!', severity: 'success' });
-          await fetchDocuments();
-          setSelectedDoc(data.data); 
-        } else {
-          setToast({ open: true, message: 'Phân tích thất bại', severity: 'error' });
-        }
-      } catch (err) {
-        setToast({ open: true, message: 'Lỗi kết nối tới Backend', severity: 'error' });
-      } finally {
-        setIsScanning(false);
-      }
-    };
-    reader.readAsDataURL(file);
-    event.target.value = '';
   };
 
   const handleAction = async (action: 'approve' | 'block' | 'review') => {
@@ -115,57 +77,52 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <AppBar position="static" elevation={0}>
+        <AppBar position="static" elevation={0} sx={{ borderBottom: '1px solid rgba(255, 255, 255, 0.12)' }}>
           <Toolbar>
             <ShieldIcon sx={{ mr: 2, fontSize: 32 }} />
             <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', mr: 4 }}>
               SmartFin-Guard
             </Typography>
-            <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)} textColor="inherit" indicatorColor="secondary" sx={{ flexGrow: 1 }}>
-              <Tab label="Dashboard Quyết định" />
+            <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)} textColor="inherit" indicatorColor="secondary" sx={{ flexGrow: 1 }}>
+              <Tab label="Cổng SME (Doanh nghiệp)" />
+              <Tab label="Dashboard Thẩm Định (Ngân hàng)" />
               <Tab label="Lịch sử Hồ sơ" />
+              <Tab label="Cấu hình API VNPT" />
             </Tabs>
-            <input
-              type="file"
-              accept="image/*,application/pdf"
-              style={{ display: 'none' }}
-              ref={fileInputRef}
-              onChange={handleScanInvoice}
-            />
-            <Button 
-              variant="contained" 
-              color="secondary" 
-              sx={{ bgcolor: 'white', color: 'primary.main', fontWeight: 'bold', '&:hover': { bgcolor: '#e0e0e0' } }}
-              startIcon={isScanning ? <CircularProgress size={20} /> : <CloudUploadIcon />}
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isScanning}
-            >
-              {isScanning ? 'Đang phân tích AI...' : 'Tải lên Hóa đơn (Scan)'}
-            </Button>
           </Toolbar>
         </AppBar>
 
-        {/* Removed maxWidth="xl" to let it span naturally, added padding */}
-        {activeTab === 0 ? (
-          <Box sx={{ p: 4, flexGrow: 1, width: '100%' }}>
-            <OverviewPanel stats={stats} />
-            
-            <Grid container spacing={4} sx={{ alignItems: 'flex-start' }}>
-              <Grid item xs={12} md={5} lg={4}>
-                <DocumentQueue 
-                  documents={documents}
-                  onSelect={(doc) => setSelectedDoc(doc)} 
-                  selectedId={selectedDoc?.id || null} 
-                />
+        <Box sx={{ p: 4, flexGrow: 1, width: '100%' }}>
+          {activeTab === 0 && (
+            <SMEPortal onScanComplete={fetchDocuments} />
+          )}
+
+          {activeTab === 1 && (
+            <Box>
+              <OverviewPanel stats={stats} />
+              <Grid container spacing={4} sx={{ alignItems: 'flex-start' }}>
+                <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+                  <DocumentQueue 
+                    documents={documents}
+                    onSelect={(doc) => setSelectedDoc(doc)} 
+                    selectedId={selectedDoc?.id || null} 
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 7, lg: 8 }}>
+                  <AnalysisPanel document={selectedDoc} onAction={handleAction} />
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={7} lg={8}>
-                <AnalysisPanel document={selectedDoc} onAction={handleAction} />
-              </Grid>
-            </Grid>
-          </Box>
-        ) : (
-          <HistoryPage documents={documents} />
-        )}
+            </Box>
+          )}
+
+          {activeTab === 2 && (
+            <HistoryPage documents={documents} />
+          )}
+
+          {activeTab === 3 && (
+            <APIConsole />
+          )}
+        </Box>
       </Box>
 
       <Snackbar open={toast.open} autoHideDuration={4000} onClose={() => setToast({...toast, open: false})}>

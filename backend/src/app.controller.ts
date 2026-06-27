@@ -52,7 +52,11 @@ export class AppController {
       const response = await fetch('http://ai-core:8000/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ document_id: docId, image_base64: body.image || "" })
+        body: JSON.stringify({ 
+          document_id: docId, 
+          image_base64: body.image || "",
+          api_key: body.apiKey || ""
+        })
       });
       aiResponse = await response.json();
     } catch (error) {
