@@ -146,14 +146,25 @@ def call_vnpt_smartreader(image_base64: str, token_id: str, token_key: str, acce
         obj_data = ocr_json.get("object", {})
         
         # Extract fields
-        tax_code = obj_data.get("seller_tax_code") or obj_data.get("sellerTaxCode") or obj_data.get("mst_seller") or "Không tìm thấy"
-        amount = obj_data.get("total_amount") or obj_data.get("totalAmount") or obj_data.get("total_payment") or "Không tìm thấy"
+        raw_tax_code = obj_data.get("seller_tax_code") or obj_data.get("sellerTaxCode") or obj_data.get("mst_seller") or "Không tìm thấy"
+        raw_amount = obj_data.get("total_amount") or obj_data.get("totalAmount") or obj_data.get("total_payment") or "Không tìm thấy"
         
-        # Format amount if it's a number
-        if isinstance(amount, (int, float)):
-            amount = f"{amount:,.0f} VND"
+        tax_code = "Không tìm thấy"
+        if isinstance(raw_tax_code, dict):
+            tax_code = raw_tax_code.get("text") or raw_tax_code.get("value") or "Không tìm thấy"
+        elif isinstance(raw_tax_code, str):
+            tax_code = raw_tax_code
+
+        amount = "Không tìm thấy"
+        if isinstance(raw_amount, dict):
+            amount = raw_amount.get("text") or raw_amount.get("value") or "Không tìm thấy"
+        elif isinstance(raw_amount, (int, float)):
+            amount = f"{raw_amount:,.0f} VND"
+        elif isinstance(raw_amount, str):
+            amount = raw_amount
             
-        return tax_code, str(amount)
+        print(f"Bóc tách thành công từ VNPT SmartReader -> MST: {tax_code}, Tiền: {amount}")
+        return tax_code, amount
         
     except Exception as e:
         print(f"VNPT SmartReader integration error: {e}")
