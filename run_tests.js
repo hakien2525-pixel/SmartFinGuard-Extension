@@ -8,7 +8,7 @@
 
 const http = require('http');
 
-const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = 'http://127.0.0.1:3000';
 
 // Helper function to make HTTP requests
 function makeRequest(method, path, body = null) {
