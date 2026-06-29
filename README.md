@@ -21,7 +21,8 @@
 - 🔍 **Image Forensics (Giám định hình ảnh):** Phân tích hình thái ảnh ở cấp độ pixel. Tự động phát hiện các vết chỉnh sửa kỹ thuật số, cắt ghép, nén sai lệch thông qua ELA (Error Level Analysis).
 - ⚡ **Hệ thống Cross-check Thông minh:** Backend (NestJS) tự động rà soát Mã số thuế với cơ sở dữ liệu để ngay lập tức chặn đứng các hóa đơn nộp trùng lặp (đã từng được giải ngân).
 - 🧩 **Microservices Architecture:** Kiến trúc tách biệt hoàn toàn giữa Frontend (Vite/React), Backend (NestJS) và AI Core (Python/FastAPI). Tích hợp cơ chế Fallback tự động nhảy API Key dự phòng.
-- 💻 **UI/UX Chuyên nghiệp:** Giao diện Dashboard được tối ưu hiển thị mượt mà với Material UI + Tailwind CSS, tự động xử lý responsive, text overflow và conditional rendering.
+- 💻 **UI/UX Master-Detail Tối Ưu:** Trải nghiệm "Fullscreen" chuyên nghiệp dành cho hệ thống quản trị ngân hàng. Hỗ trợ giao diện **Rà soát 2 cột song song (Dual-Panel Audit)** nhúng trực tiếp ngay trên Dashboard mà không làm mất đi bối cảnh dữ liệu tổng quan.
+- 🤖 **VNPT Smartbot (AI Assistant):** Chatbot thông minh dạng Floating Widget tích hợp sâu vào hệ thống, sẵn sàng trả lời và phân tích các chỉ số rủi ro của hồ sơ theo thời gian thực.
 
 ---
 
