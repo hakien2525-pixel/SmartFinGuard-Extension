@@ -12,7 +12,7 @@ import AnalyticsIcon from '@mui/icons-material/Analytics';
 import SmartButtonIcon from '@mui/icons-material/SmartButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LockIcon from '@mui/icons-material/Lock';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HelpIcon from '@mui/icons-material/Help';
 import DescriptionIcon from '@mui/icons-material/Description';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
@@ -79,7 +79,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
             <LockIcon fontSize="small" /> Khóa Khẩn Cấp
           </button>
           <a href="#" className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-sm">
-            <HelpOutlineIcon fontSize="small" /> Trợ Giúp
+            <HelpIcon fontSize="small" /> Trợ Giúp
           </a>
           <a href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }} className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-sm">
             <LogoutIcon fontSize="small" /> Đăng Xuất
