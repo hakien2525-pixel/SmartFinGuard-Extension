@@ -23,7 +23,7 @@ const theme = createTheme({
 // App wrapper to use hooks like useLocation inside BrowserRouter
 const AppContent = () => {
   const location = useLocation();
-  const showAIAssistant = location.pathname === '/admin-dashboard' || location.pathname === '/audit-screen';
+  const showAIAssistant = location.pathname === '/admin-dashboard' || location.pathname === '/audit-screen' || location.pathname === '/sme-portal';
 
   // Mock data fetching for AdminDashboard
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
@@ -92,7 +92,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginView />} />
-        <Route path="/sme-portal" element={<SMEPortalView />} />
+        <Route path="/sme-portal" element={<SMEPortalView documents={documents} onUpload={handleUpload} />} />
         
         {/* Pass necessary props to AdminDashboard */}
         <Route path="/admin-dashboard" element={

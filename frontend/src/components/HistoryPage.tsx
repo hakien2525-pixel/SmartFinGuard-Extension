@@ -7,6 +7,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import LogoutIcon from '@mui/icons-material/Logout';
 import type { DocumentRecord } from '../mockData';
 
 interface Props {
@@ -73,6 +74,13 @@ const HistoryPage = ({ documents }: Props) => {
             >
               <SettingsIcon fontSize="small" />
               <span className="font-medium text-sm">Cài đặt hệ thống</span>
+            </div>
+            <div 
+              onClick={() => navigate('/login')}
+              className="flex items-center gap-3 px-4 py-3 mt-1 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer transition-colors"
+            >
+              <LogoutIcon fontSize="small" />
+              <span className="font-medium text-sm">Đăng xuất</span>
             </div>
           </div>
         </div>

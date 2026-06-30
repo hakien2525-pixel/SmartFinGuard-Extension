@@ -16,6 +16,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import { useNavigate } from 'react-router-dom';
 import DualPanelAuditScreen from './DualPanelAuditScreen';
 import { useState } from 'react';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning }) => {
   const navigate = useNavigate();
@@ -97,6 +98,13 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
             >
               <SettingsIcon fontSize="small" />
               <span className="font-medium text-sm">Cài đặt hệ thống</span>
+            </div>
+            <div 
+              onClick={() => navigate('/login')}
+              className="flex items-center gap-3 px-4 py-3 mt-1 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer transition-colors"
+            >
+              <LogoutIcon fontSize="small" />
+              <span className="font-medium text-sm">Đăng xuất</span>
             </div>
           </div>
         </div>
