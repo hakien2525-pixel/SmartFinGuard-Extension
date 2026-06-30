@@ -14,10 +14,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LockIcon from '@mui/icons-material/Lock';
 import HelpIcon from '@mui/icons-material/Help';
 import DescriptionIcon from '@mui/icons-material/Description';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import GppBadIcon from '@mui/icons-material/GppBad';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
+import BlockIcon from '@mui/icons-material/Block';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning }) => {
   const navigate = useNavigate();
@@ -160,7 +160,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
             <div className="bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col justify-between h-[140px]">
               <div className="flex justify-between items-start">
                 <div className="w-10 h-10 bg-green-50 text-green-500 rounded-xl flex items-center justify-center border border-green-100">
-                  <CheckCircleOutlineIcon fontSize="small" />
+                  <CheckCircleIcon fontSize="small" />
                 </div>
                 <span className="text-xs font-bold text-green-600 flex items-center gap-1">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
@@ -177,7 +177,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
             <div className="bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col justify-between h-[140px]">
               <div className="flex justify-between items-start">
                 <div className="w-10 h-10 bg-yellow-50 text-yellow-500 rounded-xl flex items-center justify-center border border-yellow-100">
-                  <WarningAmberIcon fontSize="small" />
+                  <WarningIcon fontSize="small" />
                 </div>
                 <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">Chờ Xử Lý</span>
               </div>
@@ -191,7 +191,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
             <div className="bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col justify-between h-[140px]">
               <div className="flex justify-between items-start">
                 <div className="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center border border-red-100">
-                  <GppBadIcon fontSize="small" />
+                  <BlockIcon fontSize="small" />
                 </div>
                 <span className="text-xs font-bold text-red-500 flex items-center gap-1">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7L17 17M17 17H7M17 17V7"/></svg>
@@ -213,7 +213,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
                 <p className="text-xs text-gray-500 mt-1">Sắp xếp theo Điểm Rủi Ro (Ưu tiên từ cao xuống thấp)</p>
               </div>
               <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                <FilterAltOutlinedIcon fontSize="small" /> Lọc
+                <FilterListIcon fontSize="small" /> Lọc
               </button>
             </div>
             
