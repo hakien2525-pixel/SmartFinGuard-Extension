@@ -43,7 +43,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
           {/* ================= LEFT PANEL ================= */}
           <div className="w-1/2 border-r border-gray-200 bg-gray-100 p-6 flex flex-col">
             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              📸 Chứng Từ Gốc & Lớp Cảnh Báo AI
+              📸 Chứng Từ Gốc & Lớp Cảnh Báo Hệ Thống
             </h3>
             
             <div className="flex-1 bg-white rounded-xl shadow-inner border border-gray-300 overflow-auto relative p-8 flex justify-center custom-scrollbar">
@@ -142,7 +142,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
               <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent pointer-events-none"></div>
               
               <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-red-100 pb-2 relative z-10">
-                🧠 Kết Luận Thẩm Định AI
+                🧠 Kết Luận Thẩm Định
               </h3>
               
               <div className="flex items-center gap-4 mb-6 relative z-10">
@@ -151,7 +151,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
                 </div>
                 <div>
                   <p className="text-red-600 font-bold text-xl uppercase tracking-wider">Mức Độ Rủi Ro: RẤT CAO</p>
-                  <p className="text-gray-600 text-sm mt-1">Lõi AI phát hiện bất thường nghiêm trọng trên chứng từ.</p>
+                  <p className="text-gray-600 text-sm mt-1">Hệ thống phát hiện bất thường nghiêm trọng trên chứng từ.</p>
                 </div>
               </div>
 
@@ -247,7 +247,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
           {/* ================= LEFT PANEL ================= */}
           <div className="w-1/2 border-r border-gray-200 bg-gray-100 p-6 flex flex-col">
             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              📸 Chứng Từ Gốc & Lớp Cảnh Báo AI
+              📸 Chứng Từ Gốc & Lớp Cảnh Báo Hệ Thống
             </h3>
             
             <div className="flex-1 bg-white rounded-xl shadow-inner border border-gray-300 overflow-auto relative p-8 flex justify-center custom-scrollbar">
@@ -346,7 +346,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
               <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent pointer-events-none"></div>
               
               <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-red-100 pb-2 relative z-10">
-                🧠 Kết Luận Thẩm Định AI
+                🧠 Kết Luận Thẩm Định
               </h3>
               
               <div className="flex items-center gap-4 mb-6 relative z-10">
@@ -355,7 +355,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
                 </div>
                 <div>
                   <p className="text-red-600 font-bold text-xl uppercase tracking-wider">Mức Độ Rủi Ro: RẤT CAO</p>
-                  <p className="text-gray-600 text-sm mt-1">Lõi AI phát hiện bất thường nghiêm trọng trên chứng từ.</p>
+                  <p className="text-gray-600 text-sm mt-1">Hệ thống phát hiện bất thường nghiêm trọng trên chứng từ.</p>
                 </div>
               </div>
 

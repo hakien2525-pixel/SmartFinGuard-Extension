@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import SendIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 
@@ -14,7 +14,7 @@ const AIAssistant = () => {
         onClick={() => setIsOpen(true)}
         className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-tr from-blue-700 to-[#1a65d8] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[9999] border-2 border-white"
       >
-        <SmartToyIcon sx={{ fontSize: 32 }} />
+        <SupportAgentIcon sx={{ fontSize: 32 }} />
         {/* Unread indicator */}
         <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 border-2 border-white rounded-full"></span>
       </button>
@@ -28,7 +28,7 @@ const AIAssistant = () => {
       <div className="bg-gradient-to-r from-blue-700 to-[#1a65d8] text-white p-4 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-            <SmartToyIcon fontSize="small" />
+            <SupportAgentIcon fontSize="small" />
           </div>
           <div>
             <h3 className="font-bold text-sm tracking-wide">VNPT Smartbot</h3>
@@ -52,10 +52,10 @@ const AIAssistant = () => {
         {/* Bot Message */}
         <div className="flex items-start gap-2 max-w-[85%]">
           <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 mt-1">
-            <SmartToyIcon sx={{ fontSize: 14 }} />
+            <SupportAgentIcon sx={{ fontSize: 14 }} />
           </div>
           <div className="bg-white border border-gray-100 p-3 rounded-2xl rounded-tl-sm text-gray-700 shadow-sm leading-relaxed">
-            Xin chào! Tôi là AI Assistant từ VNPT. Bạn cần hỗ trợ gì về việc thẩm định hồ sơ hay cấu hình tham số rủi ro không?
+            Xin chào! Tôi là Trợ lý Hệ thống từ VNPT. Bạn cần hỗ trợ gì về việc thẩm định hồ sơ hay cấu hình tham số rủi ro không?
           </div>
         </div>
         
@@ -65,7 +65,7 @@ const AIAssistant = () => {
       <div className="p-3 bg-white border-t border-gray-100 flex gap-2 items-center">
         <input 
           type="text" 
-          placeholder="Hỏi AI về hồ sơ hiện tại..." 
+          placeholder="Hỏi trợ lý về hồ sơ hiện tại..." 
           className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 text-sm outline-none focus:border-blue-300 transition-colors"
         />
         <button className="w-10 h-10 bg-[#1a65d8] text-white rounded-full flex items-center justify-center shadow-md hover:bg-blue-700 transition-colors flex-shrink-0">

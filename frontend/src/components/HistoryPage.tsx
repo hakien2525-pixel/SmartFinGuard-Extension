@@ -135,7 +135,7 @@ const HistoryPage = ({ documents }: Props) => {
                       <th className="py-3 border-0">Ngày & Giờ (Timestamp)</th>
                       <th className="py-3 border-0 text-end">Tổng tiền (VND)</th>
                       <th className="py-3 border-0 text-center">Tỷ lệ rủi ro</th>
-                      <th className="pe-4 py-3 border-0">Trạng thái AI</th>
+                      <th className="pe-4 py-3 border-0">Trạng thái Hệ thống</th>
                     </tr>
                   </thead>
                   <tbody>

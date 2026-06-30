@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DualPanelAuditScreen from './DualPanelAuditScreen';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
+import BlockIcon from '@mui/icons-material/Block';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ShieldIcon from '@mui/icons-material/Shield';
 
@@ -158,7 +158,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
               <div className="card p-4 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded-3 h-100">
                 <div className="d-flex gap-3 align-items-center">
                   <div className="icon-shape icon-md bg-danger text-white rounded-2 d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px' }}>
-                    <SmartToyIcon />
+                    <BlockIcon />
                   </div>
                   <div>
                     <h2 className="mb-1 fs-6 text-muted fw-semibold">Gian lận (Bị Chặn)</h2>
@@ -181,7 +181,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
                     <tr>
                       <th className="ps-4 py-3 border-0">Mã Hồ Sơ</th>
                       <th className="py-3 border-0">Loại Chứng Từ</th>
-                      <th className="py-3 border-0">AI Phát Hiện</th>
+                      <th className="py-3 border-0">Hệ Thống Phát Hiện</th>
                       <th className="py-3 border-0">Thời Gian</th>
                       <th className="pe-4 py-3 border-0 text-end">Hành Động</th>
                     </tr>

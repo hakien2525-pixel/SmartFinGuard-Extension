@@ -104,7 +104,12 @@ $h5-font-size:                $font-size-base * 1.25 !default;
 $h6-font-size:                $font-size-base !default;
 
 // scss-docs-start border-radius-variables
-
+$border-radius:               .25rem !default;
+$border-radius-sm:            .125rem !default;
+$border-radius-lg:            .375rem !default;
+$border-radius-xl:            .5rem !default;
+$border-radius-2xl:           .75rem !default;
+$border-radius-pill:          50rem !default;
 
 
 
