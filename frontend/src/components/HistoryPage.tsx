@@ -1,12 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import DescriptionIcon from '@mui/icons-material/Description';
-import SettingsIcon from '@mui/icons-material/Settings';
-import TimelineIcon from '@mui/icons-material/Timeline';
-import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import ShieldIcon from '@mui/icons-material/Shield';
 import LogoutIcon from '@mui/icons-material/Logout';
 import type { DocumentRecord } from '../mockData';
 
@@ -31,150 +25,180 @@ const HistoryPage = ({ documents }: Props) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex font-sans">
-      <div className="w-full h-screen bg-[#eef5fd] flex overflow-hidden shadow-2xl">
+    <>
+      <div id="overlay" className="overlay"></div>
+      
+      {/* TOPBAR */}
+      <nav id="topbar" className="navbar bg-white border-bottom fixed-top topbar px-3 d-flex justify-content-between">
+        <div className="d-flex align-items-center">
+          <button id="toggleBtn" className="d-none d-lg-inline-flex btn btn-light btn-icon btn-sm">
+            <i className="ti ti-layout-sidebar-left-expand"></i>
+          </button>
+          <button id="mobileBtn" className="btn btn-light btn-icon btn-sm d-lg-none me-2">
+            <i className="ti ti-layout-sidebar-left-expand"></i>
+          </button>
+          <span className="ms-3 fw-bold h5 mb-0 d-none d-md-block">SmartFin<span className="text-primary">Guard</span> Admin</span>
+        </div>
         
-        {/* Dark Expanded Sidebar */}
-        <div className="w-[260px] bg-[#0b1120] flex flex-col pt-6 pb-6 text-gray-300 flex-shrink-0">
-          {/* Logo Area */}
-          <div className="flex items-center gap-3 px-6 pb-6 border-b border-gray-800">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-              SG
-            </div>
-            <span className="text-white font-bold text-lg tracking-wide">SmartFin-Guard</span>
-          </div>
-          
-          {/* Navigation Links */}
-          <div className="flex flex-col gap-2 mt-6 px-4 flex-1">
-            <div 
-              onClick={() => navigate('/admin-dashboard')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 hover:text-white cursor-pointer transition-colors"
-            >
-              <DashboardIcon fontSize="small" />
-              <span className="font-medium text-sm">Tổng quan (Dashboard)</span>
-            </div>
-            <div 
-              onClick={() => navigate('/audit-screen')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 hover:text-white cursor-pointer transition-colors"
-            >
-              <DescriptionIcon fontSize="small" />
-              <span className="font-medium text-sm">Rà soát chi tiết</span>
-            </div>
-            <div className="flex items-center gap-3 bg-[#172554] text-blue-400 px-4 py-3 rounded-lg cursor-pointer">
-              <TimelineIcon fontSize="small" />
-              <span className="font-semibold text-sm">Nhật ký hệ thống</span>
-            </div>
-          </div>
-
-          {/* Bottom Settings */}
-          <div className="px-4 pt-4 border-t border-gray-800 mt-auto">
-            <div 
-              onClick={() => navigate('/settings')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 hover:text-white cursor-pointer transition-colors"
-            >
-              <SettingsIcon fontSize="small" />
-              <span className="font-medium text-sm">Cài đặt hệ thống</span>
-            </div>
-            <div 
-              onClick={() => navigate('/login')}
-              className="flex items-center gap-3 px-4 py-3 mt-1 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer transition-colors"
-            >
-              <LogoutIcon fontSize="small" />
-              <span className="font-medium text-sm">Đăng xuất</span>
-            </div>
+        <div className="d-flex align-items-center gap-3">
+          <span className="badge bg-success-subtle text-success border border-success-subtle py-2 px-3 d-none d-md-inline-block">
+            Hệ thống Ổn định
+          </span>
+          <div className="dropdown">
+            <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" className="d-flex align-items-center gap-2 text-decoration-none text-dark">
+              <img src="./assets_inapp/images/avatar/avatar-1.jpg" alt="" className="rounded-circle border" width="36" height="36" />
+              <span className="fw-semibold small d-none d-md-block">Admin (CBNV)</span>
+            </a>
+            <ul className="dropdown-menu dropdown-menu-end shadow-sm border-0">
+              <li><a className="dropdown-item" href="#" onClick={() => navigate('/settings')}>Cài đặt</a></li>
+              <li><hr className="dropdown-divider" /></li>
+              <li>
+                <a className="dropdown-item text-danger d-flex align-items-center gap-2" href="#" onClick={() => navigate('/login')}>
+                  <LogoutIcon fontSize="small" /> Đăng xuất
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
+      </nav>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col p-10 pr-12 overflow-hidden">
+      {/* SIDEBAR */}
+      <aside id="sidebar" className="sidebar">
+        <div className="logo-area d-flex align-items-center py-3 px-4">
+          <ShieldIcon className="text-primary me-2" fontSize="large" />
+          <h4 className="mb-0 fw-bold">Fin<span className="text-primary">Guard</span></h4>
+        </div>
+        <ul className="nav flex-column">
+          <li className="px-4 py-2"><small className="nav-text text-muted">Main</small></li>
+          <li>
+            <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }}>
+              <i className="ti ti-home"></i>
+              <span className="nav-text">Tổng quan hồ sơ</span>
+            </a>
+          </li>
+          <li>
+            <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); navigate('/admin-dashboard'); }}>
+              <i className="ti ti-box-seam"></i>
+              <span className="nav-text">Rà soát chi tiết</span>
+            </a>
+          </li>
+          <li>
+            <a className="nav-link active" href="#" onClick={(e) => e.preventDefault()}>
+              <i className="ti ti-receipt"></i>
+              <span className="nav-text">Nhật kí hệ thống</span>
+            </a>
+          </li>
+
+          <li className="px-4 pt-4 pb-2"><small className="nav-text text-muted">Account</small></li>
+          <li>
+            <a className="nav-link text-danger" href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
+              <i className="ti ti-logout"></i>
+              <span className="nav-text">Đăng xuất</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main id="content" className="content py-10 bg-light min-vh-100" style={{ paddingTop: '80px' }}>
+        <div className="container-fluid">
+          
           {/* Header */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
             <div>
-              <h1 className="text-[32px] font-extrabold text-[#0f172a] tracking-tight">Nhật ký hệ thống</h1>
-              <p className="text-[#64748b] text-base mt-1">Lịch sử thẩm định & truy vết hồ sơ theo thời gian thực</p>
+              <h1 className="fs-3 mb-1 fw-bold">Nhật ký hệ thống</h1>
+              <p className="text-muted mb-0">Lịch sử thẩm định & truy vết hồ sơ theo thời gian thực</p>
             </div>
-            <div className="flex gap-4">
-              <div className="relative">
-                <input 
-                  type="text" 
-                  placeholder="Tìm kiếm mã hồ sơ, doanh nghiệp..." 
-                  className="pl-5 pr-12 py-3 bg-white rounded-full w-80 text-sm shadow-sm outline-none border border-transparent focus:border-blue-300 font-medium text-gray-700"
-                />
-                <SearchIcon className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400" fontSize="small"/>
+            <div className="d-flex gap-2">
+              <div className="input-group" style={{ maxWidth: '300px' }}>
+                <span className="input-group-text bg-white border-end-0"><i className="ti ti-search text-muted"></i></span>
+                <input type="text" className="form-control border-start-0 ps-0" placeholder="Tìm mã hồ sơ..." />
               </div>
-              <button className="bg-white text-gray-600 px-5 py-3 rounded-full text-sm font-semibold shadow-sm hover:bg-gray-50 border border-transparent transition-colors flex items-center gap-2">
-                <FilterListIcon fontSize="small" /> Lọc
+              <button className="btn btn-outline-secondary d-flex align-items-center gap-2">
+                <i className="ti ti-filter"></i> Lọc
               </button>
-              <button className="bg-white text-blue-600 px-5 py-3 rounded-full text-sm font-semibold shadow-sm hover:bg-gray-50 border border-transparent transition-colors flex items-center gap-2">
-                <CloudDownloadIcon fontSize="small" /> Xuất File
+              <button className="btn btn-primary d-flex align-items-center gap-2">
+                <i className="ti ti-download"></i> Xuất File
               </button>
             </div>
           </div>
 
           {/* Data Table */}
-          <div className="flex-1 bg-white rounded-3xl shadow-sm border border-white overflow-hidden flex flex-col">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100">
-                    <th className="px-6 py-4 font-medium rounded-tl-3xl">Mã Hồ sơ</th>
-                    <th className="px-6 py-4 font-medium">Doanh nghiệp</th>
-                    <th className="px-6 py-4 font-medium">Ngày & Giờ (Timestamp)</th>
-                    <th className="px-6 py-4 font-medium text-right">Tổng tiền (VND)</th>
-                    <th className="px-6 py-4 font-medium text-center">Tỷ lệ rủi ro</th>
-                    <th className="px-6 py-4 font-medium rounded-tr-3xl">Trạng thái AI</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-700 text-sm font-medium">
-                  {displayDocs.map((doc, i) => {
-                    let statusColor = "bg-gray-100 text-gray-700";
-                    let riskColor = "text-gray-700";
-                    const riskPercent = Math.round((doc.riskScore || doc.risk || 0) * (doc.riskScore <= 1 ? 100 : 1));
+          <div className="card border-0 shadow-sm rounded-4">
+            <div className="card-body p-0">
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="table-light text-muted small text-uppercase">
+                    <tr>
+                      <th className="ps-4 py-3 border-0">Mã Hồ Sơ</th>
+                      <th className="py-3 border-0">Doanh nghiệp</th>
+                      <th className="py-3 border-0">Ngày & Giờ (Timestamp)</th>
+                      <th className="py-3 border-0 text-end">Tổng tiền (VND)</th>
+                      <th className="py-3 border-0 text-center">Tỷ lệ rủi ro</th>
+                      <th className="pe-4 py-3 border-0">Trạng thái AI</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayDocs.map((doc, idx) => {
+                      let badgeClass = 'bg-secondary';
+                      let riskColor = 'text-dark';
+                      const riskPercent = Math.round((doc.riskScore || doc.risk || 0) * (doc.riskScore <= 1 ? 100 : 1));
 
-                    if (doc.status === 'Phê duyệt' || doc.status === 'Đã duyệt') {
-                      statusColor = "bg-green-100 text-green-700 border border-green-200";
-                      riskColor = "text-green-600";
-                    } else if (doc.status === 'Chờ xử lý' || doc.status === 'Kiểm tra thêm') {
-                      statusColor = "bg-amber-100 text-amber-700 border border-amber-200";
-                      riskColor = "text-amber-500";
-                    } else if (doc.status === 'Đã chặn' || doc.status === 'Cảnh báo') {
-                      statusColor = "bg-red-100 text-red-700 border border-red-200";
-                      riskColor = "text-red-600";
-                    }
+                      if (doc.status === 'Đã duyệt' || doc.status === 'Phê duyệt') {
+                        badgeClass = 'bg-success-subtle text-success border border-success-subtle';
+                        riskColor = 'text-success';
+                      }
+                      if (doc.status === 'Cảnh báo' || doc.status === 'Chờ xử lý' || doc.status === 'Kiểm tra thêm') {
+                        badgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+                        riskColor = 'text-warning';
+                      }
+                      if (doc.status === 'Đã chặn') {
+                        badgeClass = 'bg-danger-subtle text-danger border border-danger-subtle';
+                        riskColor = 'text-danger';
+                      }
 
-                    return (
-                      <tr key={i} className="border-b border-gray-50 hover:bg-blue-50/50 transition-colors">
-                        <td className="px-6 py-5 font-bold text-[#1a65d8]">{doc.id}</td>
-                        <td className="px-6 py-5">{doc.company || doc.fileName || 'Không xác định'}</td>
-                        <td className="px-6 py-5 text-gray-500 font-semibold">{doc.timestamp || doc.time}</td>
-                        <td className="px-6 py-5 text-right font-bold">{doc.amount}</td>
-                        <td className={`px-6 py-5 text-center font-bold ${riskColor}`}>{riskPercent}%</td>
-                        <td className="px-6 py-5">
-                          <span className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${statusColor}`}>
-                            {doc.status}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            
-            {/* Pagination Mock */}
-            <div className="p-5 border-t border-gray-100 flex items-center justify-between mt-auto">
-              <span className="text-sm text-gray-400 font-medium">Hiển thị {displayDocs.length} kết quả</span>
-              <div className="flex gap-2">
-                <button className="px-4 py-2 text-sm font-semibold text-gray-400 bg-gray-50 rounded-lg cursor-not-allowed">Trang trước</button>
-                <button className="px-4 py-2 text-sm font-bold text-white bg-[#1a65d8] rounded-lg shadow-sm">1</button>
-                <button className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 rounded-lg">2</button>
-                <button className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 rounded-lg">Trang sau</button>
+                      return (
+                        <tr key={idx}>
+                          <td className="ps-4 py-3">
+                            <span className="fw-semibold font-monospace text-primary">{doc.id}</span>
+                          </td>
+                          <td className="py-3 fw-medium">
+                            {doc.company || doc.fileName || 'Không xác định'}
+                          </td>
+                          <td className="py-3 text-muted small">
+                            {doc.timestamp || doc.time}
+                          </td>
+                          <td className="py-3 text-end fw-bold">
+                            {doc.amount}
+                          </td>
+                          <td className={`py-3 text-center fw-bold ${riskColor}`}>
+                            {riskPercent}%
+                          </td>
+                          <td className="pe-4 py-3">
+                            <span className={`badge ${badgeClass} px-2 py-1`}>{doc.status}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </div>
+            {/* Pagination Mock */}
+            <div className="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center rounded-bottom-4">
+              <span className="text-muted small">Hiển thị {displayDocs.length} kết quả</span>
+              <ul className="pagination pagination-sm mb-0">
+                <li className="page-item disabled"><a className="page-link" href="#">Trang trước</a></li>
+                <li className="page-item active"><a className="page-link" href="#">1</a></li>
+                <li className="page-item"><a className="page-link" href="#">2</a></li>
+                <li className="page-item"><a className="page-link" href="#">Trang sau</a></li>
+              </ul>
+            </div>
           </div>
+
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 };
 
