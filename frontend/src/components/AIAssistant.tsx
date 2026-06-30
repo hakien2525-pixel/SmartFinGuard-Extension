@@ -12,7 +12,7 @@ const AIAssistant = () => {
     return (
       <button 
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-tr from-blue-700 to-[#1a65d8] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[9999] border-2 border-white"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-[#6345ed] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[9999] border-2 border-white"
       >
         <SupportAgentIcon sx={{ fontSize: 32 }} />
         {/* Unread indicator */}
@@ -25,7 +25,7 @@ const AIAssistant = () => {
     <div className="fixed bottom-8 right-8 w-[350px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-[9999] flex flex-col animate-in slide-in-from-bottom-5 fade-in duration-300">
       
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-700 to-[#1a65d8] text-white p-4 flex justify-between items-center shadow-sm">
+      <div className="bg-[#6345ed] text-white p-4 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
             <SupportAgentIcon fontSize="small" />
@@ -51,7 +51,7 @@ const AIAssistant = () => {
         
         {/* Bot Message */}
         <div className="flex items-start gap-2 max-w-[85%]">
-          <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 mt-1">
+          <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-[#6345ed] flex-shrink-0 mt-1">
             <SupportAgentIcon sx={{ fontSize: 14 }} />
           </div>
           <div className="bg-white border border-gray-100 p-3 rounded-2xl rounded-tl-sm text-gray-700 shadow-sm leading-relaxed">
@@ -68,7 +68,7 @@ const AIAssistant = () => {
           placeholder="Hỏi trợ lý về hồ sơ hiện tại..." 
           className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 text-sm outline-none focus:border-blue-300 transition-colors"
         />
-        <button className="w-10 h-10 bg-[#1a65d8] text-white rounded-full flex items-center justify-center shadow-md hover:bg-blue-700 transition-colors flex-shrink-0">
+        <button className="w-10 h-10 bg-[#6345ed] text-white rounded-full flex items-center justify-center shadow-md hover:bg-purple-700 transition-colors flex-shrink-0">
           <SendIcon sx={{ fontSize: 18 }} />
         </button>
       </div>
