@@ -9,6 +9,7 @@ import DualPanelAuditScreen from './components/DualPanelAuditScreen';
 import AIAssistant from './components/AIAssistant';
 import HistoryPage from './components/HistoryPage';
 import SettingsPage from './components/SettingsPage';
+import DataAnalyticsView from './components/DataAnalyticsView';
 import type { DocumentRecord } from './mockData';
 import { Snackbar, Alert } from '@mui/material';
 
@@ -123,6 +124,9 @@ const AppContent = () => {
 
         {/* Settings Screen */}
         <Route path="/settings" element={<SettingsPage />} />
+
+        {/* Data Analytics Screen */}
+        <Route path="/data" element={<DataAnalyticsView />} />
       </Routes>
       
       {/* Global AI Assistant Overlay for specific routes */}
