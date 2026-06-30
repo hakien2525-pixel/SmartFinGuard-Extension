@@ -1,115 +1,157 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const LoginView = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState<'admin' | 'sme'>('admin');
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [isFaceIDHovered, setIsFaceIDHovered] = useState(false);
 
   return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100">
-      <div className="card shadow-lg" style={{ maxWidth: '420px', width: '100%', borderRadius: '1.5rem' }}>
-        <div className="card-body p-5">
-          <div className="text-center mb-4">
-            <h1 className="card-title mb-2 h4 fw-bold">SmartFin<span className="text-primary">Guard</span></h1>
-            <p className="text-muted small">
-              {role === 'admin' ? 'Hệ thống Quản trị Rủi ro Ngân hàng' : 'Cổng Tín dụng dành cho Doanh nghiệp'}
-            </p>
+    <div className="min-h-screen flex items-center justify-center bg-[#eef2fc] p-4 font-sans text-gray-800">
+      <div className="flex bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-full max-w-[1000px] overflow-hidden min-h-[640px]">
+        
+        {/* LEFT SIDE: LOGIN FORM */}
+        <div className="w-1/2 p-12 flex flex-col justify-center">
+          
+          {/* Logo */}
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-8 h-8 bg-[#0d2a63] rounded-md flex items-center justify-center text-white font-bold text-lg">
+              N
+            </div>
+            <h1 className="font-bold text-xl text-[#0d2a63]">Nexus Banking</h1>
           </div>
 
-          {/* Role Toggle */}
-          <div className="d-flex bg-light p-1 rounded mb-4">
-            <button 
-              type="button"
-              onClick={() => { setRole('admin'); setIsRegistering(false); }}
-              className={`btn flex-fill fw-semibold btn-sm ${role === 'admin' ? 'btn-white shadow-sm text-primary' : 'btn-light text-muted'}`}
-            >
-              <AdminPanelSettingsIcon fontSize="small" className="me-1" /> Admin
-            </button>
-            <button 
-              type="button"
-              onClick={() => setRole('sme')}
-              className={`btn flex-fill fw-semibold btn-sm ${role === 'sme' ? 'btn-white shadow-sm text-primary' : 'btn-light text-muted'}`}
-            >
-              <BusinessCenterIcon fontSize="small" className="me-1" /> SME
-            </button>
-          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Đăng nhập</h2>
+          <p className="text-sm text-gray-500 mb-8">Truy cập hệ thống ngân hàng số thông minh</p>
 
-          <form className="needs-validation" onSubmit={(e) => {
+          <form onSubmit={(e) => {
             e.preventDefault();
             navigate(role === 'admin' ? '/admin-dashboard' : '/sme-portal');
           }}>
             
-            {role === 'sme' && isRegistering && (
-              <div className="mb-3">
-                <label className="form-label">Tên doanh nghiệp</label>
-                <input type="text" className="form-control" placeholder="Tên công ty" required />
-              </div>
-            )}
+            {/* Role Selection */}
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Vai trò của bạn</label>
+              <div className="grid grid-cols-2 gap-4">
+                <button 
+                  type="button"
+                  onClick={() => setRole('admin')}
+                  className={`flex flex-col items-center justify-center py-4 rounded-xl border-2 transition-all ${
+                    role === 'admin' 
+                      ? 'border-[#4a72a8] bg-[#f8fbff] text-[#4a72a8]' 
+                      : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200'
+                  }`}
+                >
+                  <PersonOutlineIcon className="mb-1" />
+                  <span className="text-sm font-semibold">Nhân Viên</span>
+                </button>
 
-            <div className="mb-3">
-              <label className="form-label">
-                {role === 'admin' ? 'Mã cán bộ (CBNV)' : (isRegistering ? 'Email người đại diện' : 'Email đăng nhập')}
-              </label>
-              <input type="text" className="form-control" placeholder={role === 'admin' ? "VD: CBNV-88392" : "name@example.com"} required />
+                <button 
+                  type="button"
+                  onClick={() => setRole('sme')}
+                  className={`flex flex-col items-center justify-center py-4 rounded-xl border-2 transition-all ${
+                    role === 'sme' 
+                      ? 'border-[#4a72a8] bg-[#f8fbff] text-[#4a72a8]' 
+                      : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200'
+                  }`}
+                >
+                  <BusinessCenterIcon className="mb-1" />
+                  <span className="text-sm font-semibold">Doanh Nghiệp SME</span>
+                </button>
+              </div>
             </div>
 
-            <div className="mb-3">
-              <label className="form-label d-flex justify-content-between">
-                <span>Mật khẩu</span>
-                {!isRegistering && <a href="#" className="small link-primary text-decoration-none">Quên mật khẩu?</a>}
-              </label>
-              <input type="password" className="form-control" placeholder="••••••••" required />
+            {/* Inputs */}
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Tên đăng nhập / Email</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                  <PersonOutlineIcon fontSize="small" />
+                </div>
+                <input 
+                  type="text" 
+                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
+                  placeholder="Nhập tên đăng nhập..."
+                  required
+                />
+              </div>
             </div>
 
-            {!isRegistering && (
-              <div className="form-check mb-4">
-                <input className="form-check-input" type="checkbox" id="remember" defaultChecked />
-                <label className="form-check-label small" htmlFor="remember">Ghi nhớ đăng nhập</label>
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Mật khẩu</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                  <LockOutlinedIcon fontSize="small" />
+                </div>
+                <input 
+                  type="password" 
+                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
+                  placeholder="Nhập mật khẩu..."
+                  required
+                />
               </div>
-            )}
+            </div>
 
-            <button className="btn btn-primary w-100 py-2 fw-bold" type="submit">
-              {isRegistering ? 'Đăng ký tài khoản' : 'Đăng nhập hệ thống'}
+            {/* Remember & Forgot */}
+            <div className="flex items-center justify-between mb-8">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-[#4a72a8] focus:ring-[#4a72a8]" defaultChecked />
+                <span className="text-sm text-gray-600 font-medium">Ghi nhớ đăng nhập</span>
+              </label>
+              <a href="#" className="text-sm font-bold text-[#4a72a8] hover:underline">Quên mật khẩu?</a>
+            </div>
+
+            {/* Submit Button */}
+            <button 
+              type="submit"
+              className="w-full bg-[#4a72a8] text-white rounded-xl py-3.5 font-bold flex items-center justify-center gap-2 hover:bg-[#3d6091] transition-colors shadow-[0_4px_14px_rgba(74,114,168,0.3)]"
+            >
+              Đăng nhập <ArrowForwardIcon fontSize="small" />
             </button>
+
           </form>
+        </div>
 
-          {role === 'sme' && (
-            <div className="text-center mt-3 small text-muted">
-              {isRegistering ? 'Đã có tài khoản?' : 'Chưa có tài khoản?'} 
-              <button 
-                type="button"
-                onClick={() => setIsRegistering(!isRegistering)}
-                className="btn btn-link p-0 ms-1 link-primary text-decoration-none"
-              >
-                {isRegistering ? 'Đăng nhập' : 'Đăng ký'}
-              </button>
+        {/* RIGHT SIDE: eKYC */}
+        <div className="w-1/2 bg-[#f0f4fa] p-12 flex flex-col items-center relative overflow-hidden">
+          
+          <div className="mt-8 flex flex-col items-center z-10">
+            {/* VNPT eKYC Badge */}
+            <div className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-blue-50 text-[#0d2a63] font-bold text-[10px] uppercase tracking-wider mb-8">
+              <VerifiedUserIcon sx={{ fontSize: 14 }} className="text-blue-500" />
+              VNPT EKYC
             </div>
-          )}
 
-          <div className="position-relative mt-4">
-            <hr className="text-muted" />
-            <div className="position-absolute top-50 start-50 translate-middle px-3 bg-white small text-muted">
-              Hoặc
+            <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Xác Thực Khuôn Mặt</h3>
+            <p className="text-sm text-gray-500 text-center max-w-[280px] leading-relaxed">
+              Đảm bảo ánh sáng tốt và nhìn thẳng vào camera để đăng nhập an toàn.
+            </p>
+
+            {/* Camera Circle */}
+            <div className="mt-12 relative">
+              {/* Outer decorative ring */}
+              <div className="absolute inset-0 bg-[#d0dcf2] rounded-full scale-110 opacity-50"></div>
+              
+              <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-b from-[#d0dcf2] to-[#b8caeb] border-[6px] border-white shadow-[0_12px_30px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center relative z-10">
+                <CameraAltOutlinedIcon sx={{ fontSize: 48 }} className="text-white/60 mb-3" />
+                <span className="text-sm font-medium text-[#7a95c4]">Chờ quét sinh trắc học...</span>
+              </div>
             </div>
           </div>
 
-          <button 
-            type="button"
-            onMouseEnter={() => setIsFaceIDHovered(true)}
-            onMouseLeave={() => setIsFaceIDHovered(false)}
-            onClick={() => navigate(role === 'admin' ? '/admin-dashboard' : '/sme-portal')}
-            className={`btn w-100 py-2 fw-bold mt-3 d-flex justify-content-center align-items-center gap-2 ${isFaceIDHovered ? 'btn-outline-primary' : 'btn-light border'}`}
-          >
-            <FingerprintIcon className={isFaceIDHovered ? 'text-primary' : 'text-muted'} />
-            VNPT eKYC (Face Liveness)
-          </button>
+          {/* Status Indicator */}
+          <div className="absolute bottom-12 bg-white px-4 py-2 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center gap-2 z-10">
+            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+            <span className="text-xs font-bold text-gray-700">Hệ thống sẵn sàng</span>
+          </div>
 
         </div>
+
       </div>
     </div>
   );
