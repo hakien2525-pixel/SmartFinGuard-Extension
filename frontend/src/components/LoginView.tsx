@@ -27,7 +27,7 @@ const LoginView = () => {
           </div>
 
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Đăng nhập</h2>
-          <p className="text-sm text-gray-500 mb-8">Truy cập hệ thống ngân hàng số thông minh</p>
+          <p className="text-[15px] text-gray-500 mb-8">Truy cập hệ thống ngân hàng số thông minh</p>
 
           <form onSubmit={(e) => {
             e.preventDefault();
@@ -36,7 +36,7 @@ const LoginView = () => {
             
             {/* Role Selection */}
             <div className="mb-6">
-              <label className="block text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Vai trò của bạn</label>
+              <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Vai trò của bạn</label>
               <div className="grid grid-cols-2 gap-4">
                 <button 
                   type="button"
@@ -48,7 +48,7 @@ const LoginView = () => {
                   }`}
                 >
                   <PersonIcon className="mb-1" />
-                  <span className="text-sm font-semibold">Nhân Viên</span>
+                  <span className="text-[15px] font-semibold">Nhân Viên</span>
                 </button>
 
                 <button 
@@ -61,21 +61,21 @@ const LoginView = () => {
                   }`}
                 >
                   <BusinessCenterIcon className="mb-1" />
-                  <span className="text-sm font-semibold">Doanh Nghiệp SME</span>
+                  <span className="text-[15px] font-semibold">Doanh Nghiệp SME</span>
                 </button>
               </div>
             </div>
 
             {/* Inputs */}
             <div className="mb-4">
-              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Tên đăng nhập / Email</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Tên đăng nhập / Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                   <PersonIcon fontSize="small" />
                 </div>
                 <input 
                   type="text" 
-                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-[15px] focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
                   placeholder="Nhập tên đăng nhập..."
                   required
                 />
@@ -83,14 +83,14 @@ const LoginView = () => {
             </div>
 
             <div className="mb-6">
-              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Mật khẩu</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Mật khẩu</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                   <LockIcon fontSize="small" />
                 </div>
                 <input 
                   type="password" 
-                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-[15px] focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
                   placeholder="Nhập mật khẩu..."
                   required
                 />
@@ -101,9 +101,9 @@ const LoginView = () => {
             <div className="flex items-center justify-between mb-8">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-[#4a72a8] focus:ring-[#4a72a8]" defaultChecked />
-                <span className="text-sm text-gray-600 font-medium">Ghi nhớ đăng nhập</span>
+                <span className="text-[15px] text-gray-600 font-medium">Ghi nhớ đăng nhập</span>
               </label>
-              <a href="#" className="text-sm font-bold text-[#4a72a8] hover:underline">Quên mật khẩu?</a>
+              <a href="#" className="text-[15px] font-bold text-[#4a72a8] hover:underline">Quên mật khẩu?</a>
             </div>
 
             {/* Submit Button */}
@@ -122,13 +122,13 @@ const LoginView = () => {
           
           <div className="mt-8 flex flex-col items-center z-10">
             {/* VNPT eKYC Badge */}
-            <div className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-blue-50 text-[#0d2a63] font-bold text-[10px] uppercase tracking-wider mb-8">
+            <div className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-blue-50 text-[#0d2a63] font-bold text-xs uppercase tracking-wider mb-8">
               <VerifiedUserIcon sx={{ fontSize: 14 }} className="text-blue-500" />
               VNPT EKYC
             </div>
 
             <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Xác Thực Khuôn Mặt</h3>
-            <p className="text-sm text-gray-500 text-center max-w-[280px] leading-relaxed">
+            <p className="text-[15px] text-gray-500 text-center max-w-[280px] leading-relaxed">
               Đảm bảo ánh sáng tốt và nhìn thẳng vào camera để đăng nhập an toàn.
             </p>
 
@@ -139,7 +139,7 @@ const LoginView = () => {
               
               <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-b from-[#d0dcf2] to-[#b8caeb] border-[6px] border-white shadow-[0_12px_30px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center relative z-10">
                 <CameraAltIcon sx={{ fontSize: 48 }} className="text-white/60 mb-3" />
-                <span className="text-sm font-medium text-[#7a95c4]">Chờ quét sinh trắc học...</span>
+                <span className="text-[15px] font-medium text-[#7a95c4]">Chờ quét sinh trắc học...</span>
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ const LoginView = () => {
           {/* Status Indicator */}
           <div className="absolute bottom-12 bg-white px-4 py-2 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center gap-2 z-10">
             <span className="w-2 h-2 rounded-full bg-green-500"></span>
-            <span className="text-xs font-bold text-gray-700">Hệ thống sẵn sàng</span>
+            <span className="text-sm font-bold text-gray-700">Hệ thống sẵn sàng</span>
           </div>
 
         </div>

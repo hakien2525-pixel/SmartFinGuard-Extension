@@ -28,7 +28,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
           <div className="flex items-center gap-3">
             <ShieldIcon className="text-indigo-600" />
             <h2 className="text-xl font-bold text-gray-800">Màn Hình Thẩm Định Song Song & Đối Chiếu</h2>
-            <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200">
+            <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 text-sm font-bold rounded-full border border-red-200">
               Cảnh báo rủi ro cao
             </span>
           </div>
@@ -53,12 +53,12 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
                 {/* Mock Invoice Header */}
                 <div className="text-center mb-8 border-b-2 border-dashed border-gray-300 pb-6">
                   <h1 className="text-2xl font-bold text-gray-800 uppercase">Hóa Đơn Giá Trị Gia Tăng</h1>
-                  <p className="text-sm text-gray-500 mt-2">Ngày 24 tháng 06 năm 2026</p>
-                  <p className="text-sm text-gray-500">Mã số thuế: 0314589231</p>
+                  <p className="text-[15px] text-gray-500 mt-2">Ngày 24 tháng 06 năm 2026</p>
+                  <p className="text-[15px] text-gray-500">Mã số thuế: 0314589231</p>
                 </div>
                 
                 {/* Mock Invoice Body */}
-                <div className="space-y-4 text-sm text-gray-700">
+                <div className="space-y-4 text-[15px] text-gray-700">
                   <p><strong>Đơn vị bán:</strong> Công ty TNHH Thương mại Dịch vụ ABC</p>
                   <p><strong>Đơn vị mua:</strong> Công ty Cổ phần Công nghệ SME Việt Nam</p>
                   
@@ -85,7 +85,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
                     {/* The Bounding Box */}
                     <div className="absolute -inset-2 border-2 border-red-500 animate-pulse bg-red-500/10 rounded-md z-10 pointer-events-none">
                       {/* Floating Tag */}
-                      <div className="absolute -top-12 -right-4 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap flex items-center gap-1">
+                      <div className="absolute -top-12 -right-4 bg-red-600 text-white text-sm font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap flex items-center gap-1">
                         🔴 Vùng Nghi Vấn Photoshop
                         <div className="absolute -bottom-1.5 right-8 w-3 h-3 bg-red-600 transform rotate-45"></div>
                       </div>
@@ -110,7 +110,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
               <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-gray-100 pb-2">
                 💳 Thông Tin Yêu Cầu Giải Ngân
               </h3>
-              <div className="grid grid-cols-1 gap-y-3 text-sm">
+              <div className="grid grid-cols-1 gap-y-3 text-[15px]">
                 <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
                   <span className="text-gray-500 font-medium">Mã Giao Dịch:</span>
                   <span className="font-bold text-gray-800 font-mono">TXN-2026-9874</span>
@@ -151,26 +151,26 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
                 </div>
                 <div>
                   <p className="text-red-600 font-bold text-xl uppercase tracking-wider">Mức Độ Rủi Ro: RẤT CAO</p>
-                  <p className="text-gray-600 text-sm mt-1">Hệ thống phát hiện bất thường nghiêm trọng trên chứng từ.</p>
+                  <p className="text-gray-600 text-[15px] mt-1">Hệ thống phát hiện bất thường nghiêm trọng trên chứng từ.</p>
                 </div>
               </div>
 
               <div className="space-y-3 relative z-10">
                 <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-100">
                   <CancelIcon className="text-red-500 mt-0.5" fontSize="small" />
-                  <p className="text-sm text-red-900 leading-relaxed">
+                  <p className="text-[15px] text-red-900 leading-relaxed">
                     <strong>Lệch Font chữ:</strong> Dòng tổng tiền có kích thước bounding box lệch baseline 4.2 pixel so với cấu trúc bảng gốc.
                   </p>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-100">
                   <CancelIcon className="text-red-500 mt-0.5" fontSize="small" />
-                  <p className="text-sm text-red-900 leading-relaxed">
+                  <p className="text-[15px] text-red-900 leading-relaxed">
                     <strong>Bất thường ELA:</strong> Mức độ phân bố pixel xung quanh số tiền bị nén khác biệt 35% so với nền giấy gốc, dấu hiệu của tẩy xóa kỹ thuật số.
                   </p>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
                   <WarningAmberIcon className="text-orange-500 mt-0.5" fontSize="small" />
-                  <p className="text-sm text-orange-900 leading-relaxed">
+                  <p className="text-[15px] text-orange-900 leading-relaxed">
                     <strong>Cảnh báo trùng lặp:</strong> Mã số thuế này trùng khớp với 1 hồ sơ đang chờ duyệt tại ngân hàng đối thủ (Phát hiện bởi hệ thống Database Hashing Ledger).
                   </p>
                 </div>
@@ -193,7 +193,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
               
               {jsonOpen && (
                 <div className="bg-[#1e293b] p-4 flex-1 overflow-auto custom-scrollbar">
-                  <pre className="text-[#a5b4fc] text-sm font-mono leading-relaxed">
+                  <pre className="text-[#a5b4fc] text-[15px] font-mono leading-relaxed">
                     <code>{JSON.stringify(rawJSON, null, 2)}</code>
                   </pre>
                 </div>
@@ -232,7 +232,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
           <div className="flex items-center gap-3">
             <ShieldIcon className="text-indigo-600" />
             <h2 className="text-xl font-bold text-gray-800">Màn Hình Thẩm Định Song Song & Đối Chiếu</h2>
-            <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200">
+            <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 text-sm font-bold rounded-full border border-red-200">
               Cảnh báo rủi ro cao
             </span>
           </div>
@@ -257,12 +257,12 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
                 {/* Mock Invoice Header */}
                 <div className="text-center mb-8 border-b-2 border-dashed border-gray-300 pb-6">
                   <h1 className="text-2xl font-bold text-gray-800 uppercase">Hóa Đơn Giá Trị Gia Tăng</h1>
-                  <p className="text-sm text-gray-500 mt-2">Ngày 24 tháng 06 năm 2026</p>
-                  <p className="text-sm text-gray-500">Mã số thuế: 0314589231</p>
+                  <p className="text-[15px] text-gray-500 mt-2">Ngày 24 tháng 06 năm 2026</p>
+                  <p className="text-[15px] text-gray-500">Mã số thuế: 0314589231</p>
                 </div>
                 
                 {/* Mock Invoice Body */}
-                <div className="space-y-4 text-sm text-gray-700">
+                <div className="space-y-4 text-[15px] text-gray-700">
                   <p><strong>Đơn vị bán:</strong> Công ty TNHH Thương mại Dịch vụ ABC</p>
                   <p><strong>Đơn vị mua:</strong> Công ty Cổ phần Công nghệ SME Việt Nam</p>
                   
@@ -289,7 +289,7 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
                     {/* The Bounding Box */}
                     <div className="absolute -inset-2 border-2 border-red-500 animate-pulse bg-red-500/10 rounded-md z-10 pointer-events-none">
                       {/* Floating Tag */}
-                      <div className="absolute -top-12 -right-4 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap flex items-center gap-1">
+                      <div className="absolute -top-12 -right-4 bg-red-600 text-white text-sm font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap flex items-center gap-1">
                         🔴 Vùng Nghi Vấn Photoshop
                         <div className="absolute -bottom-1.5 right-8 w-3 h-3 bg-red-600 transform rotate-45"></div>
                       </div>

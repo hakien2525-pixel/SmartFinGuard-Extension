@@ -49,7 +49,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
             </div>
             <div>
               <h1 className="font-bold text-base leading-tight">Nexus</h1>
-              <p className="text-[10px] text-gray-500 uppercase tracking-wider">Enterprise Banking</p>
+              <p className="text-xs text-gray-500 uppercase tracking-wider">Enterprise Banking</p>
             </div>
           </div>
 
@@ -78,10 +78,10 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
           <button className="flex items-center justify-center gap-2 w-full py-2.5 bg-red-50 text-red-600 rounded-xl font-medium border border-red-100 hover:bg-red-100 transition-colors mb-2">
             <LockIcon fontSize="small" /> Khóa Khẩn Cấp
           </button>
-          <a href="#" className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-sm">
+          <a href="#" className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-[15px]">
             <HelpIcon fontSize="small" /> Trợ Giúp
           </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }} className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-sm">
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }} className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-[15px]">
             <LogoutIcon fontSize="small" /> Đăng Xuất
           </a>
         </div>
@@ -94,7 +94,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
         <header className="h-[72px] bg-[#f4f7fb] flex items-center justify-between px-8 shrink-0">
           <div className="flex items-center gap-8">
             <h2 className="text-xl font-bold text-[#0d2a63]">Bảng Điều Khiển Quản Trị</h2>
-            <div className="flex gap-6 text-sm font-medium">
+            <div className="flex gap-6 text-[15px] font-medium">
               {['Tổng Quan', 'Thông Tin Gian Lận', 'Thị Trường'].map(tab => (
                 <button 
                   key={tab}
@@ -116,7 +116,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
               <input 
                 type="text" 
                 placeholder="Tìm kiếm tài khoản, mã..." 
-                className="pl-10 pr-4 py-2 bg-white rounded-full border border-gray-200 text-sm w-[240px] focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all shadow-sm"
+                className="pl-10 pr-4 py-2 bg-white rounded-full border border-gray-200 text-[15px] w-[240px] focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all shadow-sm"
               />
             </div>
             <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 shadow-sm relative">
@@ -137,7 +137,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
           
           <div className="mb-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-1">Tổng Quan Hàng Đợi</h3>
-            <p className="text-gray-500 text-sm">Chỉ số xử lý theo thời gian thực và danh sách hồ sơ cần tác vụ.</p>
+            <p className="text-gray-500 text-[15px]">Chỉ số xử lý theo thời gian thực và danh sách hồ sơ cần tác vụ.</p>
           </div>
 
           {/* KPI CARDS */}
@@ -148,10 +148,10 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
                 <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center">
                   <DescriptionIcon fontSize="small" />
                 </div>
-                <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">Hôm Nay</span>
+                <span className="text-sm font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">Hôm Nay</span>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Tổng Số Hồ Sơ</p>
+                <p className="text-[15px] text-gray-500 mb-1">Tổng Số Hồ Sơ</p>
                 <h4 className="text-3xl font-bold text-gray-900">1,248</h4>
               </div>
             </div>
@@ -162,13 +162,13 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
                 <div className="w-10 h-10 bg-green-50 text-green-500 rounded-xl flex items-center justify-center border border-green-100">
                   <CheckCircleIcon fontSize="small" />
                 </div>
-                <span className="text-xs font-bold text-green-600 flex items-center gap-1">
+                <span className="text-sm font-bold text-green-600 flex items-center gap-1">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                   12%
                 </span>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Tự Động Duyệt (Hồ Sơ Xanh)</p>
+                <p className="text-[15px] text-gray-500 mb-1">Tự Động Duyệt (Hồ Sơ Xanh)</p>
                 <h4 className="text-3xl font-bold text-gray-900">892</h4>
               </div>
             </div>
@@ -179,10 +179,10 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
                 <div className="w-10 h-10 bg-yellow-50 text-yellow-500 rounded-xl flex items-center justify-center border border-yellow-100">
                   <WarningIcon fontSize="small" />
                 </div>
-                <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">Chờ Xử Lý</span>
+                <span className="text-sm font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">Chờ Xử Lý</span>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Chờ Duyệt (Hồ Sơ Vàng)</p>
+                <p className="text-[15px] text-gray-500 mb-1">Chờ Duyệt (Hồ Sơ Vàng)</p>
                 <h4 className="text-3xl font-bold text-gray-900">315</h4>
               </div>
             </div>
@@ -193,13 +193,13 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
                 <div className="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center border border-red-100">
                   <BlockIcon fontSize="small" />
                 </div>
-                <span className="text-xs font-bold text-red-500 flex items-center gap-1">
+                <span className="text-sm font-bold text-red-500 flex items-center gap-1">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7L17 17M17 17H7M17 17V7"/></svg>
                   3%
                 </span>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Gian Lận Bị Chặn (Hồ Sơ Đỏ)</p>
+                <p className="text-[15px] text-gray-500 mb-1">Gian Lận Bị Chặn (Hồ Sơ Đỏ)</p>
                 <h4 className="text-3xl font-bold text-gray-900">41</h4>
               </div>
             </div>
@@ -210,9 +210,9 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
             <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
               <div>
                 <h4 className="text-lg font-bold text-gray-900">Danh Sách Phân Loại</h4>
-                <p className="text-xs text-gray-500 mt-1">Sắp xếp theo Điểm Rủi Ro (Ưu tiên từ cao xuống thấp)</p>
+                <p className="text-sm text-gray-500 mt-1">Sắp xếp theo Điểm Rủi Ro (Ưu tiên từ cao xuống thấp)</p>
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+              <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-[15px] font-medium text-gray-600 hover:bg-gray-50 transition-colors">
                 <FilterListIcon fontSize="small" /> Lọc
               </button>
             </div>
@@ -221,12 +221,12 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-gray-100">
-                    <th className="px-6 py-4 text-xs font-semibold text-gray-400">Mã Hồ Sơ</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-gray-400">Người Nộp</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-gray-400">Loại Sản Phẩm</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-gray-400">Thời Gian Chờ</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-gray-400">Điểm Rủi Ro</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-gray-400 text-right">Thao Tác</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Mã Hồ Sơ</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Người Nộp</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Loại Sản Phẩm</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Thời Gian Chờ</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Điểm Rủi Ro</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-gray-400 text-right">Thao Tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
