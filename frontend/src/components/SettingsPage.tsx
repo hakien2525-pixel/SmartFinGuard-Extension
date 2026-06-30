@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import DescriptionIcon from '@mui/icons-material/Description';
-import SettingsIcon from '@mui/icons-material/Settings';
-import TimelineIcon from '@mui/icons-material/Timeline';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import LockIcon from '@mui/icons-material/Lock';
+import HelpIcon from '@mui/icons-material/Help';
 import LogoutIcon from '@mui/icons-material/Logout';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import ShieldIcon from '@mui/icons-material/Shield';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import SecurityIcon from '@mui/icons-material/Security';
 import Switch from '@mui/material/Switch';
 
 const SettingsPage = () => {
@@ -25,163 +28,138 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex font-sans">
-      <div className="w-full h-screen bg-[#eef5fd] flex overflow-hidden shadow-2xl">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fafc]">
         
-        {/* Dark Expanded Sidebar */}
-        <div className="w-[260px] bg-[#0b1120] flex flex-col pt-6 pb-6 text-gray-300 flex-shrink-0">
-          {/* Logo Area */}
-          <div className="flex items-center gap-3 px-6 pb-6 border-b border-gray-800">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-              SG
-            </div>
-            <span className="text-white font-bold text-lg tracking-wide">SmartFin-Guard</span>
-          </div>
+        {/* HEADER */}
+        <header className="h-[72px] bg-white border-b border-gray-100 flex items-center justify-between px-4 shrink-0 shadow-sm">
+          <h2 className="text-xl font-bold text-[#0d2a63]">Cài đặt hệ thống</h2>
           
-          {/* Navigation Links */}
-          <div className="flex flex-col gap-2 mt-6 px-4 flex-1">
-            <div 
-              onClick={() => navigate('/admin-dashboard')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 hover:text-white cursor-pointer transition-colors"
+          <div className="flex items-center gap-4">
+            <button 
+              className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 shadow-sm relative"
+              style={{ borderRadius: '50%' }}
             >
-              <DashboardIcon fontSize="small" />
-              <span className="font-medium text-sm">Tổng quan (Dashboard)</span>
-            </div>
+              <NotificationsNoneIcon fontSize="small" />
+              <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
+            </button>
             <div 
-              onClick={() => navigate('/audit-screen')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 hover:text-white cursor-pointer transition-colors"
+              className="w-10 h-10 rounded-full bg-[#0d2a63] text-white flex items-center justify-center font-bold shadow-sm cursor-pointer ml-2 border-2 border-white"
+              style={{ borderRadius: '50%' }}
             >
-              <DescriptionIcon fontSize="small" />
-              <span className="font-medium text-sm">Rà soát chi tiết</span>
-            </div>
-            <div 
-              onClick={() => navigate('/history')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 hover:text-white cursor-pointer transition-colors"
-            >
-              <TimelineIcon fontSize="small" />
-              <span className="font-medium text-sm">Nhật ký hệ thống</span>
+              JW
             </div>
           </div>
+        </header>
 
-          {/* Bottom Settings */}
-          <div className="px-4 pt-4 border-t border-gray-800 mt-auto">
-            <div className="flex items-center gap-3 bg-[#172554] text-blue-400 px-4 py-3 rounded-lg cursor-pointer">
-              <SettingsIcon fontSize="small" />
-              <span className="font-semibold text-sm">Cài đặt hệ thống</span>
-            </div>
-            <div 
-              onClick={() => navigate('/login')}
-              className="flex items-center gap-3 px-4 py-3 mt-1 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer transition-colors"
-            >
-              <LogoutIcon fontSize="small" />
-              <span className="font-medium text-sm">Đăng xuất</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col p-10 pr-12 overflow-y-auto custom-scrollbar">
-          {/* Header */}
+        {/* SCROLLABLE CONTENT */}
+        <div className="flex-1 overflow-auto px-3 py-4 custom-scrollbar">
+          
           <div className="mb-8">
-            <h1 className="text-[32px] font-extrabold text-[#0f172a] tracking-tight">Cài đặt hệ thống</h1>
-            <p className="text-[#64748b] text-base mt-1">Cấu hình API VNPT, Ngưỡng rủi ro AI & Tùy chọn tự động hóa</p>
+            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Cấu hình & Tùy chọn</h1>
+            <p className="text-gray-500 text-[15px] mt-2">Quản lý API, điều chỉnh ngưỡng rủi ro AI và tự động hóa.</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8">
-            {/* Left Column: API & AI Engine */}
-            <div className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            {/* Left Column */}
+            <div className="space-y-2">
+              
               {/* API Keys Card */}
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-white">
+              <div className="bg-white rounded-lg p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-blue-100 p-2 rounded-xl text-blue-600"><VpnKeyIcon /></div>
-                  <h3 className="text-xl font-bold text-[#0f172a]">Cấu hình API VNPT</h3>
+                  <div className="bg-blue-50 p-2.5 rounded-xl text-blue-600"><VpnKeyIcon /></div>
+                  <h3 className="text-xl font-bold text-gray-900">Cấu hình API VNPT</h3>
                 </div>
                 
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">VNPT SmartReader (OCR) API Key</label>
-                    <input type="password" value="************************" readOnly className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-500 outline-none" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">VNPT OCR API Key</label>
+                    <input 
+                      type="password" 
+                      defaultValue="vnpt_sk_test_1234567890" 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6345ed] focus:ring-1 focus:ring-[#6345ed] transition-all"
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">VNPT eKYC (Face Liveness) API Key</label>
-                    <input type="password" value="************************" readOnly className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-500 outline-none" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Mã Doanh Nghiệp (VNPT ID)</label>
+                    <input 
+                      type="text" 
+                      defaultValue="DN-8492-VN" 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6345ed] focus:ring-1 focus:ring-[#6345ed] transition-all"
+                    />
                   </div>
-                  <div className="pt-2">
-                    <button className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">Kiểm tra kết nối (Ping)</button>
-                  </div>
+                  <button className="px-6 py-2.5 bg-[#0d2a63] text-white rounded-xl font-semibold hover:bg-blue-900 transition-colors shadow-sm">
+                    Lưu cấu hình API
+                  </button>
                 </div>
               </div>
 
-              {/* Automation Rules Card */}
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-white">
+              {/* Security Card */}
+              <div className="bg-white rounded-lg p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-green-100 p-2 rounded-xl text-green-600"><ShieldIcon /></div>
-                  <h3 className="text-xl font-bold text-[#0f172a]">Quy tắc tự động hóa</h3>
+                  <div className="bg-red-50 p-2.5 rounded-xl text-red-600"><SecurityIcon /></div>
+                  <h3 className="text-xl font-bold text-gray-900">Bảo mật & Trích xuất</h3>
                 </div>
                 
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-bold text-gray-800">Tự động duyệt (Auto-Approve)</h4>
-                      <p className="text-xs text-gray-500 mt-1">Duyệt ngay nếu điểm rủi ro &lt; 20%</p>
+                      <h4 className="font-semibold text-gray-900">Kiểm duyệt eKYC nghiêm ngặt</h4>
+                      <p className="text-sm text-gray-500 mt-0.5">Bắt buộc đối chiếu khuôn mặt khi phát hiện rủi ro cao.</p>
+                    </div>
+                    <Switch checked={settings.ekycStrict} onChange={() => handleToggle('ekycStrict')} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Mã hóa đầu cuối 256-bit</h4>
+                      <p className="text-sm text-gray-500 mt-0.5">Dữ liệu hồ sơ luôn được mã hóa trước khi lưu trữ.</p>
+                    </div>
+                    <Switch checked={true} disabled />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-2">
+              
+              {/* AI Engine Card */}
+              <div className="bg-white rounded-lg p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-purple-50 p-2.5 rounded-xl text-[#6345ed]"><AutoAwesomeIcon /></div>
+                  <h3 className="text-xl font-bold text-gray-900">Engine AI VNPT & Automation</h3>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Tự động Phê Duyệt</h4>
+                      <p className="text-sm text-gray-500 mt-0.5">Duyệt ngay các hồ sơ SME nếu điểm rủi ro &lt; 20%.</p>
                     </div>
                     <Switch checked={settings.autoApprove} onChange={() => handleToggle('autoApprove')} />
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-800">Chế độ eKYC Nghiêm ngặt</h4>
-                      <p className="text-xs text-gray-500 mt-1">Yêu cầu quay mặt trái/phải để chống deepfake</p>
+                  <div className="pt-4 border-t border-gray-100">
+                    <div className="flex justify-between mb-2">
+                      <label className="font-semibold text-gray-900">Ngưỡng cảnh báo gian lận AI</label>
+                      <span className="font-bold text-[#6345ed]">{settings.aiThreshold}%</span>
                     </div>
-                    <Switch checked={settings.ekycStrict} onChange={() => handleToggle('ekycStrict')} />
-                  </div>
-
-                  <div className="pt-2">
-                    <label className="block text-sm font-bold text-gray-800 mb-2">Ngưỡng cảnh báo ĐỎ (Chặn gian lận)</label>
-                    <div className="flex items-center gap-4">
-                      <input type="range" min="50" max="100" value={settings.aiThreshold} onChange={(e) => setSettings({...settings, aiThreshold: e.target.value})} className="flex-1 accent-blue-600" />
-                      <span className="font-bold text-red-600 bg-red-50 px-3 py-1 rounded-lg">{settings.aiThreshold}%</span>
-                    </div>
+                    <input 
+                      type="range" 
+                      min="50" max="99" 
+                      value={settings.aiThreshold}
+                      onChange={(e) => setSettings(prev => ({...prev, aiThreshold: parseInt(e.target.value)}))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#6345ed]"
+                    />
+                    <p className="text-sm text-gray-500 mt-2">Hệ thống sẽ gắn cờ đỏ "Gian lận" nếu điểm rủi ro vượt mức này.</p>
                   </div>
                 </div>
               </div>
+
             </div>
-
-            {/* Right Column: Notifications & User */}
-            <div className="space-y-8">
-              {/* Alerts Card */}
-              <div className="bg-white rounded-3xl p-8 shadow-sm border border-white">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-amber-100 p-2 rounded-xl text-amber-600"><NotificationsActiveIcon /></div>
-                  <h3 className="text-xl font-bold text-[#0f172a]">Cảnh báo Khẩn cấp</h3>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-sm font-bold text-gray-800">Gọi điện khẩn cấp (VNPT SmartVoice)</h4>
-                      <p className="text-xs text-gray-500 mt-1">Tự động gọi Trưởng phòng khi có hồ sơ giả mạo tinh vi</p>
-                    </div>
-                    <Switch checked={settings.smartVoiceAlert} onChange={() => handleToggle('smartVoiceAlert')} color="warning" />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại Trưởng phòng Rủi ro</label>
-                    <input type="text" defaultValue="0912 345 678" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 font-medium outline-none focus:border-blue-300" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-4 pt-4">
-                <button className="px-6 py-3 rounded-full text-sm font-semibold text-gray-600 bg-white shadow-sm hover:bg-gray-50 transition-colors">Khôi phục mặc định</button>
-                <button className="px-8 py-3 rounded-full text-sm font-bold text-white bg-[#1a65d8] shadow-md hover:bg-blue-700 transition-colors">Lưu Cài Đặt</button>
-              </div>
-            </div>
-
           </div>
+
         </div>
       </div>
-    </div>
   );
 };
 

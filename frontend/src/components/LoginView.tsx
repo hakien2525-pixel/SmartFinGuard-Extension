@@ -6,6 +6,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import SecurityIcon from '@mui/icons-material/Security';
 
 const LoginView = () => {
   const navigate = useNavigate();
@@ -20,10 +21,10 @@ const LoginView = () => {
           
           {/* Logo */}
           <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-[#0d2a63] rounded-md flex items-center justify-center text-white font-bold text-lg">
-              N
+            <div className="w-8 h-8 bg-[#0d2a63] rounded-md flex items-center justify-center text-white">
+              <SecurityIcon fontSize="small" />
             </div>
-            <h1 className="font-bold text-xl text-[#0d2a63]">Nexus Banking</h1>
+            <h1 className="font-bold text-xl text-[#0d2a63]">SmartFinGuard</h1>
           </div>
 
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Đăng nhập</h2>
@@ -31,7 +32,7 @@ const LoginView = () => {
 
           <form onSubmit={(e) => {
             e.preventDefault();
-            navigate(role === 'admin' ? '/admin-dashboard' : '/sme-portal');
+            navigate(role === 'admin' ? '/admin/dashboard' : '/sme/portal');
           }}>
             
             {/* Role Selection */}
@@ -41,7 +42,7 @@ const LoginView = () => {
                 <button 
                   type="button"
                   onClick={() => setRole('admin')}
-                  className={`flex flex-col items-center justify-center py-4 rounded-xl border-2 transition-all ${
+                  className={`flex flex-col items-center justify-center py-4 rounded-[7px] border-2 transition-all ${
                     role === 'admin' 
                       ? 'border-[#4a72a8] bg-[#f8fbff] text-[#4a72a8]' 
                       : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200'
@@ -54,7 +55,7 @@ const LoginView = () => {
                 <button 
                   type="button"
                   onClick={() => setRole('sme')}
-                  className={`flex flex-col items-center justify-center py-4 rounded-xl border-2 transition-all ${
+                  className={`flex flex-col items-center justify-center py-4 rounded-[7px] border-2 transition-all ${
                     role === 'sme' 
                       ? 'border-[#4a72a8] bg-[#f8fbff] text-[#4a72a8]' 
                       : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200'

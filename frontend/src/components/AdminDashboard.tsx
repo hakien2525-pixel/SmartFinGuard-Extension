@@ -37,80 +37,27 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f4f7fb] font-sans text-gray-800">
-      
-      {/* SIDEBAR */}
-      <aside className="w-[260px] bg-white flex flex-col justify-between py-6 px-4 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-10">
-        <div>
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-8 px-2">
-            <div className="w-10 h-10 bg-[#0d2a63] rounded-lg flex items-center justify-center text-white font-bold text-xl">
-              N
-            </div>
-            <div>
-              <h1 className="font-bold text-base leading-tight">Nexus</h1>
-              <p className="text-xs text-gray-500 uppercase tracking-wider">Enterprise Banking</p>
-            </div>
-          </div>
-
-          {/* Menu */}
-          <nav className="flex flex-col gap-1">
-            <a href="#" className="flex items-center gap-3 bg-[#6345ed] text-white px-4 py-3 rounded-xl font-medium shadow-[0_4px_12px_rgba(99,69,237,0.3)]">
-              <DashboardIcon fontSize="small" /> Bảng Điều Khiển
-            </a>
-            <a href="#" className="flex items-center gap-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 px-4 py-3 rounded-xl transition-colors">
-              <SecurityIcon fontSize="small" /> Bảo Mật & Thẩm Định
-            </a>
-            <a href="#" className="flex items-center gap-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 px-4 py-3 rounded-xl transition-colors">
-              <AnalyticsIcon fontSize="small" /> Phân Tích
-            </a>
-            <a href="#" className="flex items-center gap-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 px-4 py-3 rounded-xl transition-colors">
-              <SmartButtonIcon fontSize="small" /> Tự Động Hóa
-            </a>
-            <a href="#" className="flex items-center gap-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 px-4 py-3 rounded-xl transition-colors">
-              <SettingsIcon fontSize="small" /> Cài Đặt
-            </a>
-          </nav>
-        </div>
-
-        {/* Bottom Actions */}
-        <div className="flex flex-col gap-2">
-          <button className="flex items-center justify-center gap-2 w-full py-2.5 bg-red-50 text-red-600 rounded-xl font-medium border border-red-100 hover:bg-red-100 transition-colors mb-2">
-            <LockIcon fontSize="small" /> Khóa Khẩn Cấp
-          </button>
-          <a href="#" className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-[15px]">
-            <HelpIcon fontSize="small" /> Trợ Giúp
-          </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }} className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-[15px]">
-            <LogoutIcon fontSize="small" /> Đăng Xuất
-          </a>
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+    <div className="flex-1 flex flex-col h-full overflow-hidden">
         
         {/* TOPBAR */}
-        <header className="h-[72px] bg-[#f4f7fb] flex items-center justify-between px-8 shrink-0">
-          <div className="flex items-center gap-8">
-            <h2 className="text-xl font-bold text-[#0d2a63]">Bảng Điều Khiển Quản Trị</h2>
-            <div className="flex gap-6 text-[15px] font-medium">
-              {['Tổng Quan', 'Thông Tin Gian Lận', 'Thị Trường'].map(tab => (
-                <button 
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`relative pb-1 transition-colors ${activeTab === tab ? 'text-[#0d2a63]' : 'text-gray-500 hover:text-gray-800'}`}
-                >
-                  {tab}
-                  {activeTab === tab && (
-                    <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#6345ed] rounded-t-full"></span>
-                  )}
-                </button>
-              ))}
-            </div>
+        <header className="h-[72px] bg-white flex items-center justify-between px-4 shrink-0 border-b border-gray-100 gap-6">
+          
+          <div className="flex items-center gap-6 text-[15px] font-medium whitespace-nowrap">
+            {['Tổng Quan', 'Thông Tin Gian Lận', 'Thị Trường'].map(tab => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-1 py-4 relative text-sm ${activeTab === tab ? 'text-[#6345ed] font-bold' : 'text-gray-500 hover:text-gray-900'}`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#6345ed] rounded-t-full"></div>
+                )}
+              </button>
+            ))}
           </div>
           
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4 shrink-0">
             <div className="relative">
               <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fontSize="small" />
               <input 
@@ -119,94 +66,85 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
                 className="pl-10 pr-4 py-2 bg-white rounded-full border border-gray-200 text-[15px] w-[240px] focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all shadow-sm"
               />
             </div>
-            <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 shadow-sm relative">
+            <button 
+              className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 shadow-sm relative"
+              style={{ borderRadius: '50%' }}
+            >
               <NotificationsNoneIcon fontSize="small" />
               <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
             </button>
-            <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[#6345ed] hover:bg-purple-50 shadow-sm">
-              <AutoAwesomeIcon fontSize="small" />
-            </button>
-            <div className="w-10 h-10 rounded-full bg-[#0d2a63] text-white flex items-center justify-center font-bold shadow-sm cursor-pointer border-2 border-white">
+            <div 
+              className="w-10 h-10 rounded-full bg-[#0d2a63] text-white flex items-center justify-center font-bold shadow-sm cursor-pointer border-2 border-white"
+              style={{ borderRadius: '50%' }}
+            >
               QT
             </div>
           </div>
         </header>
 
         {/* DASHBOARD CONTENT */}
-        <div className="flex-1 overflow-y-auto p-8 pt-4 custom-scrollbar">
-          
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-1">Tổng Quan Hàng Đợi</h3>
-            <p className="text-gray-500 text-[15px]">Chỉ số xử lý theo thời gian thực và danh sách hồ sơ cần tác vụ.</p>
+        <div className="flex-1 overflow-y-auto px-3 py-4 custom-scrollbar">
+          <div className="w-full">
+            {/* Header section with title and date picker */}
+            <div className="mb-5">
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">Tổng Quan Hàng Đợi</h3>
+              <p className="text-gray-500 text-[15px]">Chỉ số xử lý theo thời gian thực và danh sách hồ sơ cần tác vụ.</p>
+            </div>
           </div>
 
           {/* KPI CARDS */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            {/* Card 1 */}
-            <div className="bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col justify-between h-[140px]">
-              <div className="flex justify-between items-start">
-                <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center">
-                  <DescriptionIcon fontSize="small" />
-                </div>
-                <span className="text-sm font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">Hôm Nay</span>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-5">
+            {/* Card 1: Tổng Số Hồ Sơ (Cyan) */}
+            <div className="bg-[#f0f8fd] px-5 py-4 rounded-lg border border-[#e0f1fa] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#0ea5e9] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <DescriptionIcon />
               </div>
-              <div>
-                <p className="text-[15px] text-gray-500 mb-1">Tổng Số Hồ Sơ</p>
-                <h4 className="text-3xl font-bold text-gray-900">1,248</h4>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Tổng Số Hồ Sơ</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">1,248</h4>
+                <p className="text-[11px] font-semibold text-[#0ea5e9] mt-0.5 whitespace-nowrap truncate">+5% so với hôm qua</p>
               </div>
             </div>
 
-            {/* Card 2 */}
-            <div className="bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col justify-between h-[140px]">
-              <div className="flex justify-between items-start">
-                <div className="w-10 h-10 bg-green-50 text-green-500 rounded-xl flex items-center justify-center border border-green-100">
-                  <CheckCircleIcon fontSize="small" />
-                </div>
-                <span className="text-sm font-bold text-green-600 flex items-center gap-1">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                  12%
-                </span>
+            {/* Card 2: Tự Động Duyệt (Green) */}
+            <div className="bg-[#f0f9f4] px-5 py-4 rounded-lg border border-[#dcf0e5] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#22c55e] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <CheckCircleIcon />
               </div>
-              <div>
-                <p className="text-[15px] text-gray-500 mb-1">Tự Động Duyệt (Hồ Sơ Xanh)</p>
-                <h4 className="text-3xl font-bold text-gray-900">892</h4>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Tự Động Duyệt</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">892</h4>
+                <p className="text-[11px] font-semibold text-[#22c55e] mt-0.5 whitespace-nowrap truncate">+12% so với tháng trước</p>
               </div>
             </div>
 
-            {/* Card 3 */}
-            <div className="bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col justify-between h-[140px]">
-              <div className="flex justify-between items-start">
-                <div className="w-10 h-10 bg-yellow-50 text-yellow-500 rounded-xl flex items-center justify-center border border-yellow-100">
-                  <WarningIcon fontSize="small" />
-                </div>
-                <span className="text-sm font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">Chờ Xử Lý</span>
+            {/* Card 3: Chờ Duyệt (Yellow) */}
+            <div className="bg-[#fffbf0] px-5 py-4 rounded-lg border border-[#fef1cc] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#f59e0b] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <WarningIcon />
               </div>
-              <div>
-                <p className="text-[15px] text-gray-500 mb-1">Chờ Duyệt (Hồ Sơ Vàng)</p>
-                <h4 className="text-3xl font-bold text-gray-900">315</h4>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Hồ Sơ Chờ Duyệt</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">315</h4>
+                <p className="text-[11px] font-semibold text-[#f59e0b] mt-0.5 whitespace-nowrap truncate">Cần xử lý trong ngày</p>
               </div>
             </div>
 
-            {/* Card 4 */}
-            <div className="bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col justify-between h-[140px]">
-              <div className="flex justify-between items-start">
-                <div className="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center border border-red-100">
-                  <BlockIcon fontSize="small" />
-                </div>
-                <span className="text-sm font-bold text-red-500 flex items-center gap-1">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7L17 17M17 17H7M17 17V7"/></svg>
-                  3%
-                </span>
+            {/* Card 4: Gian Lận Bị Chặn (Red) */}
+            <div className="bg-[#fdf4f2] px-5 py-4 rounded-lg border border-[#fce9e6] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#e66c54] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <BlockIcon />
               </div>
-              <div>
-                <p className="text-[15px] text-gray-500 mb-1">Gian Lận Bị Chặn (Hồ Sơ Đỏ)</p>
-                <h4 className="text-3xl font-bold text-gray-900">41</h4>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Gian Lận Bị Chặn</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">41</h4>
+                <p className="text-[11px] font-semibold text-[#e66c54] mt-0.5 whitespace-nowrap truncate">-3% so với tháng trước</p>
               </div>
             </div>
           </div>
 
           {/* TABLE SECTION */}
-          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
             <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
               <div>
                 <h4 className="text-lg font-bold text-gray-900">Danh Sách Phân Loại</h4>
@@ -221,12 +159,12 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-gray-100">
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Mã Hồ Sơ</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Người Nộp</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Loại Sản Phẩm</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Thời Gian Chờ</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-400">Điểm Rủi Ro</th>
-                    <th className="px-6 py-4 text-sm font-semibold text-gray-400 text-right">Thao Tác</th>
+                    <th className="px-4 py-4 text-sm font-semibold text-gray-400 whitespace-nowrap">Mã Hồ Sơ</th>
+                    <th className="px-4 py-4 text-sm font-semibold text-gray-400 whitespace-nowrap">Người Nộp</th>
+                    <th className="px-4 py-4 text-sm font-semibold text-gray-400 whitespace-nowrap">Loại Sản Phẩm</th>
+                    <th className="px-4 py-4 text-sm font-semibold text-gray-400 whitespace-nowrap">Thời Gian Chờ</th>
+                    <th className="px-4 py-4 text-sm font-semibold text-gray-400 whitespace-nowrap">Điểm Rủi Ro</th>
+                    <th className="px-4 py-4 text-sm font-semibold text-gray-400 text-right whitespace-nowrap">Thao Tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -260,29 +198,29 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
 
                     return (
                       <tr key={idx} className="hover:bg-[#fcfdff] transition-colors group cursor-pointer" onClick={() => setActiveDoc(doc)}>
-                        <td className="px-6 py-4 text-sm font-semibold text-gray-900">{doc.id || `APP-982${idx}`}</td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
+                        <td className="px-4 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">{doc.id || `APP-982${idx}`}</td>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold shrink-0">
                               {idx % 2 === 0 ? 'JW' : 'EL'}
                             </div>
-                            <div>
-                              <p className="text-sm font-semibold text-gray-900">{idx % 2 === 0 ? 'James Wilson' : 'Elena Larson'}</p>
-                              <p className="text-xs text-gray-500">{idx % 2 === 0 ? 'Tài Khoản DN' : 'Cá Nhân'}</p>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm font-semibold text-gray-900">{idx % 2 === 0 ? 'James Wilson' : 'Elena Larson'}</span>
+                              <span className="text-[11px] text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded-full border border-gray-100">{idx % 2 === 0 ? 'Tài Khoản DN' : 'Cá Nhân'}</span>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{idx === 0 ? 'Hạn Mức Tín Dụng' : idx === 1 ? 'Vay Cá Nhân' : 'TK Khách Hàng'}</td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{doc.timestamp || '45 phút'}</td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 py-4 text-sm text-gray-600 whitespace-nowrap">{idx === 0 ? 'Hạn Mức Tín Dụng' : idx === 1 ? 'Vay Cá Nhân' : 'TK Khách Hàng'}</td>
+                        <td className="px-4 py-4 text-sm text-gray-600 whitespace-nowrap">{doc.timestamp || '45 phút'}</td>
+                        <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <div className={`w-2 h-2 rounded-full ${riskColor}`}></div>
                             <span className={`text-sm font-bold ${riskTextColor}`}>{riskScore} ({riskLabel})</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-4 py-4 text-right whitespace-nowrap">
                           <button 
-                            className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${btnClass}`}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${btnClass}`}
                             onClick={(e) => { e.stopPropagation(); setActiveDoc(doc); }}
                           >
                             Thẩm Định
@@ -310,8 +248,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
 
           </div>
         </div>
-      </main>
-    </div>
+      </div>
   );
 };
 

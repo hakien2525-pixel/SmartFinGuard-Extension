@@ -9,10 +9,15 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import ShieldIcon from '@mui/icons-material/Shield';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import SettingsIcon from '@mui/icons-material/Settings';
+import WarningIcon from '@mui/icons-material/Warning';
+import BlockIcon from '@mui/icons-material/Block';
 
 const SMEPortalView = ({ documents = [], onUpload }) => {
   const navigate = useNavigate();
@@ -24,76 +29,96 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
   };
 
   return (
-    <div className="flex h-screen bg-[#f4f7fb] font-sans text-gray-800 overflow-hidden">
-      
-      {/* SIDEBAR */}
-      <aside className="w-[260px] bg-white border-r border-gray-100 flex flex-col shrink-0 z-10 shadow-[2px_0_8px_rgba(0,0,0,0.02)]">
-        <div className="h-[72px] flex items-center px-6 gap-3 border-b border-gray-50">
-          <div className="w-8 h-8 bg-[#0d2a63] rounded-md flex items-center justify-center text-white font-bold text-lg shrink-0">
-            N
-          </div>
-          <div>
-            <h1 className="font-bold text-base leading-tight text-[#0d2a63]">Nexus AI</h1>
-            <p className="text-xs text-gray-500 uppercase tracking-wider font-medium">Enterprise Banking</p>
-          </div>
-        </div>
-
-        <div className="flex-1 px-4 py-6 overflow-y-auto">
-          <button className="flex items-center gap-3 w-full px-4 py-3 bg-[#6345ed] text-white rounded-xl shadow-[0_4px_12px_rgba(99,69,237,0.3)] transition-all">
-            <AccountBalanceWalletIcon fontSize="small" />
-            <span className="font-bold text-[15px]">Cổng Doanh Nghiệp</span>
-          </button>
-        </div>
-
-        <div className="p-4 border-t border-gray-50 flex flex-col gap-1">
-          <button className="flex items-center justify-center gap-2 w-full py-2.5 bg-red-50 text-red-600 rounded-xl font-medium border border-red-100 hover:bg-red-100 transition-colors mb-2">
-            <LockIcon fontSize="small" /> Khóa Khẩn Cấp
-          </button>
-          <a href="#" className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-[15px]">
-            <HelpIcon fontSize="small" /> Trợ Giúp
-          </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }} className="flex items-center gap-3 text-gray-500 hover:text-gray-900 px-4 py-2 transition-colors text-[15px]">
-            <LogoutIcon fontSize="small" /> Đăng Xuất
-          </a>
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col min-w-0">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#f4f7fb]">
         
         {/* HEADER */}
-        <header className="h-[72px] bg-[#f4f7fb] flex items-center justify-between px-8 shrink-0">
+        <header className="h-[72px] bg-white border-b border-gray-100 flex items-center justify-between px-4 shrink-0">
           <h2 className="text-xl font-bold text-[#0d2a63]">Cổng Doanh Nghiệp</h2>
           
           <div className="flex items-center gap-4">
-            <button className="text-gray-400 hover:text-gray-600">
-              <NotificationsNoneIcon />
+            <button 
+              className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 shadow-sm relative"
+              style={{ borderRadius: '50%' }}
+            >
+              <NotificationsNoneIcon fontSize="small" />
+              <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-white"></span>
             </button>
-            <button className="text-[#6345ed] hover:text-[#5035cc]">
-              <AutoAwesomeIcon />
-            </button>
-            <div className="w-10 h-10 rounded-full bg-[#0d2a63] text-white flex items-center justify-center font-bold shadow-sm cursor-pointer ml-2">
+            <div 
+              className="w-10 h-10 rounded-full bg-[#0d2a63] text-white flex items-center justify-center font-bold shadow-sm cursor-pointer ml-2 border-2 border-white"
+              style={{ borderRadius: '50%' }}
+            >
               JW
             </div>
           </div>
         </header>
 
         {/* SCROLLABLE CONTENT */}
-        <div className="flex-1 overflow-auto p-8 pt-4">
+        <div className="flex-1 overflow-auto px-3 py-4 custom-scrollbar">
           
-          <div className="mb-6">
+          <div className="mb-5">
             <h3 className="text-3xl font-bold text-gray-900 mb-2">Tự Động Hóa Hóa Đơn</h3>
             <p className="text-[15px] text-gray-500">Trích xuất dữ liệu thông minh và xử lý luồng cho tài khoản SME.</p>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-6">
+          {/* STATUS CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
+            {/* Card 1: Tổng Số Hồ Sơ (Cyan) */}
+            <div className="bg-[#f0f8fd] px-5 py-4 rounded-lg border border-[#e0f1fa] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#0ea5e9] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <DescriptionIcon />
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Tổng Số Hồ Sơ</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">1,248</h4>
+                <p className="text-[11px] font-semibold text-[#0ea5e9] mt-0.5 whitespace-nowrap truncate">+5% hôm qua</p>
+              </div>
+            </div>
+
+            {/* Card 2: Tự Động Duyệt (Green) */}
+            <div className="bg-[#f0f9f4] px-5 py-4 rounded-lg border border-[#dcf0e5] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#22c55e] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <CheckCircleIcon />
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Tự Động Duyệt</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">892</h4>
+                <p className="text-[11px] font-semibold text-[#22c55e] mt-0.5 whitespace-nowrap truncate">+12% tháng trước</p>
+              </div>
+            </div>
+
+            {/* Card 3: Chờ Duyệt (Yellow) */}
+            <div className="bg-[#fffbf0] px-5 py-4 rounded-lg border border-[#fef1cc] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#f59e0b] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <WarningIcon />
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Hồ Sơ Chờ Duyệt</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">315</h4>
+                <p className="text-[11px] font-semibold text-[#f59e0b] mt-0.5 whitespace-nowrap truncate">Cần xử lý gấp</p>
+              </div>
+            </div>
+
+            {/* Card 4: Gian Lận Bị Chặn (Red) */}
+            <div className="bg-[#fdf4f2] px-5 py-4 rounded-lg border border-[#fce9e6] flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#e66c54] text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                <BlockIcon />
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Gian Lận Bị Chặn</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">41</h4>
+                <p className="text-[11px] font-semibold text-[#e66c54] mt-0.5 whitespace-nowrap truncate">-3% tháng trước</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
             
             {/* LEFT COLUMN */}
-            <div className="flex-1 flex flex-col gap-6">
+            <div className="lg:col-span-3 flex flex-col gap-2 min-w-0">
               
               {/* UPLOAD AREA */}
               <div 
-                className="bg-white rounded-3xl p-10 flex flex-col items-center justify-center text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 min-h-[320px] cursor-pointer hover:border-blue-200 transition-colors"
+                className="bg-white rounded-lg p-10 flex flex-col items-center justify-center text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 min-h-[320px] cursor-pointer hover:border-blue-200 transition-colors"
                 onClick={() => document.getElementById('smeUpload').click()}
               >
                 <input 
@@ -119,7 +144,7 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
               </div>
 
               {/* HISTORY */}
-              <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+              <div className="bg-white rounded-lg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
                 <div className="flex justify-between items-center mb-6">
                   <h4 className="text-lg font-bold text-gray-900">Lịch Sử Của Bạn</h4>
                   <a href="#" className="text-sm font-bold text-[#0d2a63] flex items-center gap-1 hover:underline">
@@ -131,10 +156,10 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="border-b border-gray-100">
-                        <th className="pb-3 font-semibold text-gray-400 text-sm">Mã Hồ Sơ</th>
-                        <th className="pb-3 font-semibold text-gray-400 text-sm">Ngày Gửi</th>
-                        <th className="pb-3 font-semibold text-gray-400 text-sm">Số Tiền Yêu Cầu</th>
-                        <th className="pb-3 font-semibold text-gray-400 text-sm text-right">Trạng Thái</th>
+                        <th className="pb-3 font-semibold text-gray-400 text-sm whitespace-nowrap">Mã Hồ Sơ</th>
+                        <th className="pb-3 font-semibold text-gray-400 text-sm whitespace-nowrap">Ngày Gửi</th>
+                        <th className="pb-3 font-semibold text-gray-400 text-sm whitespace-nowrap">Số Tiền Yêu Cầu</th>
+                        <th className="pb-3 font-semibold text-gray-400 text-sm text-right whitespace-nowrap">Trạng Thái</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
@@ -144,10 +169,10 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                             <DescriptionIcon fontSize="small" className="text-gray-400" /> APP-9821
                           </div>
                         </td>
-                        <td className="py-4 text-[15px] text-gray-500">24 Th10, 10:45 SA</td>
-                        <td className="py-4 text-[15px] font-bold text-gray-900">$4,520.00</td>
-                        <td className="py-4 text-right">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f3efff] text-[#6345ed] text-xs font-bold border border-[#e5dfff]">
+                        <td className="py-4 text-[15px] text-gray-500 whitespace-nowrap">24 Th10, 10:45 SA</td>
+                        <td className="py-4 text-[15px] font-bold text-gray-900 whitespace-nowrap">$4,520.00</td>
+                        <td className="py-4 text-right whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f3efff] text-[#6345ed] text-xs font-bold border border-[#e5dfff] whitespace-nowrap">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#6345ed]"></span> Đang Phân Tích
                           </span>
                         </td>
@@ -158,10 +183,10 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                             <DescriptionIcon fontSize="small" className="text-gray-400" /> APP-9799
                           </div>
                         </td>
-                        <td className="py-4 text-[15px] text-gray-500">23 Th10, 08:30 SA</td>
-                        <td className="py-4 text-[15px] font-bold text-gray-900">$125.50</td>
-                        <td className="py-4 text-right">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold border border-green-100">
+                        <td className="py-4 text-[15px] text-gray-500 whitespace-nowrap">23 Th10, 08:30 SA</td>
+                        <td className="py-4 text-[15px] font-bold text-gray-900 whitespace-nowrap">$125.50</td>
+                        <td className="py-4 text-right whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold border border-green-100 whitespace-nowrap">
                             <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Đã Duyệt
                           </span>
                         </td>
@@ -174,12 +199,12 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
             </div>
 
             {/* RIGHT COLUMN */}
-            <div className="w-full lg:w-[340px] flex flex-col gap-6 shrink-0">
+            <div className="lg:col-span-1 flex flex-col gap-2">
               
               {/* SYSTEM PROGRESS */}
-              <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
-                <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <AutoAwesomeIcon className="text-[#6345ed]" /> Tiến Trình Hệ Thống
+              <div className="bg-white rounded-lg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+                <h4 className="text-lg font-bold text-gray-900 mb-6">
+                  Tiến Trình Hệ Thống
                 </h4>
                 
                 <div className="relative pl-3">
@@ -187,17 +212,17 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                   
                   <div className="flex gap-4 mb-6 relative z-10">
                     <div className="w-8 h-8 rounded-full bg-white border-2 border-green-500 text-green-500 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                      <CheckCircleOutlineIcon fontSize="small" />
+                      <CheckCircleIcon fontSize="small" />
                     </div>
                     <div>
                       <h5 className="font-bold text-[15px] text-gray-900">Xác Thực Tài Khoản</h5>
-                      <p className="text-sm text-gray-500 mt-1">Đã xác minh kết nối đến Cổng SME Nexus.</p>
+                      <p className="text-sm text-gray-500 mt-1">Đã xác minh kết nối đến Cổng SME SmartFinGuard.</p>
                     </div>
                   </div>
 
                   <div className="flex gap-4 mb-6 relative z-10">
                     <div className="w-8 h-8 rounded-full bg-white border-2 border-green-500 text-green-500 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                      <CheckCircleOutlineIcon fontSize="small" />
+                      <CheckCircleIcon fontSize="small" />
                     </div>
                     <div>
                       <h5 className="font-bold text-[15px] text-gray-900">Gửi Đến Quản Trị</h5>
@@ -218,7 +243,7 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
               </div>
 
               {/* STATS */}
-              <div className="bg-white rounded-3xl p-6 flex items-center gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+              <div className="bg-white rounded-lg p-6 flex items-center gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
                 <div className="w-14 h-14 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center shrink-0">
                   <DescriptionIcon />
                 </div>
@@ -229,7 +254,7 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
               </div>
 
               {/* CREDIT LIMIT */}
-              <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+              <div className="bg-white rounded-lg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
                 <h4 className="text-lg font-bold text-gray-900 mb-5">Hạn Mức Tín Dụng</h4>
                 
                 <div className="flex justify-between items-end mb-2">
@@ -261,13 +286,12 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
           
         </div>
 
-      </div>
-
       {/* FAB - AI Assistant */}
       <button 
-        className="fixed bottom-8 right-8 w-14 h-14 bg-[#6345ed] text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(99,69,237,0.4)] hover:scale-105 transition-transform z-50"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-[#6345ed] text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(99,69,237,0.4)] hover:scale-105 transition-transform z-[9999] border-2 border-white"
+        style={{ borderRadius: '50%' }}
       >
-        <SupportAgentIcon />
+        <SupportAgentIcon sx={{ fontSize: 32 }} />
       </button>
 
     </div>

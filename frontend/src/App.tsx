@@ -9,7 +9,12 @@ import DualPanelAuditScreen from './components/DualPanelAuditScreen';
 import AIAssistant from './components/AIAssistant';
 import HistoryPage from './components/HistoryPage';
 import SettingsPage from './components/SettingsPage';
+import UserManagementPage from './components/UserManagementPage';
+import EmergencyLockPage from './components/EmergencyLockPage';
+import HelpPage from './components/HelpPage';
 import DataAnalyticsView from './components/DataAnalyticsView';
+import AdminLayout from './components/AdminLayout';
+import SMELayout from './components/SMELayout';
 import type { DocumentRecord } from './mockData';
 import { Snackbar, Alert } from '@mui/material';
 
@@ -24,7 +29,7 @@ const theme = createTheme({
 // App wrapper to use hooks like useLocation inside BrowserRouter
 const AppContent = () => {
   const location = useLocation();
-  const showAIAssistant = location.pathname === '/admin-dashboard' || location.pathname === '/audit-screen' || location.pathname === '/sme-portal';
+  const showAIAssistant = location.pathname === '/admin/dashboard' || location.pathname === '/audit-screen' || location.pathname === '/sme-portal';
 
   // Mock data fetching for AdminDashboard
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
@@ -93,37 +98,42 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginView />} />
-        <Route path="/sme-portal" element={<SMEPortalView documents={documents} onUpload={handleUpload} />} />
         
-        {/* Pass necessary props to AdminDashboard */}
-        <Route path="/admin-dashboard" element={
-          <AdminDashboard 
-            stats={stats} 
-            documents={documents} 
-            onUpload={handleUpload}
-            isScanning={isScanning}
-            onSelectDoc={(doc) => {
-              // Redirect to audit screen (Simulated functionality)
-              window.location.href = '/audit-screen';
-            }} 
-          />
-        } />
+        {/* SME Portal Area */}
+        <Route path="/sme" element={<SMELayout />}>
+          <Route path="portal" element={<SMEPortalView onDocumentSubmit={handleUpload} />} />
+          <Route path="history" element={<HistoryPage documents={documents} />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
+        
+        {/* Admin Dashboard Area */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={
+            <AdminDashboard 
+              stats={stats} 
+              documents={documents} 
+              onUpload={handleUpload}
+              isScanning={isScanning}
+              onSelectDoc={(doc) => {
+                // Redirect to audit screen (Simulated functionality)
+                window.location.href = '/audit-screen';
+              }} 
+            />
+          } />
+          <Route path="history" element={<HistoryPage documents={documents} />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="users" element={<UserManagementPage />} />
+          <Route path="emergency-lock" element={<EmergencyLockPage />} />
+          <Route path="help" element={<HelpPage />} />
+        </Route>
         
         {/* Audit Screen (Alias for DualPanelAuditScreen) */}
         <Route path="/audit-screen" element={
           <DualPanelAuditScreen 
             document={documents[0] || {}} 
-            onClose={() => window.location.href = '/admin-dashboard'} 
+            onClose={() => window.location.href = '/admin/dashboard'} 
           />
         } />
-
-        {/* History Log Screen */}
-        <Route path="/history" element={
-          <HistoryPage documents={documents} />
-        } />
-
-        {/* Settings Screen */}
-        <Route path="/settings" element={<SettingsPage />} />
 
         {/* Data Analytics Screen */}
         <Route path="/data" element={<DataAnalyticsView />} />

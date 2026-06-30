@@ -13,6 +13,7 @@ const AIAssistant = () => {
       <button 
         onClick={() => setIsOpen(true)}
         className="fixed bottom-8 right-8 w-16 h-16 bg-[#6345ed] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[9999] border-2 border-white"
+        style={{ borderRadius: '50%' }}
       >
         <SupportAgentIcon sx={{ fontSize: 32 }} />
         {/* Unread indicator */}
@@ -22,7 +23,7 @@ const AIAssistant = () => {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 w-[350px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-[9999] flex flex-col animate-in slide-in-from-bottom-5 fade-in duration-300">
+    <div className="fixed bottom-8 right-8 w-[350px] bg-white rounded-lg shadow-2xl border border-gray-100 overflow-hidden z-[9999] flex flex-col animate-in slide-in-from-bottom-5 fade-in duration-300">
       
       {/* Header */}
       <div className="bg-[#6345ed] text-white p-4 flex justify-between items-center shadow-sm">
