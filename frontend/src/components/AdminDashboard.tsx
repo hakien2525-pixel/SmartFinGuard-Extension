@@ -10,7 +10,6 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
   const navigate = useNavigate();
   const [activeDoc, setActiveDoc] = useState(null);
 
-  // If a document is active, show the Dual Panel (Master-Detail) layout inline
   if (activeDoc) {
     return (
       <div className="d-flex min-vh-100 bg-light">
@@ -24,18 +23,23 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
   }
 
   return (
-    <div className="d-flex flex-column min-vh-100 bg-light">
-      {/* Topbar (Bootstrap InApp Template Style) */}
-      <nav className="navbar bg-white border-bottom fixed-top px-3 d-flex justify-content-between align-items-center shadow-sm">
-        <div className="d-flex align-items-center gap-2">
-          <div className="bg-primary text-white p-2 rounded">
-            <ShieldIcon />
-          </div>
-          <h5 className="mb-0 fw-bold text-dark">SmartFin<span className="text-primary">Guard</span> Admin</h5>
+    <>
+      <div id="overlay" className="overlay"></div>
+      
+      {/* TOPBAR */}
+      <nav id="topbar" className="navbar bg-white border-bottom fixed-top topbar px-3 d-flex justify-content-between">
+        <div className="d-flex align-items-center">
+          <button id="toggleBtn" className="d-none d-lg-inline-flex btn btn-light btn-icon btn-sm">
+            <i className="ti ti-layout-sidebar-left-expand"></i>
+          </button>
+          <button id="mobileBtn" className="btn btn-light btn-icon btn-sm d-lg-none me-2">
+            <i className="ti ti-layout-sidebar-left-expand"></i>
+          </button>
+          <span className="ms-3 fw-bold h5 mb-0 d-none d-md-block">SmartFin<span className="text-primary">Guard</span> Admin</span>
         </div>
         
         <div className="d-flex align-items-center gap-3">
-          <span className="badge bg-success-subtle text-success border border-success-subtle py-2 px-3">
+          <span className="badge bg-success-subtle text-success border border-success-subtle py-2 px-3 d-none d-md-inline-block">
             Hệ thống Ổn định
           </span>
           <div className="dropdown">
@@ -56,12 +60,49 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="flex-grow-1 p-4" style={{ marginTop: '70px' }}>
+      {/* SIDEBAR */}
+      <aside id="sidebar" className="sidebar">
+        <div className="logo-area d-flex align-items-center py-3 px-4">
+          <ShieldIcon className="text-primary me-2" fontSize="large" />
+          <h4 className="mb-0 fw-bold">Fin<span className="text-primary">Guard</span></h4>
+        </div>
+        <ul className="nav flex-column">
+          <li className="px-4 py-2"><small className="nav-text text-muted">Main</small></li>
+          <li>
+            <a className="nav-link active" href="#" onClick={(e) => e.preventDefault()}>
+              <i className="ti ti-home"></i>
+              <span className="nav-text">Tổng quan hồ sơ</span>
+            </a>
+          </li>
+          <li>
+            <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); /* Could trigger focus on table */ }}>
+              <i className="ti ti-box-seam"></i>
+              <span className="nav-text">Rà soát chi tiết</span>
+            </a>
+          </li>
+          <li>
+            <a className="nav-link" href="#" onClick={(e) => { e.preventDefault(); navigate('/history'); }}>
+              <i className="ti ti-receipt"></i>
+              <span className="nav-text">Nhật kí hệ thống</span>
+            </a>
+          </li>
+
+          <li className="px-4 pt-4 pb-2"><small className="nav-text text-muted">Account</small></li>
+          <li>
+            <a className="nav-link text-danger" href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
+              <i className="ti ti-logout"></i>
+              <span className="nav-text">Đăng xuất</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main id="content" className="content py-10 bg-light min-vh-100" style={{ paddingTop: '80px' }}>
         <div className="container-fluid">
           
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="h4 fw-bold mb-0">Tổng quan Giao dịch</h2>
+            <h1 className="fs-3 mb-1 fw-bold">Tổng quan Giao dịch</h1>
             <button className="btn btn-primary shadow-sm" onClick={() => document.getElementById('uploadInput').click()}>
               + Tải hồ sơ mới
             </button>
@@ -84,44 +125,44 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
           )}
 
           {/* Stats Cards */}
-          <div className="row g-4 mb-4">
-            <div className="col-12 col-md-4">
-              <div className="card border-0 shadow-sm rounded-4 h-100">
-                <div className="card-body p-4 d-flex align-items-center gap-4">
-                  <div className="bg-primary-subtle text-primary p-3 rounded-circle">
-                    <TimelineIcon fontSize="large" />
+          <div className="row g-3 mb-4">
+            <div className="col-12 col-lg-4">
+              <div className="card p-4 bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 h-100">
+                <div className="d-flex gap-3 align-items-center">
+                  <div className="icon-shape icon-md bg-primary text-white rounded-2 d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px' }}>
+                    <TimelineIcon />
                   </div>
                   <div>
-                    <p className="text-muted mb-1 small text-uppercase fw-bold">Tổng Hồ Sơ</p>
-                    <h3 className="mb-0 fw-bold">{stats.total}</h3>
+                    <h2 className="mb-1 fs-6 text-muted fw-semibold">Tổng Hồ Sơ</h2>
+                    <h3 className="fw-bold mb-0">{stats.total}</h3>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="col-12 col-md-4">
-              <div className="card border-0 shadow-sm rounded-4 h-100">
-                <div className="card-body p-4 d-flex align-items-center gap-4">
-                  <div className="bg-success-subtle text-success p-3 rounded-circle">
-                    <ShieldIcon fontSize="large" />
+            <div className="col-12 col-lg-4">
+              <div className="card p-4 bg-success bg-opacity-10 border border-success border-opacity-25 rounded-3 h-100">
+                <div className="d-flex gap-3 align-items-center">
+                  <div className="icon-shape icon-md bg-success text-white rounded-2 d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px' }}>
+                    <ShieldIcon />
                   </div>
                   <div>
-                    <p className="text-muted mb-1 small text-uppercase fw-bold">Đã Phê Duyệt</p>
-                    <h3 className="mb-0 fw-bold">{stats.valid}</h3>
+                    <h2 className="mb-1 fs-6 text-muted fw-semibold">Đã Phê Duyệt</h2>
+                    <h3 className="fw-bold mb-0">{stats.valid}</h3>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="col-12 col-md-4">
-              <div className="card border-0 shadow-sm rounded-4 h-100">
-                <div className="card-body p-4 d-flex align-items-center gap-4">
-                  <div className="bg-danger-subtle text-danger p-3 rounded-circle">
-                    <SmartToyIcon fontSize="large" />
+            <div className="col-12 col-lg-4">
+              <div className="card p-4 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded-3 h-100">
+                <div className="d-flex gap-3 align-items-center">
+                  <div className="icon-shape icon-md bg-danger text-white rounded-2 d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px' }}>
+                    <SmartToyIcon />
                   </div>
                   <div>
-                    <p className="text-muted mb-1 small text-uppercase fw-bold">Gian lận (Bị Chặn)</p>
-                    <h3 className="mb-0 fw-bold">{stats.fraud}</h3>
+                    <h2 className="mb-1 fs-6 text-muted fw-semibold">Gian lận (Bị Chặn)</h2>
+                    <h3 className="fw-bold mb-0">{stats.fraud}</h3>
                   </div>
                 </div>
               </div>
@@ -182,7 +223,7 @@ const AdminDashboard = ({ stats, documents, onSelectDoc, onUpload, isScanning })
 
         </div>
       </main>
-    </div>
+    </>
   );
 };
 
