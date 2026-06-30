@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import PersonIcon from '@mui/icons-material/Person';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const LoginView = () => {
@@ -47,7 +47,7 @@ const LoginView = () => {
                       : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200'
                   }`}
                 >
-                  <PersonOutlineIcon className="mb-1" />
+                  <PersonIcon className="mb-1" />
                   <span className="text-sm font-semibold">Nhân Viên</span>
                 </button>
 
@@ -71,7 +71,7 @@ const LoginView = () => {
               <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Tên đăng nhập / Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                  <PersonOutlineIcon fontSize="small" />
+                  <PersonIcon fontSize="small" />
                 </div>
                 <input 
                   type="text" 
@@ -86,7 +86,7 @@ const LoginView = () => {
               <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Mật khẩu</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                  <LockOutlinedIcon fontSize="small" />
+                  <LockIcon fontSize="small" />
                 </div>
                 <input 
                   type="password" 
@@ -138,7 +138,7 @@ const LoginView = () => {
               <div className="absolute inset-0 bg-[#d0dcf2] rounded-full scale-110 opacity-50"></div>
               
               <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-b from-[#d0dcf2] to-[#b8caeb] border-[6px] border-white shadow-[0_12px_30px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center relative z-10">
-                <CameraAltOutlinedIcon sx={{ fontSize: 48 }} className="text-white/60 mb-3" />
+                <CameraAltIcon sx={{ fontSize: 48 }} className="text-white/60 mb-3" />
                 <span className="text-sm font-medium text-[#7a95c4]">Chờ quét sinh trắc học...</span>
               </div>
             </div>
