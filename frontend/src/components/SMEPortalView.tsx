@@ -445,7 +445,6 @@ const SMEPortalView = ({ documents = [], onUpload }: SMEPortalViewProps) => {
         </div>
       </div>
     </>
->>>>>>> origin/main
   );
 };
 
