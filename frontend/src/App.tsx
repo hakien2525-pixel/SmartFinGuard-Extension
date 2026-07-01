@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 
 import LoginView from './components/LoginView';
@@ -15,6 +15,7 @@ import HelpPage from './components/HelpPage';
 import DataAnalyticsView from './components/DataAnalyticsView';
 import AdminLayout from './components/AdminLayout';
 import SMELayout from './components/SMELayout';
+import SMEAnalyticsPage from './components/SMEAnalyticsPage';
 import type { DocumentRecord } from './mockData';
 import { Snackbar, Alert } from '@mui/material';
 
@@ -29,10 +30,12 @@ const theme = createTheme({
 // App wrapper to use hooks like useLocation inside BrowserRouter
 const AppContent = () => {
   const location = useLocation();
-  const showAIAssistant = location.pathname === '/admin/dashboard' || location.pathname === '/audit-screen' || location.pathname === '/sme-portal';
+  const navigate = useNavigate();
+  const showAIAssistant = location.pathname !== '/login' && location.pathname !== '/';
 
   // Mock data fetching for AdminDashboard
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
+  const [selectedDoc, setSelectedDoc] = useState<DocumentRecord | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [toast, setToast] = useState<{open: boolean, message: string, severity: 'success' | 'error' | 'info'}>({open: false, message: '', severity: 'info'});
   const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -93,6 +96,11 @@ const AppContent = () => {
     fraud: documents.filter(d => ['Cảnh báo', 'Đã chặn'].includes(d.status)).length,
   };
 
+  const handleSelectDoc = (doc: any) => {
+    setSelectedDoc(doc);
+    navigate('/audit-screen');
+  };
+
   return (
     <>
       <Routes>
@@ -101,37 +109,29 @@ const AppContent = () => {
         
         {/* SME Portal Area */}
         <Route path="/sme" element={<SMELayout />}>
-          <Route path="portal" element={<SMEPortalView onDocumentSubmit={handleUpload} />} />
-          <Route path="history" element={<HistoryPage documents={documents} />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route path="portal" element={<SMEPortalView documents={documents} onUploadComplete={(doc: any) => setDocuments(prev => [doc, ...prev])} />} />
+          <Route path="dashboard" element={<SMEPortalView documents={documents} onUploadComplete={(doc: any) => setDocuments(prev => [doc, ...prev])} />} />
+          <Route path="records" element={<SMEPortalView documents={documents} onUploadComplete={(doc: any) => setDocuments(prev => [doc, ...prev])} />} />
+          <Route path="upload" element={<SMEPortalView documents={documents} onUploadComplete={(doc: any) => setDocuments(prev => [doc, ...prev])} />} />
+          <Route path="history" element={<SMEPortalView documents={documents} />} />
+          <Route path="support" element={<SMEPortalView documents={documents} />} />
         </Route>
         
         {/* Admin Dashboard Area */}
         <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={
-            <AdminDashboard 
-              stats={stats} 
-              documents={documents} 
-              onUpload={handleUpload}
-              isScanning={isScanning}
-              onSelectDoc={(doc) => {
-                // Redirect to audit screen (Simulated functionality)
-                window.location.href = '/audit-screen';
-              }} 
-            />
-          } />
-          <Route path="history" element={<HistoryPage documents={documents} />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="users" element={<UserManagementPage />} />
-          <Route path="emergency-lock" element={<EmergencyLockPage />} />
-          <Route path="help" element={<HelpPage />} />
+          <Route path="dashboard" element={<AdminDashboard documents={documents} onSelectDoc={handleSelectDoc} />} />
+          <Route path="overview" element={<AdminDashboard documents={documents} onSelectDoc={handleSelectDoc} />} />
+          <Route path="queue" element={<AdminDashboard documents={documents} onSelectDoc={handleSelectDoc} />} />
+          <Route path="alerts" element={<AdminDashboard documents={documents} onSelectDoc={handleSelectDoc} />} />
+          <Route path="directory" element={<AdminDashboard documents={documents} onSelectDoc={handleSelectDoc} />} />
+          <Route path="reports" element={<AdminDashboard documents={documents} onSelectDoc={handleSelectDoc} />} />
         </Route>
         
         {/* Audit Screen (Alias for DualPanelAuditScreen) */}
         <Route path="/audit-screen" element={
           <DualPanelAuditScreen 
-            document={documents[0] || {}} 
-            onClose={() => window.location.href = '/admin/dashboard'} 
+            document={selectedDoc || documents[0] || {}} 
+            onClose={() => navigate('/admin/queue')} 
           />
         } />
 

@@ -1,79 +1,63 @@
 import React from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import SecurityIcon from '@mui/icons-material/Security';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import SettingsIcon from '@mui/icons-material/Settings';
-import LockIcon from '@mui/icons-material/Lock';
-import HelpIcon from '@mui/icons-material/Help';
-import ShieldIcon from '@mui/icons-material/Shield';
-import LogoutIcon from '@mui/icons-material/Logout';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const path = location.pathname;
-
-  const getNavClass = (targetPath: string) => {
-    const isActive = path === targetPath;
-    return `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-      isActive
-        ? 'bg-[#6345ed] text-white font-medium shadow-[0_4px_12px_rgba(99,69,237,0.3)]'
-        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-    }`;
-  };
+  const currentPath = location.pathname;
 
   return (
-    <div className="flex h-screen font-sans text-gray-800 overflow-hidden bg-[#f4f7fb]">
-      {/* SIDEBAR */}
-      <aside className="w-[260px] bg-white border-r border-gray-100 flex flex-col shrink-0 z-10 shadow-[2px_0_8px_rgba(0,0,0,0.02)] justify-between pb-6">
-        <div>
-          <div className="h-[72px] flex items-center gap-3 border-b border-gray-100 px-6 shrink-0">
-            <div className="w-10 h-10 flex items-center justify-center shrink-0 rounded-lg bg-gradient-to-br from-[#0d2a63] to-[#6345ed] shadow-md">
-              <ShieldIcon sx={{ fontSize: 24 }} className="text-white" />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="font-bold leading-none mb-1 tracking-tight" style={{ fontSize: '35px' }}>
-                <span className="text-[#0d2a63]">Smart</span>
-                <span className="text-[#f97316]">Fin</span>
-              </h1>
-              <p className="text-[14px] text-gray-400 font-medium leading-none">Guard AI System</p>
-            </div>
+    <div className="shell">
+      <aside className="sidebar">
+        <div className="side-brand">
+          <div className="brand-mark">
+            <svg className="icon" width="16" height="16" viewBox="0 0 24 24" stroke="#0B2545">
+              <path d="M12 2 20 5.5v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6L12 2Z"/>
+            </svg>
           </div>
-
-          <nav className="flex flex-col gap-1 px-4 mt-6">
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/dashboard'); }} className={getNavClass('/admin/dashboard')}>
-              <DashboardIcon fontSize="small" /> Tổng quan
-            </a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/users'); }} className={getNavClass('/admin/users')}>
-              <SecurityIcon fontSize="small" /> Quản lí user
-            </a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/history'); }} className={getNavClass('/admin/history')}>
-              <AnalyticsIcon fontSize="small" /> Nhật kí hệ thống
-            </a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/settings'); }} className={getNavClass('/admin/settings')}>
-              <SettingsIcon fontSize="small" /> Cài đặt
-            </a>
-          </nav>
+          <b>SmartFin-Guard</b>
         </div>
-
-        <div className="flex flex-col px-4 mt-auto">
-          <button onClick={() => navigate('/admin/emergency-lock')} className="flex items-center gap-3 w-full px-4 py-3 bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-colors mb-2 rounded-sm border-0">
-            <LockIcon fontSize="small" /> Khóa Khẩn Cấp
-          </button>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/help'); }} className="flex items-center gap-3 text-gray-600 hover:text-gray-900 px-4 py-2 transition-colors text-[15px] font-medium">
-            <HelpIcon fontSize="small" /> Trợ Giúp
+        <div className="side-role">Không gian Nhân viên Ngân hàng</div>
+        <div className="nav-group">
+          <a className={`nav-item ${currentPath === '/admin/dashboard' || currentPath === '/admin/overview' ? 'active' : ''}`} onClick={() => navigate('/admin/dashboard')}>
+            <svg className="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            Tổng quan
           </a>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }} className="flex items-center gap-3 text-gray-600 hover:text-gray-900 px-4 py-2 transition-colors text-[15px] font-medium">
-            <LogoutIcon fontSize="small" /> Đăng Xuất
+          <a className={`nav-item ${currentPath === '/admin/queue' ? 'active' : ''}`} onClick={() => navigate('/admin/queue')}>
+            <svg className="icon" viewBox="0 0 24 24"><path d="M9 11H3v9h6z"/><path d="M21 4h-6v16h6z"/><path d="M15 8h-6v3h6z"/></svg>
+            Hàng đợi thẩm định
+            <span className="badge-count">9</span>
           </a>
+          <a className={`nav-item ${currentPath === '/admin/alerts' ? 'active' : ''}`} onClick={() => navigate('/admin/alerts')}>
+            <svg className="icon" viewBox="0 0 24 24"><path d="M10.3 3.9 2.6 18a1.7 1.7 0 0 0 1.5 2.6h15.8a1.7 1.7 0 0 0 1.5-2.6L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            Cảnh báo gian lận
+            <span className="badge-count">3</span>
+          </a>
+          <a className={`nav-item ${currentPath === '/admin/directory' ? 'active' : ''}`} onClick={() => navigate('/admin/directory')}>
+            <svg className="icon" viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-8h6v8"/></svg>
+            Danh sách doanh nghiệp
+          </a>
+          <a className={`nav-item ${currentPath === '/admin/reports' ? 'active' : ''}`} onClick={() => navigate('/admin/reports')}>
+            <svg className="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-4 4"/></svg>
+            Báo cáo &amp; thống kê
+          </a>
+        </div>
+        <div className="side-spacer"></div>
+        <a className="nav-item" onClick={() => navigate('/')}>
+          <svg className="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          Đăng xuất
+        </a>
+        <div className="side-user">
+          <div className="avatar">NV</div>
+          <div className="who">
+            <b>Nguyễn Văn Hùng</b>
+            <span>Chuyên viên thẩm định</span>
+          </div>
         </div>
       </aside>
-
-      {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0 bg-white">
+      <main className="main">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };
