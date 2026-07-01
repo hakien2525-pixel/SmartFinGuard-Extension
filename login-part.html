@@ -1,0 +1,82 @@
+
+  <div class="login-wrap">
+    <div class="login-brand">
+      <svg class="chain-motif" viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="white" stroke-width="1" fill="none" opacity="0.5">
+          <path d="M-20 120 L520 220" /><path d="M-20 340 L520 260" /><path d="M-20 520 L520 460" /><path d="M-20 620 L520 640" />
+          <circle cx="80" cy="150" r="3" fill="white" stroke="none"/><circle cx="260" cy="200" r="3" fill="white" stroke="none"/>
+          <circle cx="420" cy="240" r="3" fill="white" stroke="none"/><circle cx="120" cy="380" r="3" fill="white" stroke="none"/>
+          <circle cx="340" cy="300" r="3" fill="white" stroke="none"/><circle cx="200" cy="540" r="3" fill="white" stroke="none"/>
+          <circle cx="440" cy="480" r="3" fill="white" stroke="none"/>
+        </g>
+      </svg>
+      <div class="brand-top">
+        <div class="brand-mark"><svg class="icon" width="20" height="20" viewBox="0 0 24 24"><path d="M12 2 20 5.5v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6L12 2Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div class="brand-name">SmartFin-Guard<small>Digital Banking Security Layer</small></div>
+      </div>
+      <div class="brand-mid">
+        <h1>Một cổng đăng nhập.<br>Ba vai trò. Một chuỗi<br>xác thực chứng từ.</h1>
+        <p>Hệ thống tự động hoá thẩm định và chống gian lận chứng từ giải ngân, tích hợp trực tiếp trong luồng ngân hàng số — bảo vệ mọi giao dịch từ khâu nộp hồ sơ đến khi giải ngân.</p>
+        <div class="pipeline">
+          <div class="step"><div class="dot"></div><div class="label">Xác thực danh tính (Email / eKYC)</div></div>
+          <div class="line"></div>
+          <div class="step"><div class="dot"></div><div class="label">Phân luồng theo vai trò người dùng</div></div>
+          <div class="line"></div>
+          <div class="step"><div class="dot"></div><div class="label">Điều hướng vào không gian làm việc</div></div>
+        </div>
+      </div>
+      <div class="brand-bottom">
+        <div class="brand-stat"><b>99.8%</b><span>Uptime hệ thống</span></div>
+        <div class="brand-stat"><b>256-bit</b><span>Mã hoá đầu-cuối</span></div>
+        <div class="brand-stat"><b>&lt;3s</b><span>Thời gian xác thực</span></div>
+      </div>
+    </div>
+
+    <div class="login-form-panel">
+      <div class="login-card">
+        <h2>Đăng nhập hệ thống</h2>
+        <p class="sub">Nhập thông tin xác thực để tiếp tục. Vai trò của bạn sẽ được hệ thống tự động nhận diện.</p>
+
+        <div class="method-toggle">
+          <button class="active" id="tab-pass" onclick="switchMethod('pass')">Email &amp; Mật khẩu</button>
+          <button id="tab-ekyc" onclick="switchMethod('ekyc')">Sinh trắc học (eKYC)</button>
+        </div>
+
+        <div id="pane-pass">
+          <form id="loginForm" onsubmit="return handleLogin(event)" novalidate>
+            <div class="field" id="f-email">
+              <label>Email hoặc Mã số doanh nghiệp</label>
+              <input type="text" id="in-email" placeholder="ten@congty.com.vn">
+              <div class="errmsg">Vui lòng nhập email hợp lệ.</div>
+            </div>
+            <div class="field" id="f-pass">
+              <label>Mật khẩu</label>
+              <input type="password" id="in-pass" placeholder="••••••••••">
+              <div class="errmsg">Mật khẩu phải có ít nhất 6 ký tự.</div>
+            </div>
+            <div class="row-between">
+              <label class="checkbox-row"><input type="checkbox"> Ghi nhớ đăng nhập</label>
+              <span class="link-blue" onclick="showToast('Đã gửi liên kết đặt lại mật khẩu tới email (mô phỏng).','success')">Quên mật khẩu?</span>
+            </div>
+            <button class="btn-primary" id="loginBtn" type="submit"><span class="spinner" id="loginSpin"></span><span id="loginBtnText">Đăng nhập</span></button>
+          </form>
+          <div class="divider">hoặc</div>
+          <button class="btn-outline" style="width:100%" onclick="switchMethod('ekyc')">Xác thực bằng khuôn mặt (eKYC)</button>
+          <p class="role-hint">Đăng nhập thử: <span class="link-blue" onclick="quickLogin('business')">tư cách Doanh nghiệp</span> · <span class="link-blue" onclick="quickLogin('admin')">tư cách Nhân viên ngân hàng</span></p>
+        </div>
+
+        <div id="pane-ekyc" style="display:none">
+          <div class="ekyc-box">
+            <div class="ekyc-frame" id="ekycFrame">
+              <svg class="icon" width="30" height="30" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M20 8V5a1 1 0 0 0-1-1h-3"/><path d="M4 16v3a1 1 0 0 0 1 1h3"/><path d="M20 16v3a1 1 0 0 0-1 1h-3"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <h3 id="ekycTitle">Quét khuôn mặt để xác thực</h3>
+            <p id="ekycDesc">Đưa khuôn mặt vào khung hình. Hệ thống đối chiếu với dữ liệu eKYC đã đăng ký để xác nhận danh tính.</p>
+            <button class="btn-outline" id="ekycBtn" onclick="startEkyc()">Bắt đầu quét</button>
+          </div>
+        </div>
+
+        <p class="foot-note">Bằng việc đăng nhập, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của SmartFin-Guard.<br>Cần hỗ trợ? Liên hệ tổng đài <strong>1900 8888</strong></p>
+      </div>
+    </div>
+  </div>

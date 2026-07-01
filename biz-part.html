@@ -1,0 +1,164 @@
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-brand"><div class="brand-mark"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" stroke="#0B2545"><path d="M12 2 20 5.5v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6L12 2Z"/></svg></div><b>SmartFin-Guard</b></div>
+      <div class="side-role">Không gian Doanh nghiệp</div>
+      <div class="nav-group" id="biz-nav">
+        <a class="nav-item active" data-page="biz-overview"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Tổng quan</a>
+        <a class="nav-item" data-page="biz-records"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>Hồ sơ giải ngân</a>
+        <a class="nav-item" data-page="biz-upload"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>Tải chứng từ<span class="badge-count" id="uploadBadge" style="display:none">0</span></a>
+        <a class="nav-item" data-page="biz-history"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Lịch sử giao dịch</a>
+        <a class="nav-item" data-page="biz-support"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Hỗ trợ</a>
+      </div>
+      <div class="side-spacer"></div>
+      <a class="nav-item" onclick="goTo('view-login')"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Đăng xuất</a>
+      <div class="side-user"><div class="avatar">CT</div><div class="who"><b>Công ty TNHH Phúc An</b><span>MST 0312 456 789</span></div></div>
+    </aside>
+
+    <main class="main">
+      <!-- ---- biz-overview ---- -->
+      <div class="page active" id="biz-overview">
+        <div class="topbar">
+          <div><h1>Tổng quan hồ sơ giải ngân</h1><p class="sub">Theo dõi tiến độ thẩm định và trạng thái chứng từ theo thời gian thực.</p></div>
+          <div class="top-actions">
+            <button class="icon-btn" onclick="toggleNotif('biz')"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot-alert"></span>
+              <div class="notif-panel" id="notif-biz">
+                <div class="nh">Thông báo</div>
+                <div class="notif-item"><b>Hồ sơ #HD-2026-0091 cần bổ sung chứng từ</b>Hoá đơn VAT cần tải lại bản rõ nét.<br><span>5 phút trước</span></div>
+                <div class="notif-item"><b>Hồ sơ #HD-2026-0075 đã giải ngân</b>4.2 tỷ VNĐ đã chuyển vào tài khoản.<br><span>Hôm qua</span></div>
+                <div class="notif-item"><b>Chứng từ #0088 đối chiếu thành công</b>Không phát hiện bất thường.<br><span>2 ngày trước</span></div>
+              </div>
+            </button>
+            <button class="mini-btn blue" style="padding:9px 16px" onclick="openModal('newRecord')">+ Tạo hồ sơ mới</button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--sky-100); color:var(--blue-700)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></div><div class="num">12</div><div class="lbl">Hồ sơ đang xử lý</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--green-100); color:var(--green-600)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><div class="num">47</div><div class="lbl">Chứng từ đã xác minh</div><div class="trend" style="color:var(--green-600)">↑ 8% so với tháng trước</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--amber-100); color:var(--amber-600)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div class="num">3</div><div class="lbl">Đang chờ đối chiếu</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--sky-100); color:var(--blue-700)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg></div><div class="num">4.2 tỷ</div><div class="lbl">Tổng hạn mức đã giải ngân</div></div>
+        </div>
+
+        <div class="notice"><svg class="icon" width="18" height="18" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          <div><b>Hồ sơ #HD-2026-0091 cần bổ sung chứng từ</b><p>Hoá đơn VAT bị mờ ở góc phải, vui lòng tải lại bản scan rõ nét trước 17:00 hôm nay để không ảnh hưởng tiến độ giải ngân.</p></div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px;">
+          <div class="card-head"><h2>Tiến trình hồ sơ #HD-2026-0091</h2><span class="pill amber"><span class="d"></span>Đang thẩm định</span></div>
+          <div class="tracker">
+            <div class="tstep done"><div class="node">✓</div><div class="tlabel">Nộp hồ sơ</div><div class="ttime">28/06 · 09:12</div></div>
+            <div class="tstep done"><div class="node">✓</div><div class="tlabel">Quét &amp; số hoá OCR</div><div class="ttime">28/06 · 09:14</div></div>
+            <div class="tstep active"><div class="node">3</div><div class="tlabel">Đối chiếu dữ liệu</div><div class="ttime">Đang xử lý</div></div>
+            <div class="tstep"><div class="node">4</div><div class="tlabel">Thẩm định</div><div class="ttime">Chưa tới</div></div>
+            <div class="tstep"><div class="node">5</div><div class="tlabel">Giải ngân</div><div class="ttime">Chưa tới</div></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head"><h2>Chứng từ gần đây</h2><a class="link-blue" onclick="switchBizPage('biz-records')">Xem tất cả</a></div>
+            <table><thead><tr><th>Chứng từ</th><th>Mã hồ sơ</th><th>Trạng thái</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><div class="doc-name">Hợp đồng mua bán #08</div><div class="doc-sub">PDF · 2.4MB</div></td><td class="mono">HD-2026-0091</td><td><span class="pill green"><span class="d"></span>Đã xác minh</span></td><td><button class="mini-btn" onclick="event.stopPropagation();openModal('docDetail')">Xem</button></td></tr>
+                <tr><td><div class="doc-name">Hoá đơn VAT #1187</div><div class="doc-sub">JPG · 1.1MB</div></td><td class="mono">HD-2026-0091</td><td><span class="pill red"><span class="d"></span>Cần bổ sung</span></td><td><button class="mini-btn blue" onclick="event.stopPropagation();switchBizPage('biz-upload')">Tải lại</button></td></tr>
+                <tr><td><div class="doc-name">Biên bản giao hàng</div><div class="doc-sub">PDF · 860KB</div></td><td class="mono">HD-2026-0088</td><td><span class="pill amber"><span class="d"></span>Đang đối chiếu</span></td><td><button class="mini-btn" onclick="event.stopPropagation();openModal('docDetail')">Xem</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Tải chứng từ mới</h2></div>
+            <div class="dropzone"><div class="icon-wrap"><svg class="icon" width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg></div><h3>Kéo thả tệp vào đây</h3><p>Hỗ trợ PDF, JPG, PNG — tối đa 10MB</p><button class="btn-outline" onclick="switchBizPage('biz-upload')">Chọn tệp</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- biz-records ---- -->
+      <div class="page" id="biz-records">
+        <div class="topbar"><div><h1>Hồ sơ giải ngân</h1><p class="sub">Toàn bộ hồ sơ đã nộp — bấm vào một hồ sơ để xem chi tiết tiến trình.</p></div></div>
+        <div class="card">
+          <div class="search-row">
+            <div class="search-input"><svg class="icon" width="15" height="15" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg><input id="recSearch" oninput="filterTable('recSearch','recBody')" placeholder="Tìm theo mã hồ sơ..."></div>
+            <div class="chip-row" id="recChips">
+              <button class="chip active" data-status="all" onclick="filterChip(this,'recChips','recBody')">Tất cả</button>
+              <button class="chip" data-status="Đang xử lý" onclick="filterChip(this,'recChips','recBody')">Đang xử lý</button>
+              <button class="chip" data-status="Cần bổ sung" onclick="filterChip(this,'recChips','recBody')">Cần bổ sung</button>
+              <button class="chip" data-status="Hoàn tất" onclick="filterChip(this,'recChips','recBody')">Hoàn tất</button>
+            </div>
+          </div>
+          <table><thead><tr><th>Mã hồ sơ</th><th>Loại</th><th>Giá trị</th><th>Ngày nộp</th><th>Trạng thái</th><th></th></tr></thead>
+            <tbody id="recBody">
+              <tr data-status="Đang xử lý" onclick="openModal('recordDetail')"><td class="mono">HD-2026-0091</td><td>Vay vốn lưu động</td><td>1.8 tỷ</td><td>28/06/2026</td><td><span class="pill amber"><span class="d"></span>Đang xử lý</span></td><td><button class="mini-btn">Chi tiết</button></td></tr>
+              <tr data-status="Cần bổ sung" onclick="openModal('recordDetail')"><td class="mono">HD-2026-0088</td><td>Tín dụng thương mại</td><td>950 triệu</td><td>22/06/2026</td><td><span class="pill red"><span class="d"></span>Cần bổ sung</span></td><td><button class="mini-btn">Chi tiết</button></td></tr>
+              <tr data-status="Đang xử lý" onclick="openModal('recordDetail')"><td class="mono">HD-2026-0079</td><td>Vay đầu tư TSCĐ</td><td>3.1 tỷ</td><td>18/06/2026</td><td><span class="pill amber"><span class="d"></span>Đang xử lý</span></td><td><button class="mini-btn">Chi tiết</button></td></tr>
+              <tr data-status="Hoàn tất" onclick="openModal('recordDetail')"><td class="mono">HD-2026-0075</td><td>Vay vốn lưu động</td><td>4.2 tỷ</td><td>10/06/2026</td><td><span class="pill green"><span class="d"></span>Hoàn tất</span></td><td><button class="mini-btn">Chi tiết</button></td></tr>
+              <tr data-status="Hoàn tất" onclick="openModal('recordDetail')"><td class="mono">HD-2026-0061</td><td>Tín dụng thương mại</td><td>620 triệu</td><td>02/06/2026</td><td><span class="pill green"><span class="d"></span>Hoàn tất</span></td><td><button class="mini-btn">Chi tiết</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---- biz-upload ---- -->
+      <div class="page" id="biz-upload">
+        <div class="topbar"><div><h1>Tải chứng từ</h1><p class="sub">Kéo thả hoặc chọn tệp — hệ thống tự động quét OCR và đối chiếu ngay khi tải lên.</p></div></div>
+        <div class="card">
+          <div class="dropzone" id="dz" ondrop="handleDrop(event)" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
+            <div class="icon-wrap"><svg class="icon" width="20" height="20" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg></div>
+            <h3>Kéo thả tệp vào đây</h3><p>Hỗ trợ PDF, JPG, PNG — tối đa 10MB mỗi tệp</p>
+            <button class="btn-outline" onclick="document.getElementById('fileInput').click()">Chọn tệp</button>
+            <input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this.files)">
+          </div>
+          <div id="uploadList"></div>
+        </div>
+      </div>
+
+      <!-- ---- biz-history ---- -->
+      <div class="page" id="biz-history">
+        <div class="topbar"><div><h1>Lịch sử giao dịch</h1><p class="sub">Toàn bộ giao dịch giải ngân đã hoàn tất.</p></div>
+          <div class="top-actions"><button class="mini-btn" onclick="showToast('Đang xuất file Excel (mô phỏng)...','success')">Xuất Excel</button></div>
+        </div>
+        <div class="card">
+          <div class="search-row">
+            <div class="search-input"><svg class="icon" width="15" height="15" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg><input id="histSearch" oninput="filterTable('histSearch','histBody')" placeholder="Tìm theo mã giao dịch..."></div>
+            <input type="date" class="chip" style="padding:8px 12px;">
+            <input type="date" class="chip" style="padding:8px 12px;">
+          </div>
+          <table><thead><tr><th>Mã giao dịch</th><th>Hồ sơ</th><th>Số tiền</th><th>Ngày giải ngân</th><th>Trạng thái</th></tr></thead>
+            <tbody id="histBody">
+              <tr><td class="mono">GD-88231</td><td>HD-2026-0075</td><td>4.2 tỷ</td><td>12/06/2026</td><td><span class="pill green"><span class="d"></span>Thành công</span></td></tr>
+              <tr><td class="mono">GD-88117</td><td>HD-2026-0061</td><td>620 triệu</td><td>04/06/2026</td><td><span class="pill green"><span class="d"></span>Thành công</span></td></tr>
+              <tr><td class="mono">GD-87990</td><td>HD-2026-0042</td><td>1.1 tỷ</td><td>28/05/2026</td><td><span class="pill green"><span class="d"></span>Thành công</span></td></tr>
+              <tr><td class="mono">GD-87850</td><td>HD-2026-0030</td><td>2.4 tỷ</td><td>15/05/2026</td><td><span class="pill slate"><span class="d"></span>Đã huỷ</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---- biz-support ---- -->
+      <div class="page" id="biz-support">
+        <div class="topbar"><div><h1>Hỗ trợ</h1><p class="sub">Câu hỏi thường gặp và kênh liên hệ với bộ phận hỗ trợ doanh nghiệp.</p></div></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head"><h2>Câu hỏi thường gặp</h2></div>
+            <div id="faqList">
+              <div class="acc-item"><div class="acc-head" onclick="toggleAcc(this)">Chứng từ bị từ chối thì phải làm gì? <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div><div class="acc-body"><p>Vào mục "Tải chứng từ", tải lại bản scan rõ nét thay thế cho tệp bị đánh dấu. Hệ thống sẽ đối chiếu lại tự động trong vòng vài phút.</p></div></div>
+              <div class="acc-item"><div class="acc-head" onclick="toggleAcc(this)">Thời gian thẩm định trung bình là bao lâu? <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div><div class="acc-body"><p>Từ 1–3 ngày làm việc tuỳ khối lượng chứng từ và mức độ rủi ro được hệ thống đánh giá.</p></div></div>
+              <div class="acc-item"><div class="acc-head" onclick="toggleAcc(this)">Làm sao để xem lại hồ sơ đã giải ngân? <svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div><div class="acc-body"><p>Vào mục "Lịch sử giao dịch" để xem toàn bộ giao dịch đã hoàn tất, có thể lọc theo ngày và xuất Excel.</p></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Gửi yêu cầu hỗ trợ</h2></div>
+            <form id="supportForm" onsubmit="return handleSupport(event)" novalidate>
+              <div class="form-grid">
+                <div class="field"><label>Họ tên</label><input type="text" id="sp-name" placeholder="Nguyễn Văn A"></div>
+                <div class="field"><label>Email</label><input type="text" id="sp-email" placeholder="ten@congty.com.vn"></div>
+              </div>
+              <div class="field"><label>Chủ đề</label><input type="text" id="sp-subject" placeholder="Vd: Không tải được chứng từ"></div>
+              <div class="field"><label>Nội dung</label><textarea id="sp-msg" placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."></textarea></div>
+              <button class="btn-primary" type="submit">Gửi yêu cầu</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>

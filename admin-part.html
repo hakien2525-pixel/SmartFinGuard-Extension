@@ -1,0 +1,184 @@
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-brand"><div class="brand-mark"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" stroke="#0B2545"><path d="M12 2 20 5.5v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6L12 2Z"/></svg></div><b>SmartFin-Guard</b></div>
+      <div class="side-role">Không gian Nhân viên Ngân hàng</div>
+      <div class="nav-group" id="admin-nav">
+        <a class="nav-item" data-page="admin-overview"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Tổng quan</a>
+        <a class="nav-item active" data-page="admin-queue"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11H3v9h6z"/><path d="M21 4h-6v16h6z"/><path d="M15 8h-6v3h6z"/></svg>Hàng đợi thẩm định<span class="badge-count" id="queueBadge">9</span></a>
+        <a class="nav-item" data-page="admin-alerts"><svg class="icon" viewBox="0 0 24 24"><path d="M10.3 3.9 2.6 18a1.7 1.7 0 0 0 1.5 2.6h15.8a1.7 1.7 0 0 0 1.5-2.6L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Cảnh báo gian lận<span class="badge-count">3</span></a>
+        <a class="nav-item" data-page="admin-directory"><svg class="icon" viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-8h6v8"/></svg>Danh sách doanh nghiệp</a>
+        <a class="nav-item" data-page="admin-reports"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-4 4"/></svg>Báo cáo &amp; thống kê</a>
+      </div>
+      <div class="side-spacer"></div>
+      <a class="nav-item" onclick="goTo('view-login')"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Đăng xuất</a>
+      <div class="side-user"><div class="avatar">NV</div><div class="who"><b>Nguyễn Văn Hùng</b><span>Chuyên viên thẩm định</span></div></div>
+    </aside>
+
+    <main class="main">
+      <!-- ---- admin-overview ---- -->
+      <div class="page" id="admin-overview">
+        <div class="topbar"><div><h1>Tổng quan hoạt động</h1><p class="sub">Số liệu thẩm định và phân bổ rủi ro toàn hệ thống.</p></div></div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--sky-100); color:var(--blue-700)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M9 11H3v9h6z"/><path d="M21 4h-6v16h6z"/></svg></div><div class="num">9</div><div class="lbl">Hồ sơ chờ xử lý</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--red-100); color:var(--red-600)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M10.3 3.9 2.6 18a1.7 1.7 0 0 0 1.5 2.6h15.8a1.7 1.7 0 0 0 1.5-2.6L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/></svg></div><div class="num">3</div><div class="lbl">Rủi ro cao — cần rà soát gấp</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--green-100); color:var(--green-600)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><div class="num">128</div><div class="lbl">Đã duyệt trong tháng</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--sky-100); color:var(--blue-700)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div class="num">6.4 phút</div><div class="lbl">Thời gian xử lý TB / hồ sơ</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-head"><h2>Hồ sơ duyệt theo tuần</h2></div>
+            <div class="bar-chart">
+              <div class="bar-col"><div class="bar-pair"><div class="bar" style="height:70%"></div><div class="bar rej" style="height:14%"></div></div><div class="lbl">T1</div></div>
+              <div class="bar-col"><div class="bar-pair"><div class="bar" style="height:85%"></div><div class="bar rej" style="height:10%"></div></div><div class="lbl">T2</div></div>
+              <div class="bar-col"><div class="bar-pair"><div class="bar" style="height:60%"></div><div class="bar rej" style="height:22%"></div></div><div class="lbl">T3</div></div>
+              <div class="bar-col"><div class="bar-pair"><div class="bar" style="height:95%"></div><div class="bar rej" style="height:8%"></div></div><div class="lbl">T4</div></div>
+              <div class="bar-col"><div class="bar-pair"><div class="bar" style="height:78%"></div><div class="bar rej" style="height:16%"></div></div><div class="lbl">T5</div></div>
+            </div>
+            <div class="legend"><span><span class="sw" style="background:var(--blue-600)"></span>Đã duyệt</span><span><span class="sw" style="background:var(--red-100)"></span>Từ chối</span></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Phân bổ mức rủi ro</h2></div>
+            <div class="risk-ring" style="margin-bottom:14px;">
+              <div class="ring" style="background:conic-gradient(var(--red-600) 0% 18%, var(--amber-600) 18% 42%, var(--green-600) 42% 100%)"><div style="width:48px;height:48px;border-radius:50%;background:var(--white);"></div></div>
+              <div style="font-size:12.5px; color:var(--slate-600); line-height:1.7;">
+                <div><span class="pill red" style="padding:0"><span class="d"></span></span> Cao — 18%</div>
+                <div><span class="pill amber" style="padding:0"><span class="d"></span></span> Trung bình — 24%</div>
+                <div><span class="pill green" style="padding:0"><span class="d"></span></span> Thấp — 58%</div>
+              </div>
+            </div>
+            <div class="notice" style="margin:0;"><svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg><div><b>3 hồ sơ rủi ro cao cần rà soát trong hôm nay</b><p>Xem chi tiết tại mục Cảnh báo gian lận.</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- admin-queue ---- -->
+      <div class="page active" id="admin-queue">
+        <div class="topbar">
+          <div><h1>Hàng đợi thẩm định chứng từ</h1><p class="sub">Xếp hạng theo mức độ rủi ro — ưu tiên xử lý hồ sơ có cảnh báo cao trước.</p></div>
+          <div class="top-actions">
+            <button class="icon-btn" onclick="toggleNotif('admin')"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot-alert"></span>
+              <div class="notif-panel" id="notif-admin">
+                <div class="nh">Thông báo</div>
+                <div class="notif-item"><b>Hồ sơ HD-2026-0091 điểm rủi ro tăng lên 78</b>Phát hiện trùng số hoá đơn.<br><span>2 phút trước</span></div>
+                <div class="notif-item"><b>9 hồ sơ mới vào hàng đợi</b>Cần thẩm định trong ngày.<br><span>1 giờ trước</span></div>
+              </div>
+            </button>
+            <button class="mini-btn" style="padding:9px 16px" onclick="showToast('Đang xuất báo cáo (mô phỏng)...','success')">Xuất báo cáo</button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--sky-100); color:var(--blue-700)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M9 11H3v9h6z"/><path d="M21 4h-6v16h6z"/></svg></div><div class="num" id="statQueue">9</div><div class="lbl">Hồ sơ chờ xử lý</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--red-100); color:var(--red-600)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M10.3 3.9 2.6 18a1.7 1.7 0 0 0 1.5 2.6h15.8a1.7 1.7 0 0 0 1.5-2.6L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/></svg></div><div class="num">3</div><div class="lbl">Rủi ro cao — cần rà soát gấp</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--green-100); color:var(--green-600)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><div class="num" id="statApproved">128</div><div class="lbl">Đã duyệt trong tháng</div></div>
+          <div class="stat-card"><div class="icon-wrap" style="background:var(--sky-100); color:var(--blue-700)"><svg class="icon" width="17" height="17" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div class="num">6.4 phút</div><div class="lbl">Thời gian xử lý TB / hồ sơ</div></div>
+        </div>
+
+        <div class="two-col" style="grid-template-columns:1fr 1.3fr;">
+          <div class="card">
+            <div class="card-head"><h2 id="riskRecordTitle">Hồ sơ #HD-2026-0091</h2><span class="pill red" id="riskPill"><span class="d"></span>Rủi ro cao</span></div>
+            <div class="risk-ring">
+              <div class="ring" id="riskRing" style="background:conic-gradient(var(--red-600) 0% 78%, var(--slate-100) 78% 100%)">
+                <div style="width:48px; height:48px; border-radius:50%; background:var(--white); display:flex; flex-direction:column; align-items:center; justify-content:center;"><b id="riskScore" style="color:var(--red-600)">78</b><span style="color:var(--slate-400)">/100</span></div>
+              </div>
+              <div><div style="font-size:13px; font-weight:600;">Điểm rủi ro tổng hợp</div><div style="font-size:12px; color:var(--slate-600); margin-top:2px;">Dựa trên đối chiếu chữ ký, con dấu và dữ liệu liên ngân hàng</div></div>
+            </div>
+            <div class="flag-list">
+              <div class="flag-item" onclick="openModal('flagDetail')"><svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M10.3 3.9 2.6 18a1.7 1.7 0 0 0 1.5 2.6h15.8a1.7 1.7 0 0 0 1.5-2.6L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><div><b>Con dấu không khớp mẫu lưu</b><p>Con dấu trên hoá đơn #1187 lệch 6% so với mẫu đăng ký của doanh nghiệp.</p></div></div>
+              <div class="flag-item" onclick="openModal('flagDetail')"><svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M10.3 3.9 2.6 18a1.7 1.7 0 0 0 1.5 2.6h15.8a1.7 1.7 0 0 0 1.5-2.6L13.7 3.9a1.7 1.7 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><div><b>Trùng số hoá đơn với hồ sơ khác</b><p>Số hoá đơn VAT-1187 đã xuất hiện trong hồ sơ HD-2026-0044 nộp trước đó 14 ngày.</p></div></div>
+              <div class="flag-item ok"><svg class="icon" width="16" height="16" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><div><b>Thông tin doanh nghiệp hợp lệ</b><p>Mã số thuế và giấy phép kinh doanh khớp với cơ sở dữ liệu quốc gia.</p></div></div>
+            </div>
+            <div class="row-actions" style="margin-top:18px;">
+              <button class="mini-btn blue" style="flex:1; padding:10px;" onclick="approveRecord()">Duyệt hồ sơ</button>
+              <button class="mini-btn ghost-red" style="flex:1; padding:10px;" onclick="openModal('rejectModal')">Từ chối</button>
+              <button class="mini-btn" style="flex:1; padding:10px;" onclick="requestMore()">Yêu cầu bổ sung</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Xem chứng từ — Hoá đơn VAT #1187</h2><div class="row-actions"><button class="mini-btn" onclick="showToast('Đã phóng to tài liệu (mô phỏng)','success')">Phóng to</button><button class="mini-btn" onclick="showToast('Đang mở bản gốc (mô phỏng)','success')">Bản gốc</button></div></div>
+            <div class="doc-viewer"><svg class="icon" width="34" height="34" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg><span style="font-size:12.5px;">Xem trước tài liệu — invoice_1187_scan.pdf</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Danh sách hồ sơ trong hàng đợi</h2>
+            <div class="chip-row" id="queueChips">
+              <button class="chip active" data-status="all" onclick="filterChip(this,'queueChips','queueBody')">Tất cả</button>
+              <button class="chip" data-status="red" onclick="filterChip(this,'queueChips','queueBody')">Rủi ro cao</button>
+              <button class="chip" data-status="amber" onclick="filterChip(this,'queueChips','queueBody')">Trung bình</button>
+              <button class="chip" data-status="green" onclick="filterChip(this,'queueChips','queueBody')">Thấp</button>
+            </div>
+          </div>
+          <table><thead><tr><th>Mã hồ sơ</th><th>Doanh nghiệp</th><th>Loại chứng từ</th><th>Điểm rủi ro</th><th>Trạng thái</th><th></th></tr></thead>
+            <tbody id="queueBody">
+              <tr data-status="red" id="row-0091"><td class="mono">HD-2026-0091</td><td>Công ty TNHH Phúc An</td><td>Hoá đơn VAT</td><td><span class="pill red"><span class="d"></span>78 / 100</span></td><td><span class="pill red">Cần rà soát</span></td><td><button class="mini-btn blue">Mở</button></td></tr>
+              <tr data-status="amber"><td class="mono">HD-2026-0088</td><td>Công ty CP Đại Phát</td><td>Biên bản giao hàng</td><td><span class="pill amber"><span class="d"></span>44 / 100</span></td><td><span class="pill amber">Đang đối chiếu</span></td><td><button class="mini-btn">Mở</button></td></tr>
+              <tr data-status="green"><td class="mono">HD-2026-0079</td><td>Công ty TNHH Minh Khang</td><td>Hợp đồng mua bán</td><td><span class="pill green"><span class="d"></span>12 / 100</span></td><td><span class="pill green">Sẵn sàng duyệt</span></td><td><button class="mini-btn">Mở</button></td></tr>
+              <tr data-status="green"><td class="mono">HD-2026-0075</td><td>Công ty CP Sông Hồng</td><td>Sao kê tài khoản</td><td><span class="pill green"><span class="d"></span>8 / 100</span></td><td><span class="pill slate">Đã duyệt</span></td><td><button class="mini-btn">Xem</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---- admin-alerts ---- -->
+      <div class="page" id="admin-alerts">
+        <div class="topbar"><div><h1>Cảnh báo gian lận</h1><p class="sub">Toàn bộ bất thường được phát hiện trên các hồ sơ đang xử lý.</p></div></div>
+        <div class="card">
+          <div class="search-row">
+            <div class="search-input"><svg class="icon" width="15" height="15" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg><input id="alertSearch" oninput="filterTable('alertSearch','alertBody')" placeholder="Tìm theo mã hồ sơ hoặc doanh nghiệp..."></div>
+            <div class="chip-row" id="alertChips">
+              <button class="chip active" data-status="all" onclick="filterChip(this,'alertChips','alertBody')">Tất cả</button>
+              <button class="chip" data-status="Cao" onclick="filterChip(this,'alertChips','alertBody')">Cao</button>
+              <button class="chip" data-status="Trung bình" onclick="filterChip(this,'alertChips','alertBody')">Trung bình</button>
+            </div>
+          </div>
+          <table><thead><tr><th>Mã hồ sơ</th><th>Doanh nghiệp</th><th>Loại cảnh báo</th><th>Mức độ</th><th></th></tr></thead>
+            <tbody id="alertBody">
+              <tr data-status="Cao" onclick="openModal('flagDetail')"><td class="mono">HD-2026-0091</td><td>Công ty TNHH Phúc An</td><td>Con dấu không khớp mẫu lưu</td><td><span class="pill red"><span class="d"></span>Cao</span></td><td><button class="mini-btn">Xem</button></td></tr>
+              <tr data-status="Cao" onclick="openModal('flagDetail')"><td class="mono">HD-2026-0091</td><td>Công ty TNHH Phúc An</td><td>Trùng số hoá đơn</td><td><span class="pill red"><span class="d"></span>Cao</span></td><td><button class="mini-btn">Xem</button></td></tr>
+              <tr data-status="Trung bình" onclick="openModal('flagDetail')"><td class="mono">HD-2026-0088</td><td>Công ty CP Đại Phát</td><td>Chữ ký nghiêng bất thường</td><td><span class="pill amber"><span class="d"></span>Trung bình</span></td><td><button class="mini-btn">Xem</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---- admin-directory ---- -->
+      <div class="page" id="admin-directory">
+        <div class="topbar"><div><h1>Danh sách doanh nghiệp</h1><p class="sub">Hồ sơ pháp lý và lịch sử tín dụng của các doanh nghiệp đang giao dịch.</p></div></div>
+        <div class="card">
+          <div class="search-row"><div class="search-input"><svg class="icon" width="15" height="15" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg><input id="dirSearch" oninput="filterTable('dirSearch','dirBody')" placeholder="Tìm theo tên doanh nghiệp hoặc MST..."></div></div>
+          <table><thead><tr><th>Doanh nghiệp</th><th>Mã số thuế</th><th>Số hồ sơ</th><th>Điểm rủi ro TB</th><th></th></tr></thead>
+            <tbody id="dirBody">
+              <tr onclick="openModal('bizProfile')"><td class="doc-name">Công ty TNHH Phúc An</td><td class="mono">0312 456 789</td><td>7</td><td><span class="pill red"><span class="d"></span>Cao</span></td><td><button class="mini-btn">Hồ sơ</button></td></tr>
+              <tr onclick="openModal('bizProfile')"><td class="doc-name">Công ty CP Đại Phát</td><td class="mono">0301 998 221</td><td>4</td><td><span class="pill amber"><span class="d"></span>Trung bình</span></td><td><button class="mini-btn">Hồ sơ</button></td></tr>
+              <tr onclick="openModal('bizProfile')"><td class="doc-name">Công ty TNHH Minh Khang</td><td class="mono">0309 112 004</td><td>11</td><td><span class="pill green"><span class="d"></span>Thấp</span></td><td><button class="mini-btn">Hồ sơ</button></td></tr>
+              <tr onclick="openModal('bizProfile')"><td class="doc-name">Công ty CP Sông Hồng</td><td class="mono">0318 774 552</td><td>15</td><td><span class="pill green"><span class="d"></span>Thấp</span></td><td><button class="mini-btn">Hồ sơ</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---- admin-reports ---- -->
+      <div class="page" id="admin-reports">
+        <div class="topbar"><div><h1>Báo cáo &amp; thống kê</h1><p class="sub">Tổng hợp hiệu suất thẩm định trong quý hiện tại.</p></div>
+          <div class="top-actions"><button class="mini-btn blue" style="padding:9px 16px" onclick="showToast('Đang tạo báo cáo PDF (mô phỏng)...','success')">Tạo báo cáo PDF</button></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="num">312</div><div class="lbl">Tổng hồ sơ đã xử lý (quý)</div></div>
+          <div class="stat-card"><div class="num">27</div><div class="lbl">Hồ sơ gian lận bị chặn</div></div>
+          <div class="stat-card"><div class="num">92%</div><div class="lbl">Tỷ lệ duyệt đúng hạn</div></div>
+          <div class="stat-card"><div class="num">18.6 tỷ</div><div class="lbl">Giá trị rủi ro đã ngăn chặn</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Xu hướng hồ sơ theo tháng</h2></div>
+          <svg viewBox="0 0 560 180" style="width:100%; height:180px;">
+            <polyline points="10,140 100,110 190,120 280,70 370,90 460,40 550,55" fill="none" stroke="#1D4ED8" stroke-width="2.5"/>
+            <g fill="#1D4ED8"><circle cx="10" cy="140" r="3"/><circle cx="100" cy="110" r="3"/><circle cx="190" cy="120" r="3"/><circle cx="280" cy="70" r="3"/><circle cx="370" cy="90" r="3"/><circle cx="460" cy="40" r="3"/><circle cx="550" cy="55" r="3"/></g>
+          </svg>
+          <div class="legend"><span><span class="sw" style="background:var(--blue-600)"></span>Số hồ sơ duyệt thành công theo tháng</span></div>
+        </div>
+      </div>
+    </main>
+  </div>

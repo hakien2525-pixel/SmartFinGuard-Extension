@@ -1,23 +1,33 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PersonIcon from '@mui/icons-material/Person';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import LockIcon from '@mui/icons-material/Lock';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import SecurityIcon from '@mui/icons-material/Security';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import WarningIcon from '@mui/icons-material/Warning';
+import { CircularProgress } from '@mui/material';
 
 const LoginView = () => {
+  const [method, setMethod] = useState<'pass' | 'ekyc'>('pass');
+  const [role, setRole] = useState<'business' | 'admin'>('business');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [role, setRole] = useState<'admin' | 'sme'>('admin');
+
+  // eKYC States & Camera References
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'success' | 'failed'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      if (role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/sme/portal'); // Redirect to real /sme/portal
+      }
+    }, 1000);
+  };
 
   const startFaceScan = async () => {
     setScanStatus('scanning');
@@ -38,10 +48,10 @@ const LoginView = () => {
       return;
     }
 
-    // Capture photo after 3s
+    // Capture photo after 3 seconds of scanning animation
     setTimeout(async () => {
       let base64Image = "";
-      if (activeStream && videoRef.current) {
+      if (videoRef.current) {
         try {
           const video = videoRef.current;
           const canvas = document.createElement('canvas');
@@ -57,6 +67,7 @@ const LoginView = () => {
         }
       }
 
+      // Stop webcam stream immediately
       if (activeStream) {
         activeStream.getTracks().forEach(track => track.stop());
       }
@@ -68,7 +79,7 @@ const LoginView = () => {
         return;
       }
 
-      // Call Backend API
+      // Send to real backend endpoint
       try {
         const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
         const res = await fetch(`${baseURL}/api/ekyc`, {
@@ -95,182 +106,210 @@ const LoginView = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#eef2fc] p-4 font-sans text-gray-800">
-      <div className="flex bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-full max-w-[1000px] overflow-hidden min-h-[640px]">
-        
-        {/* LEFT SIDE: LOGIN FORM */}
-        <div className="w-1/2 p-12 flex flex-col justify-center">
-          
-          {/* Logo */}
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-[#0d2a63] rounded-md flex items-center justify-center text-white">
-              <SecurityIcon fontSize="small" />
-            </div>
-            <h1 className="font-bold text-xl text-[#0d2a63]">SmartFinGuard</h1>
+    <div className="login-wrap">
+      <div className="login-brand">
+        <svg className="chain-motif" viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="white" strokeWidth="1" fill="none" opacity="0.5">
+            <path d="M-20 120 L520 220" /><path d="M-20 340 L520 260" /><path d="M-20 520 L520 460" /><path d="M-20 620 L520 640" />
+            <circle cx="80" cy="150" r="3" fill="white" stroke="none"/><circle cx="260" cy="200" r="3" fill="white" stroke="none"/>
+            <circle cx="420" cy="240" r="3" fill="white" stroke="none"/><circle cx="120" cy="380" r="3" fill="white" stroke="none"/>
+            <circle cx="340" cy="300" r="3" fill="white" stroke="none"/><circle cx="200" cy="540" r="3" fill="white" stroke="none"/>
+            <circle cx="440" cy="480" r="3" fill="white" stroke="none"/>
+          </g>
+        </svg>
+        <div className="brand-top">
+          <div className="brand-mark">
+            <svg className="icon" width="20" height="20" viewBox="0 0 24 24">
+              <path d="M12 2 20 5.5v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6L12 2Z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
           </div>
+          <div className="brand-name">SmartFin-Guard<small>Digital Banking Security Layer</small></div>
+        </div>
+        <div className="brand-mid">
+          <h1>Một cổng đăng nhập.<br/>Ba vai trò. Một chuỗi<br/>xác thực chứng từ.</h1>
+          <p>Hệ thống tự động hoá thẩm định và chống gian lận chứng từ giải ngân, tích hợp trực tiếp trong luồng ngân hàng số — bảo vệ mọi giao dịch từ khâu nộp hồ sơ đến khi giải ngân.</p>
+          <div className="pipeline">
+            <div className="step"><div className="dot"></div><div className="label">Xác thực danh tính (Email / eKYC)</div></div>
+            <div className="line"></div>
+            <div className="step"><div className="dot"></div><div className="label">Phân luồng theo vai trò người dùng</div></div>
+            <div className="line"></div>
+            <div className="step"><div className="dot"></div><div className="label">Điều hướng vào không gian làm việc</div></div>
+          </div>
+        </div>
+        <div className="brand-bottom">
+          <div className="brand-stat"><b>99.8%</b><span>Uptime hệ thống</span></div>
+          <div className="brand-stat"><b>256-bit</b><span>Mã hoá đầu-cuối</span></div>
+          <div className="brand-stat"><b>&lt;3s</b><span>Thời gian xác thực</span></div>
+        </div>
+      </div>
 
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Đăng nhập</h2>
-          <p className="text-[15px] text-gray-500 mb-8">Truy cập hệ thống ngân hàng số thông minh</p>
+      <div className="login-form-panel">
+        <div className="login-card">
+          <h2>Đăng nhập hệ thống</h2>
+          <p className="sub">Nhập thông tin xác thực để tiếp tục. Vai trò của bạn sẽ được hệ thống tự động nhận diện.</p>
 
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            navigate(role === 'admin' ? '/admin/dashboard' : '/sme/portal');
-          }}>
-            
-            {/* Role Selection */}
-            <div className="mb-6">
-              <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Vai trò của bạn</label>
-              <div className="grid grid-cols-2 gap-4">
-                <button 
-                  type="button"
-                  onClick={() => setRole('admin')}
-                  className={`flex flex-col items-center justify-center py-4 rounded-[7px] border-2 transition-all ${
-                    role === 'admin' 
-                      ? 'border-[#4a72a8] bg-[#f8fbff] text-[#4a72a8]' 
-                      : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200'
-                  }`}
-                >
-                  <PersonIcon className="mb-1" />
-                  <span className="text-[15px] font-semibold">Nhân Viên</span>
-                </button>
-
-                <button 
-                  type="button"
-                  onClick={() => setRole('sme')}
-                  className={`flex flex-col items-center justify-center py-4 rounded-[7px] border-2 transition-all ${
-                    role === 'sme' 
-                      ? 'border-[#4a72a8] bg-[#f8fbff] text-[#4a72a8]' 
-                      : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200'
-                  }`}
-                >
-                  <BusinessCenterIcon className="mb-1" />
-                  <span className="text-[15px] font-semibold">Doanh Nghiệp SME</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Inputs */}
-            <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Tên đăng nhập / Email</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                  <PersonIcon fontSize="small" />
-                </div>
-                <input 
-                  type="text" 
-                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-[15px] focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
-                  placeholder="Nhập tên đăng nhập..."
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Mật khẩu</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                  <LockIcon fontSize="small" />
-                </div>
-                <input 
-                  type="password" 
-                  className="w-full pl-10 pr-4 py-3 bg-[#f8fafc] border border-gray-200 rounded-xl text-[15px] focus:outline-none focus:border-[#4a72a8] focus:bg-white transition-colors"
-                  placeholder="Nhập mật khẩu..."
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Remember & Forgot */}
-            <div className="flex items-center justify-between mb-8">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-[#4a72a8] focus:ring-[#4a72a8]" defaultChecked />
-                <span className="text-[15px] text-gray-600 font-medium">Ghi nhớ đăng nhập</span>
-              </label>
-              <a href="#" className="text-[15px] font-bold text-[#4a72a8] hover:underline">Quên mật khẩu?</a>
-            </div>
-
-            {/* Submit Button */}
-            <button 
-              type="submit"
-              className="w-full bg-[#4a72a8] text-white rounded-xl py-3.5 font-bold flex items-center justify-center gap-2 hover:bg-[#3d6091] transition-colors shadow-[0_4px_14px_rgba(74,114,168,0.3)]"
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+            <div 
+              onClick={() => setRole('business')} 
+              style={{ 
+                flex: 1, 
+                padding: '16px', 
+                border: role === 'business' ? '2px solid var(--blue-600)' : '1px solid var(--slate-200)', 
+                borderRadius: '12px', 
+                cursor: 'pointer',
+                backgroundColor: role === 'business' ? 'var(--blue-50)' : '#fff',
+                transition: 'all 0.2s'
+              }}
             >
-              Đăng nhập <ArrowForwardIcon fontSize="small" />
-            </button>
-
-          </form>
-        </div>
-
-        {/* RIGHT SIDE: eKYC */}
-        <div className="w-1/2 bg-[#f0f4fa] p-12 flex flex-col items-center relative overflow-hidden">
-          
-          <div className="mt-8 flex flex-col items-center z-10">
-            {/* VNPT eKYC Badge */}
-            <div className="bg-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-blue-50 text-[#0d2a63] font-bold text-xs uppercase tracking-wider mb-8">
-              <VerifiedUserIcon sx={{ fontSize: 14 }} className="text-blue-500" />
-              VNPT EKYC
+              <div style={{ fontWeight: 600, color: role === 'business' ? 'var(--blue-700)' : 'var(--slate-800)', marginBottom: '4px' }}>Doanh nghiệp</div>
+              <div style={{ fontSize: '13px', color: 'var(--slate-500)' }}>Dành cho khách hàng SME</div>
             </div>
+            <div 
+              onClick={() => setRole('admin')} 
+              style={{ 
+                flex: 1, 
+                padding: '16px', 
+                border: role === 'admin' ? '2px solid var(--blue-600)' : '1px solid var(--slate-200)', 
+                borderRadius: '12px', 
+                cursor: 'pointer',
+                backgroundColor: role === 'admin' ? 'var(--blue-50)' : '#fff',
+                transition: 'all 0.2s'
+              }}
+            >
+              <div style={{ fontWeight: 600, color: role === 'admin' ? 'var(--blue-700)' : 'var(--slate-800)', marginBottom: '4px' }}>Nhân viên Ngân hàng</div>
+              <div style={{ fontSize: '13px', color: 'var(--slate-500)' }}>Dành cho chuyên viên thẩm định</div>
+            </div>
+          </div>
 
-            <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Xác Thực Khuôn Mặt</h3>
-            <p className="text-[15px] text-gray-500 text-center max-w-[280px] leading-relaxed">
-              Đảm bảo ánh sáng tốt và nhìn thẳng vào camera để đăng nhập an toàn.
-            </p>
+          <div className="method-toggle">
+            <button className={method === 'pass' ? 'active' : ''} onClick={() => setMethod('pass')}>Email &amp; Mật khẩu</button>
+            <button className={method === 'ekyc' ? 'active' : ''} onClick={() => setMethod('ekyc')}>Sinh trắc học (eKYC)</button>
+          </div>
 
-            {/* Camera Circle */}
-            <div className="mt-12 relative">
-              {/* Outer decorative ring */}
-              <div className="absolute inset-0 bg-[#d0dcf2] rounded-full scale-110 opacity-50"></div>
-              
-              <div 
-                className="w-[280px] h-[280px] rounded-full bg-gradient-to-b from-[#d0dcf2] to-[#b8caeb] border-[6px] border-white shadow-[0_12px_30px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center relative z-10 overflow-hidden cursor-pointer"
-                onClick={scanStatus === 'idle' || scanStatus === 'failed' ? startFaceScan : undefined}
-                style={{ borderRadius: '50%' }}
-              >
-                {stream ? (
-                  <video 
-                    ref={videoRef}
-                    autoPlay 
-                    playsInline 
-                    className="w-full h-full object-cover transform -scale-x-100"
+          {method === 'pass' && (
+            <div>
+              <form onSubmit={handleLogin} noValidate>
+                <div className="field">
+                  <label>
+                    {role === 'business' ? 'Mã số doanh nghiệp (MST) hoặc Email' : 'Mã nhân viên hoặc Email'}
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder={role === 'business' ? 'MST hoặc ten@congty.com.vn' : 'NV0123 hoặc nv.ten@smartfin.vn'} 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)} 
                   />
-                ) : scanStatus === 'scanning' ? (
-                  <div className="flex flex-col items-center justify-center p-4">
-                    <AutorenewIcon className="animate-spin text-white mb-2" fontSize="large" />
-                    <span className="text-[15px] font-medium text-white">Đang quét khuôn mặt...</span>
-                  </div>
-                ) : scanStatus === 'success' ? (
-                  <div className="flex flex-col items-center justify-center p-4">
-                    <CheckCircleIcon className="text-green-500 mb-2" style={{ fontSize: 48 }} />
-                    <span className="text-[15px] font-bold text-white">Thành Công!</span>
-                  </div>
-                ) : scanStatus === 'failed' ? (
-                  <div className="flex flex-col items-center justify-center p-4 text-center">
-                    <WarningIcon className="text-red-500 mb-2" style={{ fontSize: 48 }} />
-                    <span className="text-[14px] font-bold text-white leading-tight mb-1">Thất bại</span>
-                    <span className="text-[12px] text-white/80">{errorMessage}</span>
-                    <span className="text-[11px] text-white/60 mt-2 hover:underline">Click để thử lại</span>
-                  </div>
-                ) : (
-                  <>
-                    <CameraAltIcon sx={{ fontSize: 48 }} className="text-white/60 mb-3" />
-                    <span className="text-[15px] font-medium text-[#7a95c4]">Click để quét khuôn mặt</span>
-                  </>
-                )}
-                
-                {scanStatus === 'scanning' && (
-                  <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#4a72a8] to-transparent top-0 animate-[scan_2s_infinite_ease-in-out]"></div>
+                </div>
+                <div className="field">
+                  <label>Mật khẩu</label>
+                  <input type="password" placeholder="••••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+                </div>
+                <div className="row-between">
+                  <label className="checkbox-row"><input type="checkbox" /> Ghi nhớ đăng nhập</label>
+                  <span className="link-blue" onClick={() => alert('Đã gửi liên kết đặt lại mật khẩu tới email.')}>Quên mật khẩu?</span>
+                </div>
+                <button className="btn-primary" type="submit" disabled={loading}>
+                  <span className="spinner" style={{ display: loading ? 'block' : 'none' }}></span>
+                  <span>{loading ? 'Đang xác thực...' : 'Đăng nhập'}</span>
+                </button>
+              </form>
+              <div className="divider">hoặc</div>
+              <button className="btn-outline" style={{ width: '100%' }} onClick={() => setMethod('ekyc')}>
+                Xác thực bằng khuôn mặt (eKYC)
+              </button>
+            </div>
+          )}
+
+          {method === 'ekyc' && (
+            <div>
+              <div className="ekyc-box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px 0' }}>
+                <div 
+                  className={`ekyc-frame ${scanStatus === 'scanning' ? 'scanning' : ''}`}
+                  style={{
+                    width: '220px',
+                    height: '220px',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    backgroundColor: '#0b172a',
+                    border: '4px solid #6345ed',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    marginBottom: '16px',
+                    boxShadow: '0 10px 25px rgba(99, 69, 237, 0.2)'
+                  }}
+                  onClick={scanStatus === 'idle' || scanStatus === 'failed' ? startFaceScan : undefined}
+                >
+                  {stream ? (
+                    <video 
+                      ref={videoRef}
+                      autoPlay 
+                      playsInline 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }}
+                    />
+                  ) : scanStatus === 'scanning' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#a78bfa' }}>
+                      <CircularProgress size={28} style={{ color: '#a78bfa', marginBottom: '10px' }} />
+                      <span style={{ fontSize: '13px', fontWeight: 600, color: 'white' }}>Đang phân tích FaceID...</span>
+                    </div>
+                  ) : scanStatus === 'success' ? (
+                    <div style={{ color: '#4ade80', fontSize: '14px', fontWeight: 700, textAlign: 'center' }}>
+                      ✔ XÁC THỰC THÀNH CÔNG
+                    </div>
+                  ) : scanStatus === 'failed' ? (
+                    <div style={{ color: '#ef4444', padding: '12px', fontSize: '12px', textAlign: 'center' }}>
+                      ✘ THẤT BẠI
+                      <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#9ca3af' }}>{errorMessage}</p>
+                      <p style={{ margin: '8px 0 0', fontSize: '10px', color: '#6345ed', textDecoration: 'underline' }}>Thử lại</p>
+                    </div>
+                  ) : (
+                    <div style={{ color: '#a78bfa', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.8">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                      </svg>
+                      <span style={{ fontSize: '12px', marginTop: '8px', fontWeight: 500, color: 'white' }}>Nhấp để bật camera</span>
+                    </div>
+                  )}
+                  {scanStatus === 'scanning' && (
+                    <div 
+                      className="scan-line"
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        right: 0,
+                        height: '2px',
+                        backgroundColor: '#6345ed',
+                        top: 0,
+                        animation: 'scan 2s infinite ease-in-out'
+                      }}
+                    />
+                  )}
+                </div>
+                <h3>{scanStatus === 'scanning' ? 'Đang phân tích...' : 'Sinh trắc học khuôn mặt'}</h3>
+                <p style={{ fontSize: '13px', color: 'var(--slate-500)', maxWidth: '300px', margin: '8px 0 16px' }}>
+                  {scanStatus === 'scanning' 
+                    ? 'Vui lòng giữ nguyên khuôn mặt trước camera...' 
+                    : 'Nhấp vào vòng tròn camera để đối sánh FaceID sinh trắc học thực tế với AI Core.'}
+                </p>
+                {!(scanStatus === 'scanning' || scanStatus === 'success') && (
+                  <button 
+                    className="btn-outline" 
+                    style={{ width: '100%' }}
+                    onClick={startFaceScan}
+                  >
+                    Bắt đầu quét eKYC
+                  </button>
                 )}
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Status Indicator */}
-          <div className="absolute bottom-12 bg-white px-4 py-2 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center gap-2 z-10">
-            <span className="w-2 h-2 rounded-full bg-green-500"></span>
-            <span className="text-sm font-bold text-gray-700">Hệ thống sẵn sàng</span>
-          </div>
-
+          <p className="foot-note" style={{ marginTop: '24px' }}>Bằng việc đăng nhập, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của SmartFin-Guard.<br/>Cần hỗ trợ? Liên hệ tổng đài <strong>1900 8888</strong></p>
         </div>
-
       </div>
       
       <style>{`

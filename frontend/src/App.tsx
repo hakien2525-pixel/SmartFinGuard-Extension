@@ -15,6 +15,7 @@ import HelpPage from './components/HelpPage';
 import DataAnalyticsView from './components/DataAnalyticsView';
 import AdminLayout from './components/AdminLayout';
 import SMELayout from './components/SMELayout';
+import SMEAnalyticsPage from './components/SMEAnalyticsPage';
 import type { DocumentRecord } from './mockData';
 import { Snackbar, Alert } from '@mui/material';
 
@@ -38,9 +39,10 @@ const AuditScreenWrapper = ({ documents }: { documents: DocumentRecord[] }) => {
 const AppContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const showAIAssistant = location.pathname === '/admin/dashboard' || location.pathname.startsWith('/audit-screen') || location.pathname === '/sme/portal';
+  const showAIAssistant = location.pathname !== '/login' && location.pathname !== '/';
 
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
+  const [selectedDoc, setSelectedDoc] = useState<DocumentRecord | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [toast, setToast] = useState<{open: boolean, message: string, severity: 'success' | 'error' | 'info'}>({open: false, message: '', severity: 'info'});
   const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -99,6 +101,11 @@ const AppContent = () => {
     fraud: documents.filter(d => ['Cảnh báo', 'Đã chặn'].includes(d.status)).length,
   };
 
+  const handleSelectDoc = (doc: any) => {
+    setSelectedDoc(doc);
+    navigate('/audit-screen/' + doc.id);
+  };
+
   return (
     <>
       <Routes>
@@ -108,6 +115,9 @@ const AppContent = () => {
         {/* SME Portal Area */}
         <Route path="/sme" element={<SMELayout />}>
           <Route path="portal" element={<SMEPortalView documents={documents} onUpload={handleUpload} />} />
+          <Route path="dashboard" element={<SMEPortalView documents={documents} onUpload={handleUpload} />} />
+          <Route path="records" element={<SMEPortalView documents={documents} onUpload={handleUpload} />} />
+          <Route path="upload" element={<SMEPortalView documents={documents} onUpload={handleUpload} />} />
           <Route path="history" element={<HistoryPage documents={documents} />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
@@ -120,11 +130,14 @@ const AppContent = () => {
               documents={documents} 
               onUpload={handleUpload}
               isScanning={isScanning}
-              onSelectDoc={(doc) => {
-                navigate('/audit-screen/' + doc.id);
-              }} 
+              onSelectDoc={handleSelectDoc} 
             />
           } />
+          <Route path="overview" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="queue" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="alerts" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="directory" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="reports" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="history" element={<HistoryPage documents={documents} />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="users" element={<UserManagementPage />} />
