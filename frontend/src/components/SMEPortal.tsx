@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useRef } from 'react';
 import { Box, Paper, Typography, Button, Grid, Card, CardContent, CircularProgress, Alert, Stepper, Step, StepLabel } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';

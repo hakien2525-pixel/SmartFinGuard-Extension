@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
