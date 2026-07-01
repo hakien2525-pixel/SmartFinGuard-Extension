@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 
 import LoginView from './components/LoginView';
@@ -26,35 +26,44 @@ const theme = createTheme({
   typography: { fontFamily: '"Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif' },
 });
 
-// App wrapper to use hooks like useLocation inside BrowserRouter
+// Wrapper to get selected document from route parameter
+const AuditScreenWrapper = ({ documents }: { documents: DocumentRecord[] }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const doc = documents.find(d => d.id === id);
+  if (!doc) return <Navigate to="/admin/dashboard" replace />;
+  return <DualPanelAuditScreen document={doc} onClose={() => navigate('/admin/dashboard')} />;
+};
+
 const AppContent = () => {
   const location = useLocation();
-  const showAIAssistant = location.pathname === '/admin/dashboard' || location.pathname === '/audit-screen' || location.pathname === '/sme-portal';
+  const navigate = useNavigate();
+  const showAIAssistant = location.pathname === '/admin/dashboard' || location.pathname.startsWith('/audit-screen') || location.pathname === '/sme/portal';
 
-  // Mock data fetching for AdminDashboard
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [toast, setToast] = useState<{open: boolean, message: string, severity: 'success' | 'error' | 'info'}>({open: false, message: '', severity: 'info'});
   const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const res = await fetch(`${baseURL}/api/documents`);
-        const data = await res.json();
-        if (data.status === 'success') {
-          setDocuments(data.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch documents", err);
+  const fetchDocuments = useCallback(async () => {
+    try {
+      const res = await fetch(`${baseURL}/api/documents`);
+      const data = await res.json();
+      if (data.status === 'success') {
+        setDocuments(data.data);
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch documents", err);
+    }
+  }, [baseURL]);
+
+  useEffect(() => {
     fetchDocuments();
     const interval = setInterval(fetchDocuments, 10000);
     return () => clearInterval(interval);
-  }, [baseURL]);
+  }, [fetchDocuments]);
 
-  const handleUpload = (file: File) => {
+  const handleUpload = async (file: File) => {
     setIsScanning(true);
     setToast({ open: true, message: 'Đang đẩy ảnh qua Lõi AI VNPT để phân tích...', severity: 'info' });
     
@@ -65,17 +74,14 @@ const AppContent = () => {
         const res = await fetch(`${baseURL}/api/scan`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ image: base64Image })
+          body: JSON.stringify({ image: base64Image, fileName: file.name })
         });
         const data = await res.json();
         if (data.status === 'success') {
           setToast({ open: true, message: 'Quét AI hoàn tất!', severity: 'success' });
-          // Fetch will happen automatically via interval or we can trigger it here:
-          const docRes = await fetch(`${baseURL}/api/documents`);
-          const docData = await docRes.json();
-          if (docData.status === 'success') setDocuments(docData.data);
+          fetchDocuments();
         } else {
-          setToast({ open: true, message: 'Phân tích thất bại!', severity: 'error' });
+          setToast({ open: true, message: 'Phân tích thất bại: ' + (data.message || 'Lỗi'), severity: 'error' });
         }
       } catch (err) {
         setToast({ open: true, message: 'Lỗi kết nối tới Backend', severity: 'error' });
@@ -101,7 +107,7 @@ const AppContent = () => {
         
         {/* SME Portal Area */}
         <Route path="/sme" element={<SMELayout />}>
-          <Route path="portal" element={<SMEPortalView onDocumentSubmit={handleUpload} />} />
+          <Route path="portal" element={<SMEPortalView documents={documents} onUpload={handleUpload} />} />
           <Route path="history" element={<HistoryPage documents={documents} />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
@@ -115,8 +121,7 @@ const AppContent = () => {
               onUpload={handleUpload}
               isScanning={isScanning}
               onSelectDoc={(doc) => {
-                // Redirect to audit screen (Simulated functionality)
-                window.location.href = '/audit-screen';
+                navigate('/audit-screen/' + doc.id);
               }} 
             />
           } />
@@ -127,13 +132,9 @@ const AppContent = () => {
           <Route path="help" element={<HelpPage />} />
         </Route>
         
-        {/* Audit Screen (Alias for DualPanelAuditScreen) */}
-        <Route path="/audit-screen" element={
-          <DualPanelAuditScreen 
-            document={documents[0] || {}} 
-            onClose={() => window.location.href = '/admin/dashboard'} 
-          />
-        } />
+        {/* Audit Screen Route with dynamic ID parameter */}
+        <Route path="/audit-screen/:id" element={<AuditScreenWrapper documents={documents} />} />
+        <Route path="/audit-screen" element={<Navigate to="/admin/dashboard" replace />} />
 
         {/* Data Analytics Screen */}
         <Route path="/data" element={<DataAnalyticsView />} />

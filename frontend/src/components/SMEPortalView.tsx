@@ -1,11 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import LockIcon from '@mui/icons-material/Lock';
-import HelpIcon from '@mui/icons-material/Help';
-import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -13,19 +8,37 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import ShieldIcon from '@mui/icons-material/Shield';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import SettingsIcon from '@mui/icons-material/Settings';
 import WarningIcon from '@mui/icons-material/Warning';
 import BlockIcon from '@mui/icons-material/Block';
 
-const SMEPortalView = ({ documents = [], onUpload }) => {
+interface DocumentRecord {
+  id: string;
+  company: string;
+  time: string;
+  amount: string;
+  status: string;
+}
+
+interface SMEPortalViewProps {
+  documents: DocumentRecord[];
+  onUpload: (file: File) => void;
+}
+
+const SMEPortalView = ({ documents = [], onUpload }: SMEPortalViewProps) => {
   const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0] && onUpload) {
       onUpload(e.target.files[0]);
     }
+  };
+
+  // Dynamic statistics from real PostgreSQL database
+  const stats = {
+    total: documents.length,
+    approved: documents.filter(d => ['Phê duyệt', 'Đã duyệt'].includes(d.status)).length,
+    pending: documents.filter(d => ['Đang phân tích', 'Đang xử lý', 'Chờ duyệt'].includes(d.status)).length,
+    blocked: documents.filter(d => ['Cảnh báo', 'Đã chặn'].includes(d.status)).length
   };
 
   return (
@@ -69,8 +82,8 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
               </div>
               <div className="flex flex-col overflow-hidden">
                 <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Tổng Số Hồ Sơ</p>
-                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">1,248</h4>
-                <p className="text-[11px] font-semibold text-[#0ea5e9] mt-0.5 whitespace-nowrap truncate">+5% hôm qua</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">{stats.total}</h4>
+                <p className="text-[11px] font-semibold text-[#0ea5e9] mt-0.5 whitespace-nowrap truncate">Hồ sơ trong hệ thống</p>
               </div>
             </div>
 
@@ -80,9 +93,9 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                 <CheckCircleIcon />
               </div>
               <div className="flex flex-col overflow-hidden">
-                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Tự Động Duyệt</p>
-                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">892</h4>
-                <p className="text-[11px] font-semibold text-[#22c55e] mt-0.5 whitespace-nowrap truncate">+12% tháng trước</p>
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Đã Phê Duyệt</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">{stats.approved}</h4>
+                <p className="text-[11px] font-semibold text-[#22c55e] mt-0.5 whitespace-nowrap truncate">Hồ sơ an toàn</p>
               </div>
             </div>
 
@@ -93,8 +106,8 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
               </div>
               <div className="flex flex-col overflow-hidden">
                 <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Hồ Sơ Chờ Duyệt</p>
-                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">315</h4>
-                <p className="text-[11px] font-semibold text-[#f59e0b] mt-0.5 whitespace-nowrap truncate">Cần xử lý gấp</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">{stats.pending}</h4>
+                <p className="text-[11px] font-semibold text-[#f59e0b] mt-0.5 whitespace-nowrap truncate">Đang xử lý phân tích</p>
               </div>
             </div>
 
@@ -104,9 +117,9 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                 <BlockIcon />
               </div>
               <div className="flex flex-col overflow-hidden">
-                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Gian Lận Bị Chặn</p>
-                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">41</h4>
-                <p className="text-[11px] font-semibold text-[#e66c54] mt-0.5 whitespace-nowrap truncate">-3% tháng trước</p>
+                <p className="text-[20px] text-gray-800 font-bold whitespace-nowrap truncate">Cảnh Báo Rủi Ro</p>
+                <h4 className="text-[24px] font-bold text-gray-900 leading-tight mt-1">{stats.blocked}</h4>
+                <p className="text-[11px] font-semibold text-[#e66c54] mt-0.5 whitespace-nowrap truncate">Phát hiện bất thường</p>
               </div>
             </div>
           </div>
@@ -119,7 +132,7 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
               {/* UPLOAD AREA */}
               <div 
                 className="bg-white rounded-lg p-10 flex flex-col items-center justify-center text-center shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 min-h-[320px] cursor-pointer hover:border-blue-200 transition-colors"
-                onClick={() => document.getElementById('smeUpload').click()}
+                onClick={() => document.getElementById('smeUpload')?.click()}
               >
                 <input 
                   id="smeUpload"
@@ -135,7 +148,7 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                 
                 <h4 className="text-xl font-bold text-gray-900 mb-3">Kéo & Thả Hóa Đơn (Hoặc Click)</h4>
                 <p className="text-[15px] text-gray-500 max-w-md mx-auto mb-8 leading-relaxed">
-                  Tải lên tệp PDF hoặc hình ảnh. Hệ thống sẽ tự động gửi tới bộ phận quản trị để xử lý.
+                  Tải lên tệp PDF hoặc hình ảnh hóa đơn. Hệ thống sẽ tự động sử dụng VNPT SmartReader để bóc tách thông tin.
                 </p>
                 
                 <button className="bg-[#0d2a63] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-[#0a204d] transition-colors shadow-md">
@@ -147,9 +160,9 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
               <div className="bg-white rounded-lg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
                 <div className="flex justify-between items-center mb-6">
                   <h4 className="text-lg font-bold text-gray-900">Lịch Sử Của Bạn</h4>
-                  <a href="#" className="text-sm font-bold text-[#0d2a63] flex items-center gap-1 hover:underline">
+                  <span className="text-sm font-bold text-[#0d2a63] flex items-center gap-1 hover:underline cursor-pointer" onClick={() => navigate('/sme/history')}>
                     Xem Tất Cả <ArrowForwardIcon fontSize="small" />
-                  </a>
+                  </span>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -163,34 +176,45 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                      <tr>
-                        <td className="py-4">
-                          <div className="flex items-center gap-2 text-[15px] font-bold text-[#0d2a63]">
-                            <DescriptionIcon fontSize="small" className="text-gray-400" /> APP-9821
-                          </div>
-                        </td>
-                        <td className="py-4 text-[15px] text-gray-500 whitespace-nowrap">24 Th10, 10:45 SA</td>
-                        <td className="py-4 text-[15px] font-bold text-gray-900 whitespace-nowrap">$4,520.00</td>
-                        <td className="py-4 text-right whitespace-nowrap">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f3efff] text-[#6345ed] text-xs font-bold border border-[#e5dfff] whitespace-nowrap">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#6345ed]"></span> Đang Phân Tích
-                          </span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-4">
-                          <div className="flex items-center gap-2 text-[15px] font-bold text-[#0d2a63]">
-                            <DescriptionIcon fontSize="small" className="text-gray-400" /> APP-9799
-                          </div>
-                        </td>
-                        <td className="py-4 text-[15px] text-gray-500 whitespace-nowrap">23 Th10, 08:30 SA</td>
-                        <td className="py-4 text-[15px] font-bold text-gray-900 whitespace-nowrap">$125.50</td>
-                        <td className="py-4 text-right whitespace-nowrap">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold border border-green-100 whitespace-nowrap">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Đã Duyệt
-                          </span>
-                        </td>
-                      </tr>
+                      {documents.length === 0 ? (
+                        <tr>
+                          <td colSpan={4} className="py-8 text-center text-gray-400 text-[15px]">
+                            Chưa có hồ sơ giải ngân nào được gửi.
+                          </td>
+                        </tr>
+                      ) : (
+                        documents.slice(0, 5).map((doc) => {
+                          let statusBg = "bg-yellow-50 text-yellow-600 border-yellow-100";
+                          let statusDot = "bg-yellow-500";
+                          if (doc.status === 'Đã duyệt' || doc.status === 'Phê duyệt') {
+                            statusBg = "bg-green-50 text-green-600 border-green-100";
+                            statusDot = "bg-green-500";
+                          } else if (doc.status === 'Cảnh báo' || doc.status === 'Đã chặn') {
+                            statusBg = "bg-red-50 text-red-600 border-red-100";
+                            statusDot = "bg-red-500";
+                          } else if (doc.status === 'Đang phân tích' || doc.status === 'Đang xử lý') {
+                            statusBg = "bg-blue-50 text-blue-600 border-blue-100";
+                            statusDot = "bg-blue-500";
+                          }
+
+                          return (
+                            <tr key={doc.id}>
+                              <td className="py-4">
+                                <div className="flex items-center gap-2 text-[15px] font-bold text-[#0d2a63]">
+                                  <DescriptionIcon fontSize="small" className="text-gray-400" /> {doc.id}
+                                </div>
+                              </td>
+                              <td className="py-4 text-[15px] text-gray-500 whitespace-nowrap">{doc.time}</td>
+                              <td className="py-4 text-[15px] font-bold text-gray-900 whitespace-nowrap">{doc.amount}</td>
+                              <td className="py-4 text-right whitespace-nowrap">
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${statusBg} whitespace-nowrap`}>
+                                  <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`}></span> {doc.status}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -249,7 +273,7 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Đã gửi tháng này</p>
-                  <h4 className="text-3xl font-bold text-gray-900">2</h4>
+                  <h4 className="text-3xl font-bold text-gray-900">{stats.total}</h4>
                 </div>
               </div>
 
@@ -285,14 +309,6 @@ const SMEPortalView = ({ documents = [], onUpload }) => {
           </div>
           
         </div>
-
-      {/* FAB - AI Assistant */}
-      <button 
-        className="fixed bottom-8 right-8 w-16 h-16 bg-[#6345ed] text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(99,69,237,0.4)] hover:scale-105 transition-transform z-[9999] border-2 border-white"
-        style={{ borderRadius: '50%' }}
-      >
-        <SupportAgentIcon sx={{ fontSize: 32 }} />
-      </button>
 
     </div>
   );

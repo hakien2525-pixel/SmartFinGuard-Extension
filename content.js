@@ -148,6 +148,7 @@
 
     <!-- FAB -->
     <button id="smartfin-fab">🔍 Quét Gian Lận (SmartFin)</button>
+    <input type="file" id="smartfin-file-input" accept="image/*,application/pdf" style="display:none;" />
 
     <!-- Dashboard Overlay -->
     <div id="smartfin-dashboard">
@@ -162,17 +163,25 @@
 
   // 2. Logic & Interaction
   const fab = document.getElementById('smartfin-fab');
+  const fileInput = document.getElementById('smartfin-file-input');
   const dashboard = document.getElementById('smartfin-dashboard');
   const closeBtn = document.getElementById('sfg-close-btn');
   const contentArea = document.getElementById('sfg-content');
 
-  // Open Dashboard & trigger scan
+  // Bấm nút FAB -> mở hộp thoại chọn file hóa đơn thật
   fab.addEventListener('click', () => {
-    // Show panel
+    fileInput.value = '';
+    fileInput.click();
+  });
+
+  // Sau khi chọn file -> đọc thành base64 -> gửi sang backend thật qua background.js
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+
     dashboard.classList.add('show');
     dashboard.className = 'show'; // reset themes
 
-    // Set Loading state
     contentArea.innerHTML = `
       <div class="sfg-loader-container">
         <div class="sfg-spinner"></div>
@@ -180,26 +189,52 @@
       </div>
     `;
 
-    // Send message to background script
-    chrome.runtime.sendMessage({ action: 'scanInvoice' }, (response) => {
-      if (chrome.runtime.lastError) {
-        contentArea.innerHTML = `
-          <div id="sfg-header">❌ Lỗi Kết Nối</div>
-          <div id="sfg-body">Không thể kết nối đến Lõi AI. Vui lòng tải lại trang.</div>
-        `;
-        return;
-      }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageBase64 = reader.result;
+      chrome.runtime.sendMessage(
+        { action: 'scanInvoice', imageBase64, fileName: file.name },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            contentArea.innerHTML = `
+              <div id="sfg-header">❌ Lỗi Kết Nối</div>
+              <div id="sfg-body">Không thể kết nối đến Lõi AI. Vui lòng tải lại trang.</div>
+            `;
+            return;
+          }
 
-      if (response && response.status === 'success') {
-        renderResult(response);
-      }
-    });
+          if (response && response.status === 'success') {
+            renderResult(response);
+          } else {
+            renderError(response && response.message ? response.message : 'Đã có lỗi xảy ra khi quét hóa đơn.');
+          }
+        }
+      );
+    };
+    reader.onerror = () => {
+      renderError('Không thể đọc file đã chọn.');
+    };
+    reader.readAsDataURL(file);
   });
 
   // Close Dashboard
   closeBtn.addEventListener('click', () => {
     dashboard.classList.remove('show');
   });
+
+  // Render Logic when backend call fails
+  function renderError(message) {
+    dashboard.classList.add('sfg-theme-red');
+    contentArea.innerHTML = `
+      <div id="sfg-header">⚠️ Không Thể Hoàn Tất Quét</div>
+      <div id="sfg-body">${message}</div>
+      <button class="sfg-btn sfg-btn-red" id="sfg-retry-btn">Thử lại</button>
+    `;
+    document.getElementById('sfg-retry-btn').addEventListener('click', () => {
+      dashboard.classList.remove('show');
+      fileInput.click();
+    });
+  }
 
   // Render Logic based on Fraud Score
   function renderResult(data) {

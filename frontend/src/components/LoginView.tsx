@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -7,10 +7,92 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import SecurityIcon from '@mui/icons-material/Security';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const LoginView = () => {
   const navigate = useNavigate();
   const [role, setRole] = useState<'admin' | 'sme'>('admin');
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'success' | 'failed'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const startFaceScan = async () => {
+    setScanStatus('scanning');
+    setErrorMessage('');
+    
+    let activeStream: MediaStream | null = null;
+    try {
+      activeStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setStream(activeStream);
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = activeStream;
+        }
+      }, 100);
+    } catch (err) {
+      setScanStatus('failed');
+      setErrorMessage('Không truy cập được webcam. Vui lòng cấp quyền camera.');
+      return;
+    }
+
+    // Capture photo after 3s
+    setTimeout(async () => {
+      let base64Image = "";
+      if (activeStream && videoRef.current) {
+        try {
+          const video = videoRef.current;
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth || 640;
+          canvas.height = video.videoHeight || 480;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            base64Image = canvas.toDataURL('image/jpeg');
+          }
+        } catch (captureErr) {
+          console.error("Failed to capture video frame", captureErr);
+        }
+      }
+
+      if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+      }
+      setStream(null);
+
+      if (!base64Image) {
+        setScanStatus('failed');
+        setErrorMessage('Không chụp được ảnh từ webcam.');
+        return;
+      }
+
+      // Call Backend API
+      try {
+        const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        const res = await fetch(`${baseURL}/api/ekyc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64Image })
+        });
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          setScanStatus('success');
+          setTimeout(() => {
+            navigate(role === 'admin' ? '/admin/dashboard' : '/sme/portal');
+          }, 1500);
+        } else {
+          setScanStatus('failed');
+          setErrorMessage(data.message || 'Xác thực sinh trắc học thất bại.');
+        }
+      } catch (apiErr) {
+        setScanStatus('failed');
+        setErrorMessage('Lỗi kết nối tới máy chủ.');
+      }
+    }, 3000);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#eef2fc] p-4 font-sans text-gray-800">
@@ -138,9 +220,45 @@ const LoginView = () => {
               {/* Outer decorative ring */}
               <div className="absolute inset-0 bg-[#d0dcf2] rounded-full scale-110 opacity-50"></div>
               
-              <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-b from-[#d0dcf2] to-[#b8caeb] border-[6px] border-white shadow-[0_12px_30px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center relative z-10">
-                <CameraAltIcon sx={{ fontSize: 48 }} className="text-white/60 mb-3" />
-                <span className="text-[15px] font-medium text-[#7a95c4]">Chờ quét sinh trắc học...</span>
+              <div 
+                className="w-[280px] h-[280px] rounded-full bg-gradient-to-b from-[#d0dcf2] to-[#b8caeb] border-[6px] border-white shadow-[0_12px_30px_rgba(0,0,0,0.08)] flex flex-col items-center justify-center relative z-10 overflow-hidden cursor-pointer"
+                onClick={scanStatus === 'idle' || scanStatus === 'failed' ? startFaceScan : undefined}
+                style={{ borderRadius: '50%' }}
+              >
+                {stream ? (
+                  <video 
+                    ref={videoRef}
+                    autoPlay 
+                    playsInline 
+                    className="w-full h-full object-cover transform -scale-x-100"
+                  />
+                ) : scanStatus === 'scanning' ? (
+                  <div className="flex flex-col items-center justify-center p-4">
+                    <AutorenewIcon className="animate-spin text-white mb-2" fontSize="large" />
+                    <span className="text-[15px] font-medium text-white">Đang quét khuôn mặt...</span>
+                  </div>
+                ) : scanStatus === 'success' ? (
+                  <div className="flex flex-col items-center justify-center p-4">
+                    <CheckCircleIcon className="text-green-500 mb-2" style={{ fontSize: 48 }} />
+                    <span className="text-[15px] font-bold text-white">Thành Công!</span>
+                  </div>
+                ) : scanStatus === 'failed' ? (
+                  <div className="flex flex-col items-center justify-center p-4 text-center">
+                    <WarningIcon className="text-red-500 mb-2" style={{ fontSize: 48 }} />
+                    <span className="text-[14px] font-bold text-white leading-tight mb-1">Thất bại</span>
+                    <span className="text-[12px] text-white/80">{errorMessage}</span>
+                    <span className="text-[11px] text-white/60 mt-2 hover:underline">Click để thử lại</span>
+                  </div>
+                ) : (
+                  <>
+                    <CameraAltIcon sx={{ fontSize: 48 }} className="text-white/60 mb-3" />
+                    <span className="text-[15px] font-medium text-[#7a95c4]">Click để quét khuôn mặt</span>
+                  </>
+                )}
+                
+                {scanStatus === 'scanning' && (
+                  <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#4a72a8] to-transparent top-0 animate-[scan_2s_infinite_ease-in-out]"></div>
+                )}
               </div>
             </div>
           </div>
@@ -154,6 +272,14 @@ const LoginView = () => {
         </div>
 
       </div>
+      
+      <style>{`
+        @keyframes scan {
+          0% { top: 0%; }
+          50% { top: 100%; }
+          100% { top: 0%; }
+        }
+      `}</style>
     </div>
   );
 };

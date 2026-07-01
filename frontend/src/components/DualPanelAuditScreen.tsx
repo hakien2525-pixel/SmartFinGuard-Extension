@@ -10,15 +10,182 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
   const [jsonOpen, setJsonOpen] = useState(true);
+  const [viewMode, setViewMode] = useState('original'); // 'original' | 'ela'
 
-  // Fake JSON Data based on VNPT SmartReader output
+  // Dynamically structure the OCR JSON to display
   const rawJSON = {
-    invoice_no: "INV-2026-88392",
-    tax_code: "0314589231",
-    buyer_name: "Công ty Cổ phần Công nghệ SME Việt Nam",
-    total_amount: "50,000,000 VND",
-    issue_date: "24/06/2026"
+    document_id: document?.id || "N/A",
+    invoice_no: document?.invoiceNo || "Không tìm thấy",
+    tax_code: document?.taxCode || "Không tìm thấy",
+    buyer_name: document?.company || "Không tìm thấy",
+    total_amount: document?.amount || "Không tìm thấy",
+    status: document?.status || "Phê duyệt",
+    file_hash_md5: document?.fileHash || "N/A",
+    ela_max_intensity: document?.do_tin_cay ? (100 - document.do_tin_cay) : 0,
+    tampered_regions_detected: document?.tampered_boxes?.length || 0
   };
+
+  const renderLeftPanel = () => (
+    <div className="w-1/2 border-r border-gray-200 bg-gray-100 p-6 flex flex-col h-full overflow-hidden">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+          📸 Chứng Từ & Đối Chứng ELA
+        </h3>
+        {/* Toggle View Mode between Original and ELA Mask */}
+        {document?.elaMaskUrl && (
+          <div className="flex bg-gray-200 p-1 rounded-xl shadow-inner border border-gray-300">
+            <button 
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${viewMode === 'original' ? 'bg-white shadow text-indigo-700' : 'text-gray-600 hover:text-gray-900'}`}
+              onClick={() => setViewMode('original')}
+            >
+              Bản Gốc
+            </button>
+            <button 
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${viewMode === 'ela' ? 'bg-white shadow text-red-600' : 'text-gray-600 hover:text-gray-900'}`}
+              onClick={() => setViewMode('ela')}
+            >
+              Mặt nạ ELA
+            </button>
+          </div>
+        )}
+      </div>
+      
+      <div className="flex-1 bg-white rounded-xl shadow-inner border border-gray-300 overflow-auto relative p-8 flex justify-center items-center custom-scrollbar">
+        {document?.imageUrl ? (
+          <div className="relative max-w-full shadow-lg border border-gray-200 select-none">
+            <img 
+              src={viewMode === 'ela' && document.elaMaskUrl ? document.elaMaskUrl : document.imageUrl} 
+              alt="Uploaded Invoice"
+              className="max-h-[750px] w-auto object-contain"
+            />
+            {/* Draw Real Bounding Boxes dynamically from the ELA results */}
+            {document.tampered_boxes && document.tampered_boxes.map((box, idx) => (
+              <div 
+                key={idx}
+                className="absolute border-2 border-red-500 bg-red-500/10 rounded-sm pointer-events-none group animate-pulse"
+                style={{
+                  left: `${box.x_pct}%`,
+                  top: `${box.y_pct}%`,
+                  width: `${box.width_pct}%`,
+                  height: `${box.height_pct}%`,
+                }}
+              >
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-lg whitespace-nowrap mb-1">
+                  Nghi vấn ELA ({box.intensity}%)
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-gray-400 text-center font-semibold">
+            Không tìm thấy ảnh chứng từ hợp lệ.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderRightPanel = () => (
+    <div className="w-1/2 bg-gray-50 p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar h-full">
+      {/* SECTION A: Transaction Details */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-gray-100 pb-2">
+          💳 Thông Tin Yêu Cầu Giải Ngân
+        </h3>
+        <div className="grid grid-cols-1 gap-y-3 text-[15px]">
+          <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
+            <span className="text-gray-500 font-medium">Mã Giao Dịch:</span>
+            <span className="font-bold text-gray-800 font-mono">{document?.id || 'TXN-UNKNOWN'}</span>
+          </div>
+          <div className="flex justify-between items-center p-2">
+            <span className="text-gray-500 font-medium">Doanh Nghiệp:</span>
+            <span className="font-bold text-indigo-700">{document?.company || 'N/A'}</span>
+          </div>
+          <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
+            <span className="text-gray-500 font-medium">Số tiền giải ngân:</span>
+            <span className="font-bold text-slate-800">{document?.amount || 'N/A'}</span>
+          </div>
+          <div className="flex justify-between items-center p-2">
+            <span className="text-gray-500 font-medium">Mã số thuế:</span>
+            <span className="font-semibold text-slate-700">{document?.taxCode || 'N/A'}</span>
+          </div>
+          <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
+            <span className="text-gray-500 font-medium">Số hóa đơn:</span>
+            <span className="font-semibold text-slate-700">{document?.invoiceNo || 'N/A'}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION B: AI Core Risk Analysis */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-transparent pointer-events-none"></div>
+        
+        <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-gray-100 pb-2 relative z-10">
+          🧠 Kết Luận Thẩm Định AI
+        </h3>
+        
+        <div className="flex items-center gap-4 mb-6 relative z-10">
+          <div className={`w-20 h-20 rounded-full border-4 ${document?.status === 'Cảnh báo' ? 'border-red-500 shadow-red-200' : 'border-green-500 shadow-green-200'} flex items-center justify-center bg-white shadow-inner`}>
+            <span className={`text-2xl font-extrabold ${document?.status === 'Cảnh báo' ? 'text-red-600' : 'text-green-600'}`}>
+              {document?.riskScore ? Math.round(document.riskScore * 100) : 95}%
+            </span>
+          </div>
+          <div>
+            <p className={`font-bold text-xl uppercase tracking-wider ${document?.status === 'Cảnh báo' ? 'text-red-600' : 'text-green-600'}`}>
+              Trạng Thái: {document?.status || 'Phê duyệt'}
+            </p>
+            <p className="text-gray-600 text-sm mt-1">Độ tin cậy tài liệu: {document?.do_tin_cay ?? 100}%</p>
+          </div>
+        </div>
+
+        <div className="space-y-3 relative z-10">
+          <div className={`flex items-start gap-3 p-3 ${document?.status === 'Cảnh báo' ? 'bg-red-50 border-red-100 text-red-900' : 'bg-green-50 border-green-100 text-green-900'} rounded-lg border`}>
+            <CancelIcon className={document?.status === 'Cảnh báo' ? 'text-red-500 mt-0.5' : 'text-green-500 mt-0.5'} fontSize="small" />
+            <p className="text-sm leading-relaxed">
+              <strong>Kết luận ELA:</strong> {document?.do_tin_cay_tong_the || 'Tài liệu nguyên bản, không có dấu vết tẩy xóa.'}
+            </p>
+          </div>
+          {document?.logic_so_hoc && (
+            <div className="flex items-start gap-3 p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-900">
+              <ShieldIcon className="text-indigo-500 mt-0.5" fontSize="small" />
+              <p className="text-sm leading-relaxed">
+                <strong>Kiểm tra số học:</strong> {document.logic_so_hoc}
+              </p>
+            </div>
+          )}
+          <div className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200 text-amber-900">
+            <WarningAmberIcon className="text-amber-500 mt-0.5" fontSize="small" />
+            <p className="text-sm leading-relaxed">
+              <strong>Khuyến nghị giải ngân:</strong> {document?.khuyen_nghi || 'Sẵn sàng phê duyệt.'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION C: SmartReader OCR JSON Output */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex-1 flex flex-col min-h-[250px]">
+        <div 
+          className="bg-slate-800 p-4 flex justify-between items-center cursor-pointer hover:bg-slate-700 transition-colors"
+          onClick={() => setJsonOpen(!jsonOpen)}
+        >
+          <h3 className="text-md font-bold text-white flex items-center gap-2">
+            📄 Dữ Liệu Số Hóa VNPT SmartReader
+          </h3>
+          <IconButton size="small" sx={{ color: 'white' }}>
+            {jsonOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </div>
+        
+        {jsonOpen && (
+          <div className="bg-[#1e293b] p-4 flex-1 overflow-auto custom-scrollbar font-mono text-[14px]">
+            <pre className="text-[#a5b4fc] leading-relaxed">
+              <code>{JSON.stringify(rawJSON, null, 2)}</code>
+            </pre>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   if (inline) {
     return (
@@ -28,8 +195,8 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
           <div className="flex items-center gap-3">
             <ShieldIcon className="text-indigo-600" />
             <h2 className="text-xl font-bold text-gray-800">Màn Hình Thẩm Định Song Song & Đối Chiếu</h2>
-            <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 text-sm font-bold rounded-full border border-red-200">
-              Cảnh báo rủi ro cao
+            <span className={`ml-4 px-3 py-1 ${document?.status === 'Cảnh báo' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-green-100 text-green-700 border-green-200'} text-sm font-bold rounded-full border`}>
+              Trạng thái: {document?.status || 'Phê duyệt'}
             </span>
           </div>
           <IconButton onClick={onClose} size="small" className="hover:bg-gray-200">
@@ -39,168 +206,8 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
 
         {/* Dual Panel Split */}
         <div className="flex flex-1 overflow-hidden">
-          
-          {/* ================= LEFT PANEL ================= */}
-          <div className="w-1/2 border-r border-gray-200 bg-gray-100 p-6 flex flex-col">
-            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              📸 Chứng Từ Gốc & Lớp Cảnh Báo Hệ Thống
-            </h3>
-            
-            <div className="flex-1 bg-white rounded-xl shadow-inner border border-gray-300 overflow-auto relative p-8 flex justify-center custom-scrollbar">
-              
-              {/* Mock Invoice Image Container */}
-              <div className="relative w-full max-w-lg bg-white shadow-md border border-gray-200 min-h-[800px] p-10">
-                {/* Mock Invoice Header */}
-                <div className="text-center mb-8 border-b-2 border-dashed border-gray-300 pb-6">
-                  <h1 className="text-2xl font-bold text-gray-800 uppercase">Hóa Đơn Giá Trị Gia Tăng</h1>
-                  <p className="text-[15px] text-gray-500 mt-2">Ngày 24 tháng 06 năm 2026</p>
-                  <p className="text-[15px] text-gray-500">Mã số thuế: 0314589231</p>
-                </div>
-                
-                {/* Mock Invoice Body */}
-                <div className="space-y-4 text-[15px] text-gray-700">
-                  <p><strong>Đơn vị bán:</strong> Công ty TNHH Thương mại Dịch vụ ABC</p>
-                  <p><strong>Đơn vị mua:</strong> Công ty Cổ phần Công nghệ SME Việt Nam</p>
-                  
-                  <table className="w-full mt-6 border-collapse border border-gray-300">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border border-gray-300 p-2 text-left">STT</th>
-                        <th className="border border-gray-300 p-2 text-left">Tên hàng hóa</th>
-                        <th className="border border-gray-300 p-2 text-right">Thành tiền</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="border border-gray-300 p-2">1</td>
-                        <td className="border border-gray-300 p-2">Máy chủ Server Dell PowerEdge</td>
-                        <td className="border border-gray-300 p-2 text-right">45,454,545 VND</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  
-                  {/* Dynamic Bounding Box over Total Amount */}
-                  <div className="mt-8 text-right relative inline-block float-right w-64 text-lg">
-                    
-                    {/* The Bounding Box */}
-                    <div className="absolute -inset-2 border-2 border-red-500 animate-pulse bg-red-500/10 rounded-md z-10 pointer-events-none">
-                      {/* Floating Tag */}
-                      <div className="absolute -top-12 -right-4 bg-red-600 text-white text-sm font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap flex items-center gap-1">
-                        🔴 Vùng Nghi Vấn Photoshop
-                        <div className="absolute -bottom-1.5 right-8 w-3 h-3 bg-red-600 transform rotate-45"></div>
-                      </div>
-                    </div>
-
-                    <p><strong>Cộng tiền hàng:</strong> 45,454,545 VND</p>
-                    <p><strong>Thuế GTGT (10%):</strong> 4,545,455 VND</p>
-                    <p className="text-xl font-bold mt-2 pt-2 border-t border-gray-400">
-                      Tổng cộng: 50,000,000 VND
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ================= RIGHT PANEL ================= */}
-          <div className="w-1/2 bg-gray-50 p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
-            
-            {/* SECTION A: Transaction Details */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-              <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-gray-100 pb-2">
-                💳 Thông Tin Yêu Cầu Giải Ngân
-              </h3>
-              <div className="grid grid-cols-1 gap-y-3 text-[15px]">
-                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                  <span className="text-gray-500 font-medium">Mã Giao Dịch:</span>
-                  <span className="font-bold text-gray-800 font-mono">TXN-2026-9874</span>
-                </div>
-                <div className="flex justify-between items-center p-2">
-                  <span className="text-gray-500 font-medium">Doanh Nghiệp:</span>
-                  <span className="font-bold text-indigo-700">Công ty Cổ phần Công nghệ SME Việt Nam</span>
-                </div>
-                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                  <span className="text-gray-500 font-medium">Cán bộ thẩm định:</span>
-                  <span className="text-gray-800">Nguyễn Văn A (CN Đông Sài Gòn)</span>
-                </div>
-                <div className="flex justify-between items-center p-2">
-                  <span className="text-gray-500 font-medium">eKYC Nhân viên:</span>
-                  <span className="font-bold text-green-600 flex items-center gap-1">
-                    <CheckCircleIcon fontSize="small"/> Đã xác thực FaceID thành công
-                  </span>
-                </div>
-                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                  <span className="text-gray-500 font-medium">Ngày tạo lệnh:</span>
-                  <span className="text-gray-800">Hôm nay, 15:30</span>
-                </div>
-              </div>
-            </div>
-
-            {/* SECTION B: AI Core Risk Analysis */}
-            <div className="bg-white rounded-xl shadow-sm border border-red-200 p-5 relative overflow-hidden">
-              {/* Subtle danger gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent pointer-events-none"></div>
-              
-              <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-red-100 pb-2 relative z-10">
-                🧠 Kết Luận Thẩm Định
-              </h3>
-              
-              <div className="flex items-center gap-4 mb-6 relative z-10">
-                <div className="w-20 h-20 rounded-full border-4 border-red-500 flex items-center justify-center bg-white shadow-inner shadow-red-200">
-                  <span className="text-2xl font-extrabold text-red-600">78%</span>
-                </div>
-                <div>
-                  <p className="text-red-600 font-bold text-xl uppercase tracking-wider">Mức Độ Rủi Ro: RẤT CAO</p>
-                  <p className="text-gray-600 text-[15px] mt-1">Hệ thống phát hiện bất thường nghiêm trọng trên chứng từ.</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 relative z-10">
-                <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-100">
-                  <CancelIcon className="text-red-500 mt-0.5" fontSize="small" />
-                  <p className="text-[15px] text-red-900 leading-relaxed">
-                    <strong>Lệch Font chữ:</strong> Dòng tổng tiền có kích thước bounding box lệch baseline 4.2 pixel so với cấu trúc bảng gốc.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-100">
-                  <CancelIcon className="text-red-500 mt-0.5" fontSize="small" />
-                  <p className="text-[15px] text-red-900 leading-relaxed">
-                    <strong>Bất thường ELA:</strong> Mức độ phân bố pixel xung quanh số tiền bị nén khác biệt 35% so với nền giấy gốc, dấu hiệu của tẩy xóa kỹ thuật số.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
-                  <WarningAmberIcon className="text-orange-500 mt-0.5" fontSize="small" />
-                  <p className="text-[15px] text-orange-900 leading-relaxed">
-                    <strong>Cảnh báo trùng lặp:</strong> Mã số thuế này trùng khớp với 1 hồ sơ đang chờ duyệt tại ngân hàng đối thủ (Phát hiện bởi hệ thống Database Hashing Ledger).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* SECTION C: SmartReader OCR JSON Output */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex-1 flex flex-col">
-              <div 
-                className="bg-slate-800 p-4 flex justify-between items-center cursor-pointer hover:bg-slate-700 transition-colors"
-                onClick={() => setJsonOpen(!jsonOpen)}
-              >
-                <h3 className="text-md font-bold text-white flex items-center gap-2">
-                  📄 Dữ Liệu Số Hóa VNPT SmartReader
-                </h3>
-                <IconButton size="small" sx={{ color: 'white' }}>
-                  {jsonOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                </IconButton>
-              </div>
-              
-              {jsonOpen && (
-                <div className="bg-[#1e293b] p-4 flex-1 overflow-auto custom-scrollbar">
-                  <pre className="text-[#a5b4fc] text-[15px] font-mono leading-relaxed">
-                    <code>{JSON.stringify(rawJSON, null, 2)}</code>
-                  </pre>
-                </div>
-              )}
-            </div>
-
-          </div>
+          {renderLeftPanel()}
+          {renderRightPanel()}
         </div>
 
         {/* ================= BOTTOM FOOTER ACTIONS ================= */}
@@ -212,9 +219,6 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
           <div className="flex gap-4">
             <button className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-amber-200 transition-all">
               Yêu Cầu Bổ Sung Chứng Từ
-            </button>
-            <button className="bg-gray-100 text-gray-400 px-6 py-3 rounded-xl font-bold border border-gray-200 cursor-not-allowed flex items-center gap-2" disabled>
-              Phê Duyệt Nhanh <LockIcon className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -232,8 +236,8 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
           <div className="flex items-center gap-3">
             <ShieldIcon className="text-indigo-600" />
             <h2 className="text-xl font-bold text-gray-800">Màn Hình Thẩm Định Song Song & Đối Chiếu</h2>
-            <span className="ml-4 px-3 py-1 bg-red-100 text-red-700 text-sm font-bold rounded-full border border-red-200">
-              Cảnh báo rủi ro cao
+            <span className={`ml-4 px-3 py-1 ${document?.status === 'Cảnh báo' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-green-100 text-green-700 border-green-200'} text-sm font-bold rounded-full border`}>
+              Trạng thái: {document?.status || 'Phê duyệt'}
             </span>
           </div>
           <IconButton onClick={onClose} size="small" className="hover:bg-gray-200">
@@ -243,168 +247,8 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
 
         {/* Dual Panel Split */}
         <div className="flex flex-1 overflow-hidden">
-          
-          {/* ================= LEFT PANEL ================= */}
-          <div className="w-1/2 border-r border-gray-200 bg-gray-100 p-6 flex flex-col">
-            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              📸 Chứng Từ Gốc & Lớp Cảnh Báo Hệ Thống
-            </h3>
-            
-            <div className="flex-1 bg-white rounded-xl shadow-inner border border-gray-300 overflow-auto relative p-8 flex justify-center custom-scrollbar">
-              
-              {/* Mock Invoice Image Container */}
-              <div className="relative w-full max-w-lg bg-white shadow-md border border-gray-200 min-h-[800px] p-10">
-                {/* Mock Invoice Header */}
-                <div className="text-center mb-8 border-b-2 border-dashed border-gray-300 pb-6">
-                  <h1 className="text-2xl font-bold text-gray-800 uppercase">Hóa Đơn Giá Trị Gia Tăng</h1>
-                  <p className="text-[15px] text-gray-500 mt-2">Ngày 24 tháng 06 năm 2026</p>
-                  <p className="text-[15px] text-gray-500">Mã số thuế: 0314589231</p>
-                </div>
-                
-                {/* Mock Invoice Body */}
-                <div className="space-y-4 text-[15px] text-gray-700">
-                  <p><strong>Đơn vị bán:</strong> Công ty TNHH Thương mại Dịch vụ ABC</p>
-                  <p><strong>Đơn vị mua:</strong> Công ty Cổ phần Công nghệ SME Việt Nam</p>
-                  
-                  <table className="w-full mt-6 border-collapse border border-gray-300">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border border-gray-300 p-2 text-left">STT</th>
-                        <th className="border border-gray-300 p-2 text-left">Tên hàng hóa</th>
-                        <th className="border border-gray-300 p-2 text-right">Thành tiền</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="border border-gray-300 p-2">1</td>
-                        <td className="border border-gray-300 p-2">Máy chủ Server Dell PowerEdge</td>
-                        <td className="border border-gray-300 p-2 text-right">45,454,545 VND</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  
-                  {/* Dynamic Bounding Box over Total Amount */}
-                  <div className="mt-8 text-right relative inline-block float-right w-64 text-lg">
-                    
-                    {/* The Bounding Box */}
-                    <div className="absolute -inset-2 border-2 border-red-500 animate-pulse bg-red-500/10 rounded-md z-10 pointer-events-none">
-                      {/* Floating Tag */}
-                      <div className="absolute -top-12 -right-4 bg-red-600 text-white text-sm font-bold px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap flex items-center gap-1">
-                        🔴 Vùng Nghi Vấn Photoshop
-                        <div className="absolute -bottom-1.5 right-8 w-3 h-3 bg-red-600 transform rotate-45"></div>
-                      </div>
-                    </div>
-
-                    <p><strong>Cộng tiền hàng:</strong> 45,454,545 VND</p>
-                    <p><strong>Thuế GTGT (10%):</strong> 4,545,455 VND</p>
-                    <p className="text-xl font-bold mt-2 pt-2 border-t border-gray-400">
-                      Tổng cộng: 50,000,000 VND
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ================= RIGHT PANEL ================= */}
-          <div className="w-1/2 bg-gray-50 p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
-            
-            {/* SECTION A: Transaction Details */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-              <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-gray-100 pb-2">
-                💳 Thông Tin Yêu Cầu Giải Ngân
-              </h3>
-              <div className="grid grid-cols-1 gap-y-3 text-sm">
-                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                  <span className="text-gray-500 font-medium">Mã Giao Dịch:</span>
-                  <span className="font-bold text-gray-800 font-mono">TXN-2026-9874</span>
-                </div>
-                <div className="flex justify-between items-center p-2">
-                  <span className="text-gray-500 font-medium">Doanh Nghiệp:</span>
-                  <span className="font-bold text-indigo-700">Công ty Cổ phần Công nghệ SME Việt Nam</span>
-                </div>
-                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                  <span className="text-gray-500 font-medium">Cán bộ thẩm định:</span>
-                  <span className="text-gray-800">Nguyễn Văn A (CN Đông Sài Gòn)</span>
-                </div>
-                <div className="flex justify-between items-center p-2">
-                  <span className="text-gray-500 font-medium">eKYC Nhân viên:</span>
-                  <span className="font-bold text-green-600 flex items-center gap-1">
-                    <CheckCircleIcon fontSize="small"/> Đã xác thực FaceID thành công
-                  </span>
-                </div>
-                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                  <span className="text-gray-500 font-medium">Ngày tạo lệnh:</span>
-                  <span className="text-gray-800">Hôm nay, 15:30</span>
-                </div>
-              </div>
-            </div>
-
-            {/* SECTION B: AI Core Risk Analysis */}
-            <div className="bg-white rounded-xl shadow-sm border border-red-200 p-5 relative overflow-hidden">
-              {/* Subtle danger gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent pointer-events-none"></div>
-              
-              <h3 className="text-md font-bold text-slate-800 mb-4 border-b border-red-100 pb-2 relative z-10">
-                🧠 Kết Luận Thẩm Định
-              </h3>
-              
-              <div className="flex items-center gap-4 mb-6 relative z-10">
-                <div className="w-20 h-20 rounded-full border-4 border-red-500 flex items-center justify-center bg-white shadow-inner shadow-red-200">
-                  <span className="text-2xl font-extrabold text-red-600">78%</span>
-                </div>
-                <div>
-                  <p className="text-red-600 font-bold text-xl uppercase tracking-wider">Mức Độ Rủi Ro: RẤT CAO</p>
-                  <p className="text-gray-600 text-sm mt-1">Hệ thống phát hiện bất thường nghiêm trọng trên chứng từ.</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 relative z-10">
-                <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-100">
-                  <CancelIcon className="text-red-500 mt-0.5" fontSize="small" />
-                  <p className="text-sm text-red-900 leading-relaxed">
-                    <strong>Lệch Font chữ:</strong> Dòng tổng tiền có kích thước bounding box lệch baseline 4.2 pixel so với cấu trúc bảng gốc.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-100">
-                  <CancelIcon className="text-red-500 mt-0.5" fontSize="small" />
-                  <p className="text-sm text-red-900 leading-relaxed">
-                    <strong>Bất thường ELA:</strong> Mức độ phân bố pixel xung quanh số tiền bị nén khác biệt 35% so với nền giấy gốc, dấu hiệu của tẩy xóa kỹ thuật số.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
-                  <WarningAmberIcon className="text-orange-500 mt-0.5" fontSize="small" />
-                  <p className="text-sm text-orange-900 leading-relaxed">
-                    <strong>Cảnh báo trùng lặp:</strong> Mã số thuế này trùng khớp với 1 hồ sơ đang chờ duyệt tại ngân hàng đối thủ (Phát hiện bởi hệ thống Database Hashing Ledger).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* SECTION C: SmartReader OCR JSON Output */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex-1 flex flex-col">
-              <div 
-                className="bg-slate-800 p-4 flex justify-between items-center cursor-pointer hover:bg-slate-700 transition-colors"
-                onClick={() => setJsonOpen(!jsonOpen)}
-              >
-                <h3 className="text-md font-bold text-white flex items-center gap-2">
-                  📄 Dữ Liệu Số Hóa VNPT SmartReader
-                </h3>
-                <IconButton size="small" sx={{ color: 'white' }}>
-                  {jsonOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                </IconButton>
-              </div>
-              
-              {jsonOpen && (
-                <div className="bg-[#1e293b] p-4 flex-1 overflow-auto custom-scrollbar">
-                  <pre className="text-[#a5b4fc] text-sm font-mono leading-relaxed">
-                    <code>{JSON.stringify(rawJSON, null, 2)}</code>
-                  </pre>
-                </div>
-              )}
-            </div>
-
-          </div>
+          {renderLeftPanel()}
+          {renderRightPanel()}
         </div>
 
         {/* ================= BOTTOM FOOTER ACTIONS ================= */}
@@ -417,21 +261,11 @@ const DualPanelAuditScreen = ({ document, onClose, inline = false }) => {
             <button className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-amber-200 transition-all">
               Yêu Cầu Bổ Sung Chứng Từ
             </button>
-            <button className="bg-gray-100 text-gray-400 px-6 py-3 rounded-xl font-bold border border-gray-200 cursor-not-allowed flex items-center gap-2" disabled>
-              Phê Duyệt Nhanh <LockIcon className="w-4 h-4" />
-            </button>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-// SVG Icon for Lock
-const LockIcon = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
-  </svg>
-);
 
 export default DualPanelAuditScreen;
